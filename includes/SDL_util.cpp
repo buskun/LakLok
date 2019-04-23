@@ -1,9 +1,7 @@
 #include "SDL_util.h"
 
-using namespace std;
-
-void logSDLError(const string &message) {
-	cout << message << " Error: " << SDL_GetError() << endl;
+void logSDLError(const std::string &message) {
+	std::cout << message << " Error: " << SDL_GetError() << std::endl;
 }
 
 SDL_Window *createWindow(const char *windowName, int posX, int posY, int screenWidth, int screenHeight, SDL_WindowFlags flags) {

@@ -7,6 +7,7 @@
 #include "includes/util/array.h"
 #include "includes/component/container.h"
 #include "includes/util/timercpp.h"
+#include "view/view_loader.h"
 
 #include "includes/test.h"
 
@@ -15,11 +16,9 @@
 #define RESOURCE_PATH "A:/Projects/LakLok/resources"
 #define FPS 144
 
-using namespace std;
-
 int WinMain(int argc, char *argv[]) {
 	if (SDL_Init(SDL_INIT_VIDEO)) {
-		cout << "SDL_Init Error: " << SDL_GetError() << endl;
+		std::cout << "SDL_Init Error: " << SDL_GetError() << std::endl;
 		return 1;
 	}
 
@@ -30,9 +29,9 @@ int WinMain(int argc, char *argv[]) {
 
 	RendererController SDLRendererController(SDLRenderer, SDLWindow);
 
-	string currentScene = "menu";
+	std::string currentScene = "menu";
 
-	map<const string, Container *> sceneList;
+	std::map<const std::string, Container *> sceneList;
 
 	auto *EventManager = new Event();
 

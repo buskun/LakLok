@@ -17,7 +17,7 @@
 #include "component/touchable.h"
 
 int sth(RendererController &SDLRendererController, Event *EventManager,
-    map<const string, Container *> &sceneList, string &sceneName,
+        std::map<const std::string, Container *> &sceneList, std::string &sceneName,
     const std::string &RESOURCE_PATH, const int &SCREEN_WIDTH, const int &SCREEN_HEIGHT) {
 
 	SDL_Renderer *SDLRenderer = SDLRendererController.getSDLRenderer();
@@ -32,7 +32,7 @@ int sth(RendererController &SDLRendererController, Event *EventManager,
 	MainContainer->setPosition(10, 10);
 	MainContainer->append(new TouchableImage(SDLRendererController, imgtexture,
 	                                         [ ](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
-		                                         cout << "Image clicked" << endl;
+		                                         std::cout << "Image clicked" << std::endl;
 	                                         },
 	                                         10, { iW, iH },
 	                                         { SCREEN_WIDTH / 2 - iW / 2, SCREEN_HEIGHT / 2 - iH / 2, POSITION_RELATIVE }));
@@ -62,7 +62,7 @@ int sth(RendererController &SDLRendererController, Event *EventManager,
 		return fNode->getNodeData()->getRenderIndex() <= sNode->getNodeData()->getRenderIndex();
 	});
 
-	sceneList.insert(pair<const string, Container *>("menu", MainContainer));
+	sceneList.insert(std::pair<const std::string, Container *>("menu", MainContainer));
 
 /*	SDLRendererController.addRenderer(0, [=](Renderer *renderer, SDL_Renderer *SDLRenderer, SDL_Window *SDLWindow) {
 		MainContainer->render(renderer);

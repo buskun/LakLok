@@ -10,9 +10,7 @@
 #include "util/timercpp.h"
 #include "util/array.h"
 
-using namespace std;
-
-void logSDLError(const string &message);
+void logSDLError(const std::string &message);
 
 SDL_Window *createWindow(const char *windowName, int posX, int posY, int screenWidth, int screenHeight, SDL_WindowFlags flags);
 
