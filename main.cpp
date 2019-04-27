@@ -1,3 +1,9 @@
+#ifndef NDEBUG
+#define DEBUG true
+#else
+#define DEBUG false
+#endif
+
 #include <iostream>
 #include <SDL.h>
 #include <map>
@@ -13,7 +19,6 @@
 
 #define WINDOW_WIDTH 1600
 #define WINDOW_HEIGHT 900
-#define RESOURCE_PATH "A:/Projects/LakLok/resources"
 #define FPS 144
 #define TICK_TIME 100
 
@@ -29,6 +34,8 @@ int WinMain(int argc, char *argv[]) {
 		std::cout << "TTF_Init Error: " << TTF_GetError() << std::endl;
 		return errorCode;
 	}
+
+	const std::string RESOURCE_PATH = ( std::string ) SDL_GetBasePath() + ( DEBUG ? "../resources" : "resources" );
 
 	SDL_DisplayMode DM;
 	SDL_GetCurrentDisplayMode(0, &DM);
