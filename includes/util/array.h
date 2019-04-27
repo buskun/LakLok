@@ -245,11 +245,11 @@ public:
 	}
 
 	DataType getByIndex(int index) {
-		return ( DataType ) getNodeByIndex(index)->getNodeData();
+		return getNodeByIndex(index)->getNodeData();
 	}
 
 	DataType getByID(int id) {
-		return ( DataType ) getNodeByID(id)->getNodeData();
+		return getNodeByID(id)->getNodeData();
 	}
 
 	DataType removeByIndex(int index) {

@@ -18,11 +18,11 @@ protected:
 	ComponentSize size = { 0, 0 };
 	Component *_parent = nullptr;
 	COMPONENT_TYPE _componentType = COMPONENT_TYPE_UNDEFINED;
-	RendererController &_rendererController;
+	RendererController *_rendererController;
 	bool hovered = false;
 
 public:
-	explicit Component(RendererController &rendererController, int renderIndex = 0,
+	explicit Component(RendererController *rendererController, int renderIndex = 0,
 	                   ComponentSize componentSize = { 0, 0 },
 	                   ComponentPosition componentPosition = { 0, 0, POSITION_RELATIVE },
 	                   COMPONENT_TYPE componentType = COMPONENT_TYPE_UNDEFINED)
@@ -34,7 +34,7 @@ public:
 		return _renderIndex;
 	}
 
-	RendererController &getRendererController( ) {
+	RendererController *getRendererController( ) {
 		return _rendererController;
 	}
 

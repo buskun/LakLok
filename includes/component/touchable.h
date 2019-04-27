@@ -29,8 +29,8 @@ protected:
 	}
 
 public:
-	Touchable(RendererController &rendererController,
-	          function<void(Touchable *, ComponentPosition, SDL_Event)> &touchFunction,
+	Touchable(RendererController *rendererController,
+	          std::function<void(Touchable *, ComponentPosition, SDL_Event)> &touchFunction,
 	          int renderIndex = 0, ComponentSize componentSize = { 0, 0 },
 	          ComponentPosition componentPosition = { 0, 0, POSITION_RELATIVE })
 			: Component(rendererController, renderIndex, componentSize, componentPosition, COMPONENT_TYPE_VIEW),
@@ -44,7 +44,7 @@ public:
 
 class TouchableText : public Touchable, public TextView {
 public:
-	TouchableText(RendererController &rendererController,
+	TouchableText(RendererController *rendererController,
 	              std::string &&text, TextProp &&textProp,
 	              std::function<void(Touchable *, ComponentPosition clickPosition, SDL_Event event)> &&touchFunction,
 	              int renderIndex = 0, ComponentPosition componentPosition = { 0, 0, POSITION_RELATIVE }) :
@@ -56,7 +56,7 @@ public:
 
 class TouchableImage : public Touchable, public ImageView {
 public:
-	TouchableImage(RendererController &rendererController, SDL_Texture *imageTexture,
+	TouchableImage(RendererController *rendererController, SDL_Texture *imageTexture,
 	               std::function<void(Touchable *, ComponentPosition clickPosition, SDL_Event event)> &&touchFunction,
 	               int renderIndex = 0, ComponentSize componentSize = { 0, 0 },
 	               ComponentPosition componentPosition = { 0, 0, POSITION_RELATIVE }) :
@@ -69,7 +69,7 @@ class Button : public Touchable {
 	TextView *textView = nullptr;
 	ImageView *imageView = nullptr;
 public:
-	Button(RendererController &rendererController,
+	Button(RendererController *rendererController,
 	       std::string &&text, TextProp &&textProp,
 	       SDL_Texture *backgroundTexture,
 	       std::function<void(Touchable *, ComponentPosition clickPosition, SDL_Event event)> &&touchFunction,

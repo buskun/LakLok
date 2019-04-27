@@ -11,75 +11,93 @@
 
 #include "includes/test.h"
 
-#define SCREEN_WIDTH 1920
-#define SCREEN_HEIGHT 1080
+#define WINDOW_WIDTH 1600
+#define WINDOW_HEIGHT 900
 #define RESOURCE_PATH "A:/Projects/LakLok/resources"
 #define FPS 144
+#define TICK_TIME 100
 
 int WinMain(int argc, char *argv[]) {
-	if (SDL_Init(SDL_INIT_VIDEO)) {
+	int errorCode = 0;
+
+	if (( errorCode = SDL_Init(SDL_INIT_EVERYTHING)) < 0) {
 		std::cout << "SDL_Init Error: " << SDL_GetError() << std::endl;
-		return 1;
+		return errorCode;
 	}
 
-	TTF_Init();
+	if (( errorCode = TTF_Init()) < 0) {
+		std::cout << "TTF_Init Error: " << TTF_GetError() << std::endl;
+		return errorCode;
+	}
 
-	SDL_Window *SDLWindow = createWindow("LakLok", 100, 100, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+	SDL_DisplayMode DM;
+	SDL_GetCurrentDisplayMode(0, &DM);
+
+	auto ScreenWidth = DM.w;
+	auto ScreenHeight = DM.h;
+
+	const GameProp gameProp = {
+			RESOURCE_PATH,
+			FPS,
+			TICK_TIME,
+			{ WINDOW_WIDTH, WINDOW_HEIGHT }
+	};
+
+	SDL_Window *SDLWindow = createWindow("LakLok", ( ScreenWidth - WINDOW_WIDTH ) / 2, ( ScreenHeight - WINDOW_HEIGHT ) / 2,
+	                                     WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
 	SDL_Renderer *SDLRenderer = createRenderer(SDLWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
-	RendererController SDLRendererController(SDLRenderer, SDLWindow);
+	auto SDLRendererController = new RendererController(SDLRenderer, SDLWindow);
 
-	std::string currentScene = "menu";
+	auto *eventManager = new EventManager();
 
-	std::map<const std::string, Container *> sceneList;
+	auto *gameScene = new GameScenes(SDLRendererController, eventManager, ( const GameProp && ) gameProp);
 
-	auto *EventManager = new Event();
+	menu(gameScene);
 
-	sth(SDLRendererController, EventManager, sceneList, currentScene, RESOURCE_PATH, SCREEN_WIDTH, SCREEN_HEIGHT);
-
-	EventManager->on(SDL_MOUSEBUTTONDOWN, [&](SDL_Event event) {
-		if (!sceneList[currentScene]) return;
+	eventManager->on(SDL_MOUSEBUTTONDOWN, [&](SDL_Event event) {
 		ComponentPosition clickPosition = { 0, 0, POSITION_ABSOLUTE };
 		SDL_GetMouseState(&clickPosition.x, &clickPosition.y);
-		sceneList[currentScene]->click(clickPosition, event);
+		gameScene->getCurrentScene()->getContainer()->click(clickPosition, event);
 	});
 
-	Component *lastHoveredScene = nullptr;
+	Scene *lastHoveredScene = nullptr;
 
-	EventManager->on(SDL_MOUSEMOTION, [&](SDL_Event event) {
+	eventManager->on(SDL_MOUSEMOTION, [&](SDL_Event event) {
 		ComponentPosition mousePosition = { 0, 0, POSITION_ABSOLUTE };
 		SDL_GetMouseState(&mousePosition.x, &mousePosition.y);
 		if (lastHoveredScene) {
-			lastHoveredScene->unHover(mousePosition, event);
+			lastHoveredScene->getContainer()->unHover(mousePosition, event);
 			lastHoveredScene = nullptr;
 		}
-		if (sceneList[currentScene]) {
-			sceneList[currentScene]->hover(mousePosition, event);
-			lastHoveredScene = sceneList[currentScene];
-		}
+		gameScene->getCurrentScene()->getContainer()->hover(mousePosition, event);
+		lastHoveredScene = gameScene->getCurrentScene();
 	});
 
-	SDLRendererController.addRenderer(0, [&](Renderer *renderer, SDL_Renderer *SDLRenderer, SDL_Window *SDLWindow) {
-		if (sceneList[currentScene]) sceneList[currentScene]->render(renderer);
+	SDLRendererController->addRenderer(0, [&](Renderer *renderer, SDL_Renderer *SDLRenderer, SDL_Window *SDLWindow) {
+		gameScene->getCurrentScene()->renderScene(renderer);
 	});
 
 	auto timer = new Timer();
-	timer->setInterval([&]( ) {
-		if (sceneList[currentScene]) {
-			sceneList[currentScene]->children()->sort([ ](Node<Component *> *fNode, Node<Component *> *sNode) {
+	timer->setInterval([=]( ) {
+		if (gameScene->getCurrentScene()) {
+			gameScene->getCurrentScene()->getContainer()->children()->sort([ ](Node<Component *> *fNode, Node<Component *> *sNode) {
 				return fNode->getNodeData()->getRenderIndex() <= sNode->getNodeData()->getRenderIndex();
 			});
 		}
-		SDLRendererController.tick();
+		SDLRendererController->tick();
 	}, 1 /*s*/ * ( 1000 /*ms*/ / 1 /*s*/) * ( 1 /*s*/ / FPS /*frames*/));
 
-	EventManager->init([ ](SDL_Event event) {
+	timer->setInterval([&]( ) {
+		eventManager->gameTick();
+		gameScene->getCurrentScene()->gameTick();
+	}, TICK_TIME);
+
+	eventManager->init([ ](SDL_Event event) {
 		return event.type == SDL_QUIT;
 	});
 
 	timer->stop();
-
-	cleanupSDL(SDLRenderer, SDLWindow);
 
 	return 0;
 }

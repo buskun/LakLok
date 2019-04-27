@@ -2,10 +2,10 @@
 
 #include "renderer.h"
 
-Renderer::Renderer(int renderIndex, std::function<void(Renderer *, SDL_Renderer *&, SDL_Window *&)> _renderFunction) : renderFunction(
+Renderer::Renderer(int renderIndex, std::function<void(Renderer *, SDL_Renderer *, SDL_Window *)> _renderFunction) : renderFunction(
 		std::move(_renderFunction)), _renderIndex(renderIndex) { }
 
-void Renderer::callRenderFunction(SDL_Renderer *&_renderer, SDL_Window *&_window) {
+void Renderer::callRenderFunction(SDL_Renderer *_renderer, SDL_Window *_window) {
 	renderFunction(this, _renderer, _window);
 }
 
@@ -13,10 +13,10 @@ int Renderer::getRenderIndex( ) {
 	return _renderIndex;
 }
 
-RendererController::RendererController(SDL_Renderer *&_renderer, SDL_Window *&_window) :
+RendererController::RendererController(SDL_Renderer *_renderer, SDL_Window *_window) :
 		SDLRenderer(_renderer), SDLWindow(_window), rendererList(new Array<Renderer *>) { }
 
-void RendererController::addRenderer(int renderIndex, std::function<void(Renderer *, SDL_Renderer *&, SDL_Window *&)> &&renderFunction) {
+void RendererController::addRenderer(int renderIndex, std::function<void(Renderer *, SDL_Renderer *, SDL_Window *)> &&renderFunction) {
 	Renderer *_renderer = new Renderer(renderIndex, renderFunction);
 	rendererList->insert(_renderer, renderIndex);
 }

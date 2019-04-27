@@ -12,8 +12,9 @@ class Container : virtual public Component {
 protected:
 	Array<Component *> *_children;
 public:
-	explicit Container(RendererController rendererController, int renderIndex = 0)
-			: Component(rendererController, renderIndex, { 0, 0 }, { 0, 0, POSITION_ABSOLUTE }, COMPONENT_TYPE_CONTAINER),
+	explicit Container(RendererController *rendererController, int renderIndex = 0,
+	                   ComponentSize &&componentSize = { 0, 0 }, ComponentPosition &&componentPosition = { 0, 0, POSITION_ABSOLUTE })
+			: Component(rendererController, renderIndex, componentSize, componentPosition, COMPONENT_TYPE_CONTAINER),
 			  _children(new Array<Component *>) {
 	}
 

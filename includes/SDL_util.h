@@ -24,19 +24,24 @@ void renderTexture(SDL_Renderer *renderer, SDL_Texture *texture, int posX, int p
 
 void cleanupSDL(SDL_Renderer *renderer, SDL_Window *window);
 
-class Event {
-	SDL_Event event;
+class EventManager {
+	SDL_Event event = { };
 	bool _end;
 	Timer timer;
 	std::map<SDL_EventType, Array<std::function<void(SDL_Event)>> *> callbackList;
+	std::map<SDL_EventType, Array<std::function<void(SDL_Event)>> *> gameTickCallbackList;
 public:
-	Event( );
+	EventManager( );
 
-	Event *init(std::function<bool(SDL_Event)> &&callback);
+	EventManager *init(std::function<bool(SDL_Event)> &&callback);
 
 	void exit( );
 
-	Event *on(SDL_EventType eventType, std::function<void(SDL_Event)> &&callback);
+	void gameTick( );
+
+	EventManager *on(SDL_EventType eventType, std::function<void(SDL_Event)> &&callback);
+
+	EventManager *gameTickOn(SDL_EventType eventType, std::function<void(SDL_Event)> &&callback);
 };
 
 #endif //LAKLOK_SDL_UTIL_H

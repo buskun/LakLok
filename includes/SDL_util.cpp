@@ -45,11 +45,9 @@ void cleanupSDL(SDL_Renderer *renderer, SDL_Window *window) {
 	SDL_DestroyWindow(window);
 }
 
-Event::Event( ) : _end(true) { }
+EventManager::EventManager( ) : _end(true) { }
 
-// TODO event
-
-Event *Event::init(std::function<bool(SDL_Event)> &&callback) {
+EventManager *EventManager::init(std::function<bool(SDL_Event)> &&callback) {
 	_end = false;
 	while (!_end) {
 		while (SDL_PollEvent(&event)) {
@@ -65,12 +63,26 @@ Event *Event::init(std::function<bool(SDL_Event)> &&callback) {
 	return this;
 }
 
-Event *Event::on(SDL_EventType eventType, std::function<void(SDL_Event)> &&callback) {
+EventManager *EventManager::on(SDL_EventType eventType, std::function<void(SDL_Event)> &&callback) {
 	if (!callbackList[eventType]) callbackList[eventType] = new Array<std::function<void(SDL_Event)>>;
 	callbackList[eventType]->push(callback);
 	return this;
 }
 
-void Event::exit( ) {
+EventManager *EventManager::gameTickOn(SDL_EventType eventType, std::function<void(SDL_Event)> &&callback) {
+	if (!gameTickCallbackList[eventType]) gameTickCallbackList[eventType] = new Array<std::function<void(SDL_Event)>>;
+	gameTickCallbackList[eventType]->push(callback);
+	return this;
+}
+
+void EventManager::gameTick( ) {
+	if (gameTickCallbackList[( SDL_EventType ) event.type]) {
+		gameTickCallbackList[( SDL_EventType ) event.type]->forEach([&](int index, int id, std::function<void(SDL_Event)> &&_callback) {
+			timer.setTimeout([=]( ) { _callback(event); }, 0);
+		});
+	}
+}
+
+void EventManager::exit( ) {
 	_end = true;
 }
