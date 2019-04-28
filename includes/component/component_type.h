@@ -1,23 +1,20 @@
-//
-// Created by buskun0 on 14/04/19.
-//
-
 #ifndef LAKLOK_COMPONENT_TYPE_H
 #define LAKLOK_COMPONENT_TYPE_H
 
 #include <SDL.h>
 #include <SDL_ttf.h>
+#include <iostream>
 
-enum POSITION_FLAG {
+typedef enum {
 	POSITION_ABSOLUTE,
 	POSITION_RELATIVE
-};
+} POSITION_FLAG;
 
-enum COMPONENT_TYPE {
+typedef enum {
 	COMPONENT_TYPE_UNDEFINED,
 	COMPONENT_TYPE_VIEW,
 	COMPONENT_TYPE_CONTAINER
-};
+} COMPONENT_TYPE;
 
 typedef struct {
 	int x;

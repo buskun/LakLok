@@ -1,7 +1,3 @@
-//
-// Created by buskun0 on 07/04/19.
-//
-
 #ifndef LAKLOK_CUSTOM_ARRAY_H
 #define LAKLOK_CUSTOM_ARRAY_H
 
@@ -9,69 +5,72 @@
 
 template<class DataType>
 class Node {
-	Node *previous;
+	Node *previousNode = nullptr;
+	Node *nextNode = nullptr;
 	DataType nodeData;
-	Node *next;
-	int ID;
-	int _comparingIndex;
+	int ID = 0;
+	int value = 0;
 
 public:
-	Node(int id, DataType data, int comparingIndex = 0) :
-			previous(nullptr), next(nullptr), ID(id), nodeData(data),
-			_comparingIndex(comparingIndex) { }
-
-	Node<DataType> *nextNode( ) {
-		return next;
+	Node(int ID, DataType nodeData, int value = 0) {
+		this->nodeData = nodeData;
+		this->value = value;
+		this->ID = ID;
 	}
 
-	Node<DataType> *previousNode( ) {
-		return previous;
+	Node<DataType> *getNextNode( ) {
+		return this->nextNode;
+	}
+
+	Node<DataType> *getPreviousNode( ) {
+		return this->previousNode;
 	}
 
 	DataType getNodeData( ) {
-		return nodeData;
+		return this->nodeData;
 	}
 
 	int getID( ) {
-		return ID;
+		return this->ID;
 	}
 
-	int getComparingIndex( ) {
-		return _comparingIndex;
+	int getValue( ) {
+		return this->value;
 	}
 
-	void setComparingIndex(int comparingIndex) {
-		_comparingIndex = comparingIndex;
+	Node<DataType> *setValue(int value) {
+		this->value = value;
+		return this;
 	}
 
-	void setNextNode(Node<DataType> *nextNode) {
-		next = nextNode;
+	Node<DataType> *setNextNode(Node<DataType> *nextNode) {
+		this->nextNode = nextNode;
+		return this;
 	}
 
-	void setPreviousNode(Node<DataType> *previousNode) {
-		previous = previousNode;
+	Node<DataType> *setPreviousNode(Node<DataType> *previousNode) {
+		this->previousNode = previousNode;
+		return this;
 	}
 
-	void setNodeData(DataType data) {
-		nodeData = data;
+	Node<DataType> *setNodeData(DataType data) {
+		this->nodeData = data;
+		return this;
 	}
 };
 
 template<class DataType>
 class Array {
-
-	Node<DataType> *first;
-	Node<DataType> *last;
-
-	int _size;
-
-	int idCount;
+	Node<DataType> *first = nullptr;
+	Node<DataType> *last = nullptr;
+	int size = 0;
+	int IDCounter = 0;
 
 	void swap(Node<DataType> *firstElement, Node<DataType> *secondElement) {
-		Node<DataType> *fPrev = firstElement->previousNode();
-		Node<DataType> *fNext = firstElement->nextNode();
-		Node<DataType> *sPrev = secondElement->previousNode();
-		Node<DataType> *sNext = secondElement->nextNode();
+		Node<DataType> *fPrev = firstElement->getPreviousNode();
+		Node<DataType> *fNext = firstElement->getNextNode();
+		Node<DataType> *sPrev = secondElement->getPreviousNode();
+		Node<DataType> *sNext = secondElement->getNextNode();
 
 		if (firstElement == sPrev && secondElement == fNext) {
 			firstElement->setNextNode(sNext);
@@ -81,9 +80,9 @@ class Array {
 			secondElement->setPreviousNode(fPrev);
 
 			if (fPrev) fPrev->setNextNode(secondElement);
-			else first = secondElement;
+			else this->first = secondElement;
 			if (sNext) sNext->setPreviousNode(firstElement);
-			else last = firstElement;
+			else this->last = firstElement;
 		} else if (secondElement == fPrev && firstElement == sNext) {
 			firstElement->setNextNode(secondElement);
 			firstElement->setPreviousNode(sPrev);
@@ -92,9 +91,9 @@ class Array {
 			secondElement->setPreviousNode(firstElement);
 
 			if (sPrev) sPrev->setNextNode(firstElement);
-			else first = firstElement;
+			else this->first = firstElement;
 			if (fNext) fNext->setPreviousNode(secondElement);
-			else last = secondElement;
+			else this->last = secondElement;
 		} else {
 			firstElement->setNextNode(sNext);
 			firstElement->setPreviousNode(sPrev);
@@ -103,169 +102,179 @@ class Array {
 			secondElement->setPreviousNode(fPrev);
 
 			if (fPrev) fPrev->setNextNode(secondElement);
-			else first = secondElement;
+			else this->first = secondElement;
 			if (fNext) fNext->setPreviousNode(secondElement);
-			else last = secondElement;
+			else this->last = secondElement;
 			if (sPrev) sPrev->setNextNode(firstElement);
-			else first = firstElement;
+			else this->first = firstElement;
 			if (sNext) sNext->setNextNode(firstElement);
-			else last = firstElement;
+			else this->last = firstElement;
 		}
 	}
 
 public:
 	Array( ) {
-		first = nullptr;
-		last = nullptr;
-		_size = 0;
-		idCount = 0;
+		this->size = 0;
+		this->IDCounter = 0;
 	}
 
-	int size( ) {
-		return _size;
-	}
-
-	void push(DataType nodeData, int comparingIndex = 0) {
-		auto *newNode = new Node<DataType>(idCount++, nodeData, comparingIndex);
-
-		if (!first) first = newNode;
-
-		if (last) {
-			last->setNextNode(newNode);
-			newNode->setPreviousNode(last);
+	~Array( ) {
+		for (Node<DataType> *currentNode = this->first, *temp; currentNode; currentNode = temp) {
+			temp = currentNode->getNextNode();
+			delete currentNode;
 		}
-		last = newNode;
+	}
 
-		_size++;
+	int getSize( ) {
+		return this->size;
+	}
+
+	Array<DataType> *push(DataType nodeData, int value = 0) {
+		auto *newNode = new Node<DataType>(this->IDCounter++, nodeData, value);
+
+		if (!this->first) this->first = newNode;
+
+		if (this->last) {
+			this->last->setNextNode(newNode);
+			newNode->setPreviousNode(this->last);
+		}
+		this->last = newNode;
+		this->size++;
+
+		return this;
 	}
 
 	DataType pop( ) {
-		if (!last) return ( DataType ) nullptr;
+		if (!this->last) return ( DataType ) nullptr;
 
-		DataType nodeData = last->getNodeData();
-		Node<DataType> *lastNode = last;
-		Node<DataType> *newLastNode = last->previousNode();
+		DataType nodeData = this->last->getNodeData();
+		Node<DataType> *lastNode = this->last;
+		Node<DataType> *newLastNode = this->last->getPreviousNode();
 
-		if (!newLastNode) first = nullptr;
+		if (!newLastNode) this->first = nullptr;
 		else newLastNode->setNextNode(nullptr);
 
-		last = newLastNode;
-		_size--;
+		this->last = newLastNode;
+		this->size--;
 
 		delete lastNode;
 
 		return nodeData;
 	}
 
-	void unshift(DataType nodeData, int comparingIndex = 0) {
-		auto *newNode = new Node<DataType>(idCount++, nodeData, comparingIndex);
+	Array<DataType> *unshift(DataType nodeData, int value = 0) {
+		auto *newNode = new Node<DataType>(this->IDCounter++, nodeData, value);
 
-		if (first) {
-			first->setPreviousNode(newNode);
-			newNode->setNextNode(first);
+		if (this->first) {
+			this->first->setPreviousNode(newNode);
+			newNode->setNextNode(this->first);
 		}
-		first = newNode;
+		this->first = newNode;
 
-		if (!last) last = newNode;
+		if (!this->last) this->last = newNode;
+		this->size++;
 
-		_size++;
+		return this;
 	}
 
 	DataType shift( ) {
-		if (!first) return ( DataType ) nullptr;
+		if (!this->first) return ( DataType ) nullptr;
 
-		DataType nodeData = first->getNodeData();
-		Node<DataType> *firstNode = first;
-		Node<DataType> *newFirstNode = first->nextNode();
+		DataType nodeData = this->first->getNodeData();
+		Node<DataType> *firstNode = this->first;
+		Node<DataType> *newFirstNode = this->first->getNextNode();
 
-		if (!newFirstNode) last = nullptr;
+		if (!newFirstNode) this->last = nullptr;
 		else newFirstNode->setNextNode(nullptr);
 
-		first = newFirstNode;
-		_size--;
+		this->first = newFirstNode;
+		this->size--;
 
 		delete firstNode;
 
 		return nodeData;
 	}
 
-	void insert(DataType nodeData, int comparingIndex) {
-		auto *newNode = new Node<DataType>(idCount++, nodeData, comparingIndex);
-		Node<DataType> *currentNode = first;
+	Array<DataType> *insert(DataType nodeData, int value) {
+		auto *newNode = new Node<DataType>(this->IDCounter++, nodeData, value);
+		Node<DataType> *currentNode = this->first;
 		Node<DataType> *previousNode = nullptr;
-		for (; currentNode; previousNode = currentNode, currentNode = currentNode->nextNode()) {
-			if (currentNode->getComparingIndex() > comparingIndex) break;
+		for (; currentNode; previousNode = currentNode, currentNode = currentNode->getNextNode()) {
+			if (currentNode->getValue() > value) break;
 		}
 
 		if (!currentNode) {
-			last = newNode;
+			this->last = newNode;
 		} else {
 			currentNode->setPreviousNode(newNode);
 			newNode->setNextNode(currentNode);
 		}
 
 		if (!previousNode) {
-			first = newNode;
+			this->first = newNode;
 		} else {
 			previousNode->setNextNode(newNode);
 			newNode->setPreviousNode(previousNode);
 		}
 
-		_size++;
+		this->size++;
+
+		return this;
 	}
 
-	void forEach(std::function<void(int index, int id, DataType data)> callback) {
-		Node<DataType> *currentNode = first;
-		for (int i = 0; currentNode; currentNode = currentNode->nextNode(), i++) {
+	Array<DataType> *forEach(std::function<void(int index, int ID, DataType data)> callback) {
+		Node<DataType> *currentNode = this->first;
+		for (int i = 0; currentNode; currentNode = currentNode->getNextNode(), i++) {
 			callback(i, currentNode->getID(), currentNode->getNodeData());
 		}
+		return this;
 	}
 
-	Node<DataType> *getFirst( ) {
-		return first;
+	Node<DataType> *getFirstNode( ) {
+		return this->first;
 	}
 
-	Node<DataType> *getLast( ) {
-		return last;
+	Node<DataType> *getLastNode( ) {
+		return this->last;
 	}
 
 	Node<DataType> *getNodeByIndex(int index) {
-		Node<DataType> *currentNode = first;
-		for (int i = 0; currentNode; currentNode = currentNode->nextNode(), i++) {
+		Node<DataType> *currentNode = this->first;
+		for (int i = 0; currentNode; currentNode = currentNode->getNextNode(), i++) {
 			if (i == index) return currentNode;
 		}
 		return nullptr;
 	}
 
 	Node<DataType> *getNodeByID(int id) {
-		for (Node<DataType> *currentNode = first; currentNode; currentNode = currentNode->nextNode()) {
+		for (Node<DataType> *currentNode = this->first; currentNode; currentNode = currentNode->getNextNode()) {
 			if (currentNode->getID() == id) return currentNode;
 		}
 		return nullptr;
 	}
 
 	DataType getByIndex(int index) {
-		return getNodeByIndex(index)->getNodeData();
+		return this->getNodeByIndex(index)->getNodeData();
 	}
 
 	DataType getByID(int id) {
-		return getNodeByID(id)->getNodeData();
+		return this->getNodeByID(id)->getNodeData();
 	}
 
 	DataType removeByIndex(int index) {
-		Node<DataType> *currentNode = first;
+		Node<DataType> *currentNode = this->first;
 		Node<DataType> *previousNode = nullptr;
-		for (int i = 0; currentNode; previousNode = currentNode, currentNode = currentNode->nextNode(), i++) {
+		for (int i = 0; currentNode; previousNode = currentNode, currentNode = currentNode->getNextNode(), i++) {
 			if (i == index) {
-				if (!previousNode) first = currentNode->nextNode();
-				else previousNode->setNextNode(currentNode->nextNode());
+				if (!previousNode) this->first = currentNode->getNextNode();
+				else previousNode->setNextNode(currentNode->getNextNode());
 
-				if (!currentNode->nextNode()) last = previousNode;
-				else currentNode->nextNode()->setPreviousNode(previousNode);
+				if (!currentNode->getNextNode()) this->last = previousNode;
+				else currentNode->getNextNode()->setPreviousNode(previousNode);
 
 				DataType data = currentNode->getNodeData();
 				delete currentNode;
-				_size--;
+				this->size--;
 				return data;
 			}
 		}
@@ -273,17 +282,17 @@ public:
 	}
 
 	DataType removeByID(int id) {
-		for (Node<DataType> *currentNode = first, *previousNode = nullptr; currentNode; previousNode = currentNode, currentNode = currentNode->nextNode()) {
+		for (Node<DataType> *currentNode = this->first, *previousNode = nullptr; currentNode; previousNode = currentNode, currentNode = currentNode->getNextNode()) {
 			if (currentNode->getID() == id) {
-				if (!previousNode) first = currentNode->nextNode();
-				else previousNode->setNextNode(currentNode->nextNode());
+				if (!previousNode) this->first = currentNode->getNextNode();
+				else previousNode->setNextNode(currentNode->getNextNode());
 
-				if (!currentNode->nextNode()) last = previousNode;
-				else currentNode->nextNode()->setPreviousNode(previousNode);
+				if (!currentNode->getNextNode()) this->last = previousNode;
+				else currentNode->getNextNode()->setPreviousNode(previousNode);
 
 				DataType data = currentNode->getNodeData();
 				delete currentNode;
-				_size--;
+				this->size--;
 				return data;
 			}
 		}
@@ -292,12 +301,12 @@ public:
 
 	Array<DataType> *sort(std::function<bool(Node<DataType> *, Node<DataType> *)> comparingFunction) {
 		bool swapped = false;
-		for (int i = _size - 1; i > 0; swapped = false, i--) {
+		for (int i = this->size - 1; i > 0; swapped = false, i--) {
 			for (int j = 0; j < i; j++) {
-				Node<DataType> *fNode = getNodeByIndex(j);
-				Node<DataType> *sNode = fNode->nextNode();
+				Node<DataType> *fNode = this->getNodeByIndex(j);
+				Node<DataType> *sNode = fNode->getNextNode();
 				if (!comparingFunction(fNode, sNode)) {
-					swap(fNode, sNode);
+					this->swap(fNode, sNode);
 					swapped = true;
 				}
 			}

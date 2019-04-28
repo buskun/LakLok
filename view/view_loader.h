@@ -1,7 +1,3 @@
-//
-// Created by buskun0 on 07/04/19.
-//
-
 #ifndef LAKLOK_VIEW_LOADER_H
 #define LAKLOK_VIEW_LOADER_H
 
@@ -54,12 +50,12 @@ public:
 class GameScenes {
 	std::map<const std::string, Scene *> sceneList;
 	std::string currentScene;
-	Array<const std::string> sceneNameList;
+	Array<std::string> sceneNameList;
 	RendererController *_rendererController;
 	EventManager *_eventManager;
 	const GameProp _gameProp;
 public:
-	GameScenes(RendererController *rendererController, EventManager *eventManager, const GameProp &&gameProp) :
+	GameScenes(RendererController *rendererController, EventManager *eventManager, GameProp &gameProp) :
 			_rendererController(rendererController), _gameProp(gameProp), _eventManager(eventManager) {
 	}
 

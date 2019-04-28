@@ -1,11 +1,5 @@
-//
-// Created by buskun0 on 06/04/19.
-//
-
 #ifndef LAKLOK_TEST_H
 #define LAKLOK_TEST_H
-
-#include <fstream>
 
 #include "renderer.h"
 #include "SDL_util.h"
@@ -26,14 +20,14 @@ int menu(GameScenes *gameScenes) {
 
 	const GameProp GAME_PROP = gameScenes->getGameProp();
 
-	SDL_Texture *bgTexture = loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/background.bmp");
-	SDL_Texture *imgTexture = loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/image.bmp");
+	SDL_Texture *bgTexture = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/background.bmp");
+	SDL_Texture *imgTexture = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/image.bmp");
 	int bW, bH;
 	SDL_QueryTexture(bgTexture, nullptr, nullptr, &bW, &bH);
 	int iW, iH;
 	SDL_QueryTexture(imgTexture, nullptr, nullptr, &iW, &iH);
 
-	sceneContainer->setPosition(10, 10);
+	sceneContainer->setPosition({ 10, 10 });
 	sceneContainer->append(new TouchableImage(SDLRendererController, imgTexture,
 	                                          [ ](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
 		                                          std::cout << "Image clicked" << std::endl;
@@ -51,16 +45,16 @@ int menu(GameScenes *gameScenes) {
 	                      bgTexture,
 	                      [&](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
 		                      ComponentPosition currentPos = button->getPosition();
-		                      button->setPosition(currentPos.x + 10, currentPos.y + 10);
+		                      button->setPosition({ currentPos.x + 10, currentPos.y + 10 });
 	                      },
 	                      0, { bW, bH }, { bW, bH, POSITION_ABSOLUTE });
-	btn->getTextView()->setHoverText("Bird", { 18, GAME_PROP.RESOURCE_PATH  + "/fonts/Roboto-Regular.ttf", { 255, 255, 255 }});
+	btn->getTextView()->setHoverText("Bird", { 18, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf", { 255, 255, 255 }});
 	sceneContainer->append(btn);
 
 	scene->addTick([ ](Container *container, RendererController *rendererController, Scene *scene) {
 	});
 
-	sceneContainer->children()->sort([ ](Node<Component *> *fNode, Node<Component *> *sNode) {
+	sceneContainer->getChildren()->sort([ ](Node<Component *> *fNode, Node<Component *> *sNode) {
 		return fNode->getNodeData()->getRenderIndex() <= sNode->getNodeData()->getRenderIndex();
 	});
 

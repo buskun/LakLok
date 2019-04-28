@@ -19,8 +19,6 @@
 
 #define WINDOW_WIDTH 1600
 #define WINDOW_HEIGHT 900
-#define FPS 144
-#define TICK_TIME 100
 
 int WinMain(int argc, char *argv[]) {
 	int errorCode = 0;
@@ -35,30 +33,28 @@ int WinMain(int argc, char *argv[]) {
 		return errorCode;
 	}
 
-	const std::string RESOURCE_PATH = ( std::string ) SDL_GetBasePath() + ( DEBUG ? "../resources" : "resources" );
+	GameProp gameProp = { };
+	gameProp.NAME = "LakLok";
+	gameProp.FPS = 144;
+	gameProp.TICK_TIME = 100;
+	gameProp.RESOURCE_PATH = ( std::string ) SDL_GetBasePath() + ( DEBUG ? "../resources" : "resources" );
 
 	SDL_DisplayMode DM;
 	SDL_GetCurrentDisplayMode(0, &DM);
 
-	auto ScreenWidth = DM.w;
-	auto ScreenHeight = DM.h;
+	gameProp.WINDOW.HEIGHT = WINDOW_HEIGHT;
+	gameProp.WINDOW.WIDTH = WINDOW_WIDTH;
 
-	const GameProp gameProp = {
-			RESOURCE_PATH,
-			FPS,
-			TICK_TIME,
-			{ WINDOW_WIDTH, WINDOW_HEIGHT }
-	};
+	gameProp.WINDOW.X = ( DM.w - WINDOW_WIDTH ) / 2;
+	gameProp.WINDOW.Y = ( DM.h - WINDOW_HEIGHT ) / 2;
 
-	SDL_Window *SDLWindow = createWindow("LakLok", ( ScreenWidth - WINDOW_WIDTH ) / 2, ( ScreenHeight - WINDOW_HEIGHT ) / 2,
-	                                     WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
-	SDL_Renderer *SDLRenderer = createRenderer(SDLWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-
-	auto SDLRendererController = new RendererController(SDLRenderer, SDLWindow);
+	auto SDLRendererController = new RendererController(( GameProp && ) gameProp,
+	                                                    SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI,
+	                                                    SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
 	auto *eventManager = new EventManager();
 
-	auto *gameScene = new GameScenes(SDLRendererController, eventManager, ( const GameProp && ) gameProp);
+	auto *gameScene = new GameScenes(SDLRendererController, eventManager, gameProp);
 
 	menu(gameScene);
 
@@ -81,24 +77,24 @@ int WinMain(int argc, char *argv[]) {
 		lastHoveredScene = gameScene->getCurrentScene();
 	});
 
-	SDLRendererController->addRenderer(0, [&](Renderer *renderer, SDL_Renderer *SDLRenderer, SDL_Window *SDLWindow) {
+	SDLRendererController->addRenderer(0, [&](Renderer *renderer) {
 		gameScene->getCurrentScene()->renderScene(renderer);
 	});
 
 	auto timer = new Timer();
 	timer->setInterval([=]( ) {
 		if (gameScene->getCurrentScene()) {
-			gameScene->getCurrentScene()->getContainer()->children()->sort([ ](Node<Component *> *fNode, Node<Component *> *sNode) {
+			gameScene->getCurrentScene()->getContainer()->getChildren()->sort([ ](Node<Component *> *fNode, Node<Component *> *sNode) {
 				return fNode->getNodeData()->getRenderIndex() <= sNode->getNodeData()->getRenderIndex();
 			});
 		}
-		SDLRendererController->tick();
-	}, 1 /*s*/ * ( 1000 /*ms*/ / 1 /*s*/) * ( 1 /*s*/ / FPS /*frames*/));
+		SDLRendererController->renderTick();
+	}, 1 /*s*/ * ( 1000 /*ms*/ / 1 /*s*/) * ( 1 /*s*/ / gameProp.FPS /*frames*/));
 
 	timer->setInterval([&]( ) {
 		eventManager->gameTick();
 		gameScene->getCurrentScene()->gameTick();
-	}, TICK_TIME);
+	}, gameProp.TICK_TIME);
 
 	eventManager->init([ ](SDL_Event event) {
 		return event.type == SDL_QUIT;
