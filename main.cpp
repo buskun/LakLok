@@ -13,9 +13,9 @@
 #include "includes/util/array.h"
 #include "includes/component/container.h"
 #include "includes/util/timercpp.h"
-#include "view/view_loader.h"
+#include "includes/scene.h"
 
-#include "includes/test.h"
+#include "test.h"
 
 #define WINDOW_WIDTH 1600
 #define WINDOW_HEIGHT 900
@@ -54,14 +54,14 @@ int WinMain(int argc, char *argv[]) {
 
 	auto *eventManager = new EventManager();
 
-	auto *gameScene = new GameScenes(SDLRendererController, eventManager, gameProp);
+	auto *gameScene = new GameScenes(SDLRendererController, eventManager, ( GameProp && ) gameProp);
 
 	menu(gameScene);
 
 	eventManager->on(SDL_MOUSEBUTTONDOWN, [&](SDL_Event event) {
 		ComponentPosition clickPosition = { 0, 0, POSITION_ABSOLUTE };
 		SDL_GetMouseState(&clickPosition.x, &clickPosition.y);
-		gameScene->getCurrentScene()->getContainer()->click(clickPosition, event);
+		gameScene->getCurrentScene()->getSceneContainer()->click(clickPosition, event);
 	});
 
 	Scene *lastHoveredScene = nullptr;
@@ -70,10 +70,10 @@ int WinMain(int argc, char *argv[]) {
 		ComponentPosition mousePosition = { 0, 0, POSITION_ABSOLUTE };
 		SDL_GetMouseState(&mousePosition.x, &mousePosition.y);
 		if (lastHoveredScene) {
-			lastHoveredScene->getContainer()->unHover(mousePosition, event);
+			lastHoveredScene->getSceneContainer()->unHover(mousePosition, event);
 			lastHoveredScene = nullptr;
 		}
-		gameScene->getCurrentScene()->getContainer()->hover(mousePosition, event);
+		gameScene->getCurrentScene()->getSceneContainer()->hover(mousePosition, event);
 		lastHoveredScene = gameScene->getCurrentScene();
 	});
 
@@ -84,7 +84,7 @@ int WinMain(int argc, char *argv[]) {
 	auto timer = new Timer();
 	timer->setInterval([=]( ) {
 		if (gameScene->getCurrentScene()) {
-			gameScene->getCurrentScene()->getContainer()->getChildren()->sort([ ](Node<Component *> *fNode, Node<Component *> *sNode) {
+			gameScene->getCurrentScene()->getSceneContainer()->getChildren()->sort([ ](Node<Component *> *fNode, Node<Component *> *sNode) {
 				return fNode->getNodeData()->getRenderIndex() <= sNode->getNodeData()->getRenderIndex();
 			});
 		}

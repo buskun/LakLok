@@ -1,19 +1,20 @@
 #ifndef LAKLOK_TEST_H
 #define LAKLOK_TEST_H
 
-#include "renderer.h"
-#include "SDL_util.h"
+#include "includes/renderer.h"
+#include "includes/SDL_util.h"
+#include "includes/scene.h"
 
-#include "util/array.h"
-#include "component/view.h"
-#include "component/container.h"
-#include "component/touchable.h"
+#include "includes/util/array.h"
+#include "includes/component/view.h"
+#include "includes/component/container.h"
+#include "includes/component/touchable.h"
 
 int menu(GameScenes *gameScenes) {
 	Scene *scene = gameScenes->newScene("menu");
 	gameScenes->addScene(scene);
 
-	Container *sceneContainer = scene->getContainer();
+	Container *sceneContainer = scene->getSceneContainer();
 
 	RendererController *SDLRendererController = gameScenes->getRendererController();
 	SDL_Renderer *SDLRenderer = SDLRendererController->getSDLRenderer();
@@ -51,7 +52,7 @@ int menu(GameScenes *gameScenes) {
 	btn->getTextView()->setHoverText("Bird", { 18, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf", { 255, 255, 255 }});
 	sceneContainer->append(btn);
 
-	scene->addTick([ ](Container *container, RendererController *rendererController, Scene *scene) {
+	scene->onGameTick([ ](Scene *scene) {
 	});
 
 	sceneContainer->getChildren()->sort([ ](Node<Component *> *fNode, Node<Component *> *sNode) {
