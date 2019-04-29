@@ -18,12 +18,25 @@ public:
 		this->ID = ID;
 	}
 
+	Node<DataType> *operator-(int shift) {
+		if (shift == 1) return this->previousNode;
+		if (this->previousNode) return *( this->previousNode ) - 1;
+		return nullptr;
+	}
+
+	Node<DataType> *operator+(int shift) {
+		if (shift < 0) return this - ( -shift );
+		if (shift == 1) return this->nextNode;
+		if (this->nextNode) return *( this->nextNode ) + 1;
+		return nullptr;
+	}
+
 	Node<DataType> *getNextNode( ) {
-		return this->nextNode;
+		return *this + 1;
 	}
 
 	Node<DataType> *getPreviousNode( ) {
-		return this->previousNode;
+		return *this + ( -1 );
 	}
 
 	DataType getNodeData( ) {
@@ -299,14 +312,14 @@ public:
 		return nullptr;
 	}
 
-	Array<DataType> *sort(std::function<bool(Node<DataType> *, Node<DataType> *)> comparingFunction) {
+	Array<DataType> *sort(std::function<bool(Node<DataType> *, Node<DataType> *)> compare) {
 		bool swapped = false;
 		for (int i = this->size - 1; i > 0; swapped = false, i--) {
 			Node<DataType> *fNode = this->first;
-			Node<DataType> *temp = fNode->getNextNode();
+			Node<DataType> *temp = ( *fNode ) + 1;
 			for (int j = 0; j < i; j++, fNode = temp) {
-				Node<DataType> *sNode = fNode->getNextNode();
-				if (!comparingFunction(fNode, sNode)) {
+				Node<DataType> *sNode = ( *fNode ) + 1;
+				if (!compare(fNode, sNode)) {
 					this->swap(fNode, sNode);
 					swapped = true;
 				}
