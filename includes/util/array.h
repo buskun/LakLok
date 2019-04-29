@@ -19,24 +19,18 @@ public:
 	}
 
 	Node<DataType> *operator-(int shift) {
+		if (shift == 0) return this;
 		if (shift == 1) return this->previousNode;
-		if (this->previousNode) return *( this->previousNode ) - 1;
+		if (this->previousNode) return *( this->previousNode ) - ( shift - 1 );
 		return nullptr;
 	}
 
 	Node<DataType> *operator+(int shift) {
+		if (shift == 0) return this;
 		if (shift < 0) return this - ( -shift );
 		if (shift == 1) return this->nextNode;
-		if (this->nextNode) return *( this->nextNode ) + 1;
+		if (this->nextNode) return *( this->nextNode ) + ( shift - 1 );
 		return nullptr;
-	}
-
-	Node<DataType> *getNextNode( ) {
-		return *this + 1;
-	}
-
-	Node<DataType> *getPreviousNode( ) {
-		return *this + ( -1 );
 	}
 
 	DataType getNodeData( ) {
@@ -80,10 +74,10 @@ class Array {
 	int IDCounter = 0;
 
 	void swap(Node<DataType> *firstElement, Node<DataType> *secondElement) {
-		Node<DataType> *fPrev = firstElement->getPreviousNode();
-		Node<DataType> *fNext = firstElement->getNextNode();
-		Node<DataType> *sPrev = secondElement->getPreviousNode();
-		Node<DataType> *sNext = secondElement->getNextNode();
+		Node<DataType> *fPrev = *firstElement - 1;
+		Node<DataType> *fNext = *firstElement + 1;
+		Node<DataType> *sPrev = *secondElement - 1;
+		Node<DataType> *sNext = *secondElement + 1;
 
 		if (firstElement == sPrev && secondElement == fNext) {
 			firstElement->setNextNode(sNext);
@@ -133,7 +127,7 @@ public:
 
 	~Array( ) {
 		for (Node<DataType> *currentNode = this->first, *temp; currentNode; currentNode = temp) {
-			temp = currentNode->getNextNode();
+			temp = *currentNode + 1;
 			delete currentNode;
 		}
 	}
@@ -162,7 +156,7 @@ public:
 
 		DataType nodeData = this->last->getNodeData();
 		Node<DataType> *lastNode = this->last;
-		Node<DataType> *newLastNode = this->last->getPreviousNode();
+		Node<DataType> *newLastNode = *this->last - 1;
 
 		if (!newLastNode) this->first = nullptr;
 		else newLastNode->setNextNode(nullptr);
@@ -195,7 +189,7 @@ public:
 
 		DataType nodeData = this->first->getNodeData();
 		Node<DataType> *firstNode = this->first;
-		Node<DataType> *newFirstNode = this->first->getNextNode();
+		Node<DataType> *newFirstNode = *this->first + 1;
 
 		if (!newFirstNode) this->last = nullptr;
 		else newFirstNode->setNextNode(nullptr);
@@ -212,7 +206,7 @@ public:
 		auto *newNode = new Node<DataType>(this->IDCounter++, nodeData, value);
 		Node<DataType> *currentNode = this->first;
 		Node<DataType> *previousNode = nullptr;
-		for (; currentNode; previousNode = currentNode, currentNode = currentNode->getNextNode()) {
+		for (; currentNode; previousNode = currentNode, currentNode = *currentNode + 1) {
 			if (currentNode->getValue() > value) break;
 		}
 
@@ -237,7 +231,7 @@ public:
 
 	Array<DataType> *forEach(std::function<void(int index, int ID, DataType data)> callback) {
 		Node<DataType> *currentNode = this->first;
-		for (int i = 0; currentNode; currentNode = currentNode->getNextNode(), i++) {
+		for (int i = 0; currentNode; currentNode = *currentNode + 1, i++) {
 			callback(i, currentNode->getID(), currentNode->getNodeData());
 		}
 		return this;
@@ -251,23 +245,27 @@ public:
 		return this->last;
 	}
 
-	Node<DataType> *getNodeByIndex(int index) {
+	Node<DataType> *operator[](int index) {
 		Node<DataType> *currentNode = this->first;
-		for (int i = 0; currentNode; currentNode = currentNode->getNextNode(), i++) {
+		for (int i = 0; currentNode; currentNode = *currentNode + 1, i++) {
 			if (i == index) return currentNode;
 		}
 		return nullptr;
 	}
 
 	Node<DataType> *getNodeByID(int id) {
-		for (Node<DataType> *currentNode = this->first; currentNode; currentNode = currentNode->getNextNode()) {
+		for (Node<DataType> *currentNode = this->first; currentNode; currentNode = *currentNode + 1) {
 			if (currentNode->getID() == id) return currentNode;
 		}
 		return nullptr;
 	}
 
-	DataType getByIndex(int index) {
-		return this->getNodeByIndex(index)->getNodeData();
+	DataType operator()(int index) {
+		return ( *this )[index]->getNodeData();
+	}
+
+	DataType operator()( ) {
+		return this->getNodeData();
 	}
 
 	DataType getByID(int id) {
@@ -277,13 +275,13 @@ public:
 	DataType removeByIndex(int index) {
 		Node<DataType> *currentNode = this->first;
 		Node<DataType> *previousNode = nullptr;
-		for (int i = 0; currentNode; previousNode = currentNode, currentNode = currentNode->getNextNode(), i++) {
+		for (int i = 0; currentNode; previousNode = currentNode, currentNode = *currentNode + 1, i++) {
 			if (i == index) {
-				if (!previousNode) this->first = currentNode->getNextNode();
-				else previousNode->setNextNode(currentNode->getNextNode());
+				if (!previousNode) this->first = *currentNode + 1;
+				else previousNode->setNextNode(*currentNode + 1);
 
-				if (!currentNode->getNextNode()) this->last = previousNode;
-				else currentNode->getNextNode()->setPreviousNode(previousNode);
+				if (!*currentNode + 1) this->last = previousNode;
+				else ( *currentNode + 1 )->setPreviousNode(previousNode);
 
 				DataType data = currentNode->getNodeData();
 				delete currentNode;
@@ -295,13 +293,15 @@ public:
 	}
 
 	DataType removeByID(int id) {
-		for (Node<DataType> *currentNode = this->first, *previousNode = nullptr; currentNode; previousNode = currentNode, currentNode = currentNode->getNextNode()) {
+		for (Node<DataType> *currentNode = this->first, *previousNode = nullptr; currentNode; previousNode = currentNode, currentNode =
+				                                                                                                                  *currentNode +
+				                                                                                                                  1) {
 			if (currentNode->getID() == id) {
-				if (!previousNode) this->first = currentNode->getNextNode();
-				else previousNode->setNextNode(currentNode->getNextNode());
+				if (!previousNode) this->first = *currentNode + 1;
+				else previousNode->setNextNode(*currentNode + 1);
 
-				if (!currentNode->getNextNode()) this->last = previousNode;
-				else currentNode->getNextNode()->setPreviousNode(previousNode);
+				if (!( *currentNode + 1 )) this->last = previousNode;
+				else ( *currentNode + 1 )->setPreviousNode(previousNode);
 
 				DataType data = currentNode->getNodeData();
 				delete currentNode;

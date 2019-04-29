@@ -34,7 +34,7 @@ Array<Component *> *Container::getChildren( ) {
 }
 
 void Container::click(ComponentPosition clickPosition, SDL_Event event) {
-	for (Node<Component *> *currentComponent = this->children->getLastNode(); currentComponent; currentComponent = currentComponent->getPreviousNode()) {
+	for (Node<Component *> *currentComponent = this->children->getLastNode(); currentComponent; currentComponent = *currentComponent - 1) {
 		ComponentPosition absolutePosition = currentComponent->getNodeData()->getAbsolutePosition();
 		ComponentSize size = currentComponent->getNodeData()->getSize();
 
@@ -56,7 +56,7 @@ void Container::unHover(ComponentPosition mousePosition, SDL_Event event) {
 
 void Container::hover(ComponentPosition mousePosition, SDL_Event event) {
 	this->hovered = true;
-	for (Node<Component *> *currentComponent = this->children->getLastNode(); currentComponent; currentComponent = currentComponent->getPreviousNode()) {
+	for (Node<Component *> *currentComponent = this->children->getLastNode(); currentComponent; currentComponent = *currentComponent - 1) {
 		ComponentPosition pos = currentComponent->getNodeData()->getAbsolutePosition();
 		ComponentSize size = currentComponent->getNodeData()->getSize();
 		if (pos.x < mousePosition.x && mousePosition.x < pos.x + size.width

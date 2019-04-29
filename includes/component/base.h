@@ -39,6 +39,8 @@ public:
 
 	ComponentSize getSize( );
 
+	bool isHovered();
+
 	virtual void click(ComponentPosition clickPosition, SDL_Event event);
 
 	virtual void hover(ComponentPosition mousePosition, SDL_Event event);

@@ -49,6 +49,10 @@ ComponentSize Component::getSize( ) {
 	return this->size;
 }
 
+bool Component::isHovered( ) {
+	return this->hovered;
+}
+
 void Component::click(ComponentPosition clickPosition, SDL_Event event) { }
 
 void Component::hover(ComponentPosition mousePosition, SDL_Event event) { }
