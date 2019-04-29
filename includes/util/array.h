@@ -302,8 +302,9 @@ public:
 	Array<DataType> *sort(std::function<bool(Node<DataType> *, Node<DataType> *)> comparingFunction) {
 		bool swapped = false;
 		for (int i = this->size - 1; i > 0; swapped = false, i--) {
-			for (int j = 0; j < i; j++) {
-				Node<DataType> *fNode = this->getNodeByIndex(j);
+			Node<DataType> *fNode = this->first;
+			Node<DataType> *temp = fNode->getNextNode();
+			for (int j = 0; j < i; j++, fNode = temp) {
 				Node<DataType> *sNode = fNode->getNextNode();
 				if (!comparingFunction(fNode, sNode)) {
 					this->swap(fNode, sNode);
