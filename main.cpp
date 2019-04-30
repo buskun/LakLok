@@ -15,10 +15,10 @@
 #include "includes/util/timercpp.h"
 #include "includes/scene.h"
 
-#include "test.h"
+#include "scenes/scene_list.h"
 
-#define WINDOW_WIDTH 1600
-#define WINDOW_HEIGHT 900
+#define WINDOW_WIDTH 800
+#define WINDOW_HEIGHT 600
 
 int WinMain(int argc, char *argv[]) {
 	int errorCode = 0;
@@ -56,6 +56,7 @@ int WinMain(int argc, char *argv[]) {
 
 	auto *gameScene = new GameScenes(SDLRendererController, eventManager, ( GameProp && ) gameProp);
 
+	// Scenes
 	menu(gameScene);
 
 	eventManager->on(SDL_MOUSEBUTTONDOWN, [&](SDL_Event event) {
