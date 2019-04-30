@@ -1,7 +1,3 @@
-//
-// Created by buskun0 on 07/04/19.
-//
-
 #ifndef LAKLOK_BASE_H
 #define LAKLOK_BASE_H
 
@@ -13,88 +9,47 @@
 
 class Component {
 protected:
-	int _renderIndex = 0;
+	int renderIndex = 0;
 	ComponentPosition position = { 0, 0, POSITION_RELATIVE };
 	ComponentSize size = { 0, 0 };
-	Component *_parent = nullptr;
-	COMPONENT_TYPE _componentType = COMPONENT_TYPE_UNDEFINED;
-	RendererController &_rendererController;
+	COMPONENT_TYPE componentType = COMPONENT_TYPE_UNDEFINED;
+	Component *parent = nullptr;
+	RendererController *rendererController = nullptr;
 	bool hovered = false;
 
 public:
-	explicit Component(RendererController &rendererController, int renderIndex = 0,
+	explicit Component(RendererController *rendererController, int renderIndex = 0,
 	                   ComponentSize componentSize = { 0, 0 },
 	                   ComponentPosition componentPosition = { 0, 0, POSITION_RELATIVE },
-	                   COMPONENT_TYPE componentType = COMPONENT_TYPE_UNDEFINED)
-			: position(componentPosition), size(componentSize), _componentType(componentType), _renderIndex(renderIndex),
-			  _rendererController(rendererController) {
-	}
+	                   COMPONENT_TYPE componentType = COMPONENT_TYPE_UNDEFINED);
 
-	int getRenderIndex( ) {
-		return _renderIndex;
-	}
+	RendererController *getRendererController( );
 
-	RendererController &getRendererController( ) {
-		return _rendererController;
-	}
+	Component *setParent(Component *parent);
 
-	Component *setParent(Component *parent) {
-		_parent = parent;
-		return this;
-	}
+	Component *setRenderIndex(int index);
 
-	Component *setRenderIndex(int index) {
-		_renderIndex = index;
-		return this;
-	}
+	int getRenderIndex( );
 
-	ComponentPosition setPosition(int x, int y, POSITION_FLAG positionFlag) {
-		position.x = x;
-		position.y = y;
-		position.positionFlag = positionFlag;
-		return position;
-	}
+	ComponentPosition setPosition(ComponentPosition componentPosition);
 
-	ComponentPosition setPosition(int x, int y) {
-		return setPosition(x, y, position.positionFlag);
-	}
+	ComponentPosition getPosition( );
 
-	ComponentPosition setPosX(int x) {
-		return setPosition(x, position.y);
-	}
+	ComponentSize setSize(ComponentSize componentSize);
 
-	ComponentPosition setPosY(int y) {
-		return setPosition(position.x, y);
-	}
+	ComponentSize getSize( );
 
-	ComponentPosition getPosition() {
-		return position;
-	}
+	bool isHovered();
 
-	ComponentSize getSize( ) {
-		return size;
-	}
+	virtual void click(ComponentPosition clickPosition, SDL_Event event);
 
-	ComponentSize setSize(ComponentSize componentSize) {
-		if (componentSize.width) size.width = componentSize.width;
-		if (componentSize.height) size.height = componentSize.height;
-		return size;
-	}
+	virtual void hover(ComponentPosition mousePosition, SDL_Event event);
 
-	virtual void click(ComponentPosition clickPosition, SDL_Event event) { }
+	virtual void unHover(ComponentPosition mousePosition, SDL_Event event);
 
-	virtual void hover(ComponentPosition mousePosition, SDL_Event event) { }
+	virtual void render(Renderer *renderer);
 
-	virtual void unHover(ComponentPosition mousePosition, SDL_Event event) { }
-
-	virtual void render(Renderer *renderer) { }
-
-	static ComponentPosition absolutePosition(Component *component) {
-		if (!component) return ( ComponentPosition ) { 0, 0, POSITION_ABSOLUTE };
-		if (( component->position ).positionFlag == POSITION_ABSOLUTE) return component->position;
-		ComponentPosition temp = absolutePosition(component->_parent);
-		return ( ComponentPosition ) { component->position.x + temp.x, component->position.y + temp.y, POSITION_ABSOLUTE };
-	}
+	ComponentPosition getAbsolutePosition( );
 };
 
 #endif //LAKLOK_BASE_H

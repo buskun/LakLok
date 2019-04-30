@@ -10,35 +10,34 @@
 #include "util/timercpp.h"
 #include "util/array.h"
 
-using namespace std;
+namespace SDL {
+	void logSDLError(const std::string &message, bool exitOnError);
 
-void logSDLError(const string &message);
+	SDL_Texture * loadTexture(SDL_Renderer *SDLRenderer, const std::string &texturePath);
 
-SDL_Window *createWindow(const char *windowName, int posX, int posY, int screenWidth, int screenHeight, SDL_WindowFlags flags);
+	void renderTexture(SDL_Renderer *SDLRenderer, SDL_Texture *texture, int posX, int posY);
 
-SDL_Renderer *createRenderer(SDL_Window *window, int index, Uint32 flags);
+	void renderTexture(SDL_Renderer *SDLRenderer, SDL_Texture *texture, int posX, int posY, int width, int height);
+};
 
-SDL_Texture *loadTexture(SDL_Renderer *renderer, const std::string &texturePath);
-
-void renderTexture(SDL_Renderer *renderer, SDL_Texture *texture, int posX, int posY);
-
-void renderTexture(SDL_Renderer *renderer, SDL_Texture *texture, int posX, int posY, int width, int height);
-
-void cleanupSDL(SDL_Renderer *renderer, SDL_Window *window);
-
-class Event {
-	SDL_Event event;
-	bool _end;
-	Timer timer;
+class EventManager {
+	SDL_Event event = { };
+	bool exitProgram = true;
+	Timer *timer = nullptr;
 	std::map<SDL_EventType, Array<std::function<void(SDL_Event)>> *> callbackList;
+	std::map<SDL_EventType, Array<std::function<void(SDL_Event)>> *> gameTickCallbackList;
 public:
-	Event( );
+	EventManager( );
 
-	Event *init(std::function<bool(SDL_Event)> &&callback);
+	EventManager *init(std::function<bool(SDL_Event)> &&callback);
 
 	void exit( );
 
-	Event *on(SDL_EventType eventType, std::function<void(SDL_Event)> &&callback);
+	void gameTick( );
+
+	EventManager *on(SDL_EventType eventType, std::function<void(SDL_Event)> &&callback);
+
+	EventManager *onGameTick(SDL_EventType eventType, std::function<void(SDL_Event)> &&callback);
 };
 
 #endif //LAKLOK_SDL_UTIL_H

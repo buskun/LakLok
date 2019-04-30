@@ -1,3 +1,9 @@
+#ifndef NDEBUG
+#define DEBUG true
+#else
+#define DEBUG false
+#endif
+
 #include <iostream>
 #include <SDL.h>
 #include <map>
@@ -7,80 +13,94 @@
 #include "includes/util/array.h"
 #include "includes/component/container.h"
 #include "includes/util/timercpp.h"
+#include "includes/scene.h"
 
-#include "includes/test.h"
+#include "test.h"
 
-#define SCREEN_WIDTH 1920
-#define SCREEN_HEIGHT 1080
-#define RESOURCE_PATH "A:/Projects/LakLok/resources"
-#define FPS 144
-
-using namespace std;
+#define WINDOW_WIDTH 1600
+#define WINDOW_HEIGHT 900
 
 int WinMain(int argc, char *argv[]) {
-	if (SDL_Init(SDL_INIT_VIDEO)) {
-		cout << "SDL_Init Error: " << SDL_GetError() << endl;
-		return 1;
+	int errorCode = 0;
+
+	if (( errorCode = SDL_Init(SDL_INIT_EVERYTHING)) < 0) {
+		std::cout << "SDL_Init Error: " << SDL_GetError() << std::endl;
+		return errorCode;
 	}
 
-	TTF_Init();
+	if (( errorCode = TTF_Init()) < 0) {
+		std::cout << "TTF_Init Error: " << TTF_GetError() << std::endl;
+		return errorCode;
+	}
 
-	SDL_Window *SDLWindow = createWindow("LakLok", 100, 100, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
-	SDL_Renderer *SDLRenderer = createRenderer(SDLWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	GameProp gameProp = { };
+	gameProp.NAME = "LakLok";
+	gameProp.FPS = 144;
+	gameProp.TICK_TIME = 100;
+	gameProp.RESOURCE_PATH = ( std::string ) SDL_GetBasePath() + ( DEBUG ? "../resources" : "resources" );
 
-	RendererController SDLRendererController(SDLRenderer, SDLWindow);
+	SDL_DisplayMode DM;
+	SDL_GetCurrentDisplayMode(0, &DM);
 
-	string currentScene = "menu";
+	gameProp.WINDOW.HEIGHT = WINDOW_HEIGHT;
+	gameProp.WINDOW.WIDTH = WINDOW_WIDTH;
 
-	map<const string, Container *> sceneList;
+	gameProp.WINDOW.X = ( DM.w - WINDOW_WIDTH ) / 2;
+	gameProp.WINDOW.Y = ( DM.h - WINDOW_HEIGHT ) / 2;
 
-	auto *EventManager = new Event();
+	auto SDLRendererController = new RendererController(( GameProp && ) gameProp,
+	                                                    SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI,
+	                                                    SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
-	sth(SDLRendererController, EventManager, sceneList, currentScene, RESOURCE_PATH, SCREEN_WIDTH, SCREEN_HEIGHT);
+	auto *eventManager = new EventManager();
 
-	EventManager->on(SDL_MOUSEBUTTONDOWN, [&](SDL_Event event) {
-		if (!sceneList[currentScene]) return;
+	auto *gameScene = new GameScenes(SDLRendererController, eventManager, ( GameProp && ) gameProp);
+
+	menu(gameScene);
+
+	eventManager->on(SDL_MOUSEBUTTONDOWN, [&](SDL_Event event) {
 		ComponentPosition clickPosition = { 0, 0, POSITION_ABSOLUTE };
 		SDL_GetMouseState(&clickPosition.x, &clickPosition.y);
-		sceneList[currentScene]->click(clickPosition, event);
+		gameScene->getCurrentScene()->getSceneContainer()->click(clickPosition, event);
 	});
 
-	Component *lastHoveredScene = nullptr;
+	Scene *lastHoveredScene = nullptr;
 
-	EventManager->on(SDL_MOUSEMOTION, [&](SDL_Event event) {
+	eventManager->on(SDL_MOUSEMOTION, [&](SDL_Event event) {
 		ComponentPosition mousePosition = { 0, 0, POSITION_ABSOLUTE };
 		SDL_GetMouseState(&mousePosition.x, &mousePosition.y);
 		if (lastHoveredScene) {
-			lastHoveredScene->unHover(mousePosition, event);
+			lastHoveredScene->getSceneContainer()->unHover(mousePosition, event);
 			lastHoveredScene = nullptr;
 		}
-		if (sceneList[currentScene]) {
-			sceneList[currentScene]->hover(mousePosition, event);
-			lastHoveredScene = sceneList[currentScene];
-		}
+		gameScene->getCurrentScene()->getSceneContainer()->hover(mousePosition, event);
+		lastHoveredScene = gameScene->getCurrentScene();
 	});
 
-	SDLRendererController.addRenderer(0, [&](Renderer *renderer, SDL_Renderer *SDLRenderer, SDL_Window *SDLWindow) {
-		if (sceneList[currentScene]) sceneList[currentScene]->render(renderer);
+	SDLRendererController->addRenderer(0, [&](Renderer *renderer) {
+		gameScene->getCurrentScene()->renderScene(renderer);
 	});
 
 	auto timer = new Timer();
-	timer->setInterval([&]( ) {
-		if (sceneList[currentScene]) {
-			sceneList[currentScene]->children()->sort([ ](Node<Component *> *fNode, Node<Component *> *sNode) {
+	timer->setInterval([=]( ) {
+		if (gameScene->getCurrentScene()) {
+			gameScene->getCurrentScene()->getSceneContainer()->getChildren()->sort([ ](Node<Component *> *fNode, Node<Component *> *sNode) {
 				return fNode->getNodeData()->getRenderIndex() <= sNode->getNodeData()->getRenderIndex();
 			});
 		}
-		SDLRendererController.tick();
-	}, 1 /*s*/ * ( 1000 /*ms*/ / 1 /*s*/) * ( 1 /*s*/ / FPS /*frames*/));
+		SDLRendererController->renderTick();
+	}, 1 /*s*/ * ( 1000 /*ms*/ / 1 /*s*/) * ( 1 /*s*/ / gameProp.FPS /*frames*/));
 
-	EventManager->init([ ](SDL_Event event) {
+	timer->setInterval([&]( ) {
+		eventManager->gameTick();
+		gameScene->getCurrentScene()->gameTick();
+	}, gameProp.TICK_TIME);
+
+	eventManager->init([ ](SDL_Event event) {
 		return event.type == SDL_QUIT;
 	});
 
 	timer->stop();
-
-	cleanupSDL(SDLRenderer, SDLWindow);
 
 	return 0;
 }
