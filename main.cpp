@@ -102,12 +102,8 @@ int WinMain(int argc, char *argv[]) {
         switch (event.type) {
             case SDL_QUIT:
                 return true;
-            case SDL_KEYUP:;
+            case SDL_KEYUP:
             case SDL_KEYDOWN:
-                // TODO Fix Alt + F4
-                if (event.key.keysym.sym == SDLK_F4
-                    && event.key.keysym.mod == (KMOD_LALT | KMOD_RALT))
-                    return true;
                 if (event.key.keysym.sym == SDLK_ESCAPE)
                     return true;
             default:
