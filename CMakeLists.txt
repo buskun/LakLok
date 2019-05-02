@@ -3,7 +3,7 @@ project(LakLok)
 
 set(CMAKE_CXX_STANDARD 14)
 
-file(GLOB LOCAL_INCLUDES source_files/*.cpp source_files/*/*.cpp)
+file(GLOB LOCAL_INCLUDES source_files/*.cpp source_files/*/*.cpp scenes/*)
 
 add_executable(LakLok ${LOCAL_INCLUDES} main.cpp)
 
