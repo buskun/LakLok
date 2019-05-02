@@ -12,6 +12,6 @@
 #include "../includes/component/touchable.h"
 #include "../includes/component/container.h"
 
-void menu(GameScenes *gameScenes);
+void mainMenu(GameScenes *gameScenes);
 
 #endif //LAKLOK_SCENE_LIST_H

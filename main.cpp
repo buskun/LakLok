@@ -57,7 +57,7 @@ int WinMain(int argc, char *argv[]) {
     auto *gameScene = new GameScenes(SDLRendererController, eventManager, (GameProp &&) gameProp);
 
     // Scenes
-    menu(gameScene);
+    mainMenu(gameScene);
 
     eventManager->on(SDL_MOUSEBUTTONDOWN, [&](SDL_Event event) {
         ComponentPosition clickPosition = {0, 0, POSITION_ABSOLUTE};
