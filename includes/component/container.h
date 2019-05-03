@@ -13,6 +13,7 @@ public:
 
 	~Container( );
 
+	// TODO re-append and re-prepend
 	Container *append(Component *child);
 
 	Container *prepend(Component *child);

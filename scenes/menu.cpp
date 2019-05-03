@@ -96,8 +96,8 @@ void mainMenu(GameScenes *gameScenes) {
     text->setHoverText("Hello world!", {24, gameProp.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf", {255, 255, 255}});
     sceneContainer->append(text);
 
-    eventManager->on(SDL_MOUSEBUTTONDOWN, [](SDL_Event event) {
-        std::cout << "A" << std::endl;
+    eventManager->on(SDL_MOUSEBUTTONDOWN, [=](SDL_Event event) {
+        text->show(!text->isShown());
     });
 
     scene->onGameTick([](Scene *currentScene) {
