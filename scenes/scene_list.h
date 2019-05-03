@@ -13,5 +13,8 @@
 #include "../includes/component/container.h"
 
 void mainMenu(GameScenes *gameScenes);
-
+void mainGame1(GameScenes *gameScenes);
+void mainGame2(GameScenes *gameScenes);
+void mainGame3(GameScenes *gameScenes);
+void mainGame4(GameScenes *gameScenes);
 #endif //LAKLOK_SCENE_LIST_H

@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 14)
 
 file(GLOB LOCAL_INCLUDES source_files/*.cpp source_files/*/*.cpp scenes/*)
 
-add_executable(LakLok ${LOCAL_INCLUDES} main.cpp)
+add_executable(LakLok ${LOCAL_INCLUDES} main.cpp scenes/mainGame1.cpp scenes/mainGame2.cpp scenes/mainGame3.cpp scenes/mainGame4.cpp)
 
 include_directories("C:/Dev/c-cpp-lib/SDL2-2.0.9/i686-w64-mingw32/include/SDL2")
 link_directories("C:/Dev/c-cpp-lib/SDL2-2.0.9/i686-w64-mingw32/lib")
