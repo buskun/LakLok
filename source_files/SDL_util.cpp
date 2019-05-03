@@ -29,7 +29,7 @@ void SDL::renderTexture(SDL_Renderer *SDLRenderer, SDL_Texture *texture, int pos
 	SDL_RenderCopy(SDLRenderer, texture, nullptr, &pos);
 }
 
-EventManager::EventManager( ) {
+EventManager::EventManager() {
 	this->exitProgram = true;
 	this->timer = new Timer();
 }

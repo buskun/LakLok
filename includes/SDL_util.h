@@ -27,7 +27,7 @@ class EventManager {
 	std::map<SDL_EventType, Array<std::function<void(SDL_Event)>> *> callbackList;
 	std::map<SDL_EventType, Array<std::function<void(SDL_Event)>> *> gameTickCallbackList;
 public:
-	EventManager( );
+	EventManager();
 
 	EventManager *init(std::function<bool(SDL_Event)> &&callback);
 

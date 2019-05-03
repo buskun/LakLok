@@ -3,7 +3,7 @@ void mainGame4(GameScenes *gameScenes) {//todo
     Scene *scene = gameScenes->newScene("mainGame4");
     gameScenes->addScene(scene);
     Container *sceneContainer = scene->getSceneContainer();
-    auto *eventManager = new EventManager();
+    auto *eventManager = gameScenes->getEventManager();
     RendererController *SDLRendererController = gameScenes->getRendererController();
     SDL_Renderer *SDLRenderer = SDLRendererController->getSDLRenderer();
 

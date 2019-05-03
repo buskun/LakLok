@@ -4,7 +4,7 @@ void mainMenu(GameScenes *gameScenes) {
     Scene *scene = gameScenes->newScene("menu");
     gameScenes->addScene(scene);
     Container *sceneContainer = scene->getSceneContainer();
-    auto *eventManager = new EventManager();
+    auto *eventManager = gameScenes->getEventManager();
 
     RendererController *SDLRendererController = gameScenes->getRendererController();
     SDL_Renderer *SDLRenderer = SDLRendererController->getSDLRenderer();
