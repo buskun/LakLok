@@ -7,55 +7,58 @@
 #include "component_type.h"
 #include "../renderer.h"
 
-// TODO show and hide
 class Component {
 protected:
-    int renderIndex = 0;
-    ComponentPosition position = {0, 0, POSITION_RELATIVE};
-    ComponentSize size = {0, 0};
-    COMPONENT_TYPE componentType = COMPONENT_TYPE_UNDEFINED;
-    Component *parent = nullptr;
-    RendererController *rendererController = nullptr;
-    bool hovered = false;
-    bool shown = true;
+	int renderIndex = 0;
+	ComponentPosition position = {0, 0, POSITION_RELATIVE};
+	ComponentSize size = {0, 0};
+	COMPONENT_TYPE componentType = COMPONENT_TYPE_UNDEFINED;
+	Component *parent = nullptr;
+	RendererController *rendererController = nullptr;
+	bool hovered = false;
+	bool shown = true;
 
 public:
-    explicit Component(RendererController *rendererController, int renderIndex = 0,
-                       ComponentSize componentSize = {0, 0},
-                       ComponentPosition componentPosition = {0, 0, POSITION_RELATIVE},
-                       COMPONENT_TYPE componentType = COMPONENT_TYPE_UNDEFINED);
+	explicit Component(RendererController *rendererController, int renderIndex = 0,
+	                   ComponentSize componentSize = {0, 0},
+	                   ComponentPosition componentPosition = {0, 0, POSITION_RELATIVE},
+	                   COMPONENT_TYPE componentType = COMPONENT_TYPE_UNDEFINED);
 
-    RendererController *getRendererController();
+	RendererController *getRendererController();
 
-    Component *setParent(Component *parent);
+	Component *setParent(Component *parent);
 
-    Component *setRenderIndex(int index);
+	Component *setRenderIndex(int index);
 
-    Component *show(bool shown = true);
+	Component *show(bool shown = true);
 
-    int getRenderIndex();
+	Component *getParent();
 
-    ComponentPosition setPosition(ComponentPosition componentPosition);
+	virtual Array<Component *> *getChildren();
 
-    ComponentPosition getPosition();
+	int getRenderIndex();
 
-    ComponentSize setSize(ComponentSize componentSize);
+	ComponentPosition setPosition(ComponentPosition componentPosition);
 
-    ComponentSize getSize();
+	ComponentPosition getPosition();
 
-    bool isShown();
+	ComponentSize setSize(ComponentSize componentSize);
 
-    bool isHovered();
+	ComponentSize getSize();
 
-    virtual void click(ComponentPosition clickPosition, SDL_Event event);
+	bool isShown();
 
-    virtual void hover(ComponentPosition mousePosition, SDL_Event event);
+	bool isHovered();
 
-    virtual void unHover(ComponentPosition mousePosition, SDL_Event event);
+	virtual void click(ComponentPosition clickPosition, SDL_Event event);
 
-    virtual void render(Renderer *renderer);
+	virtual void hover(ComponentPosition mousePosition, SDL_Event event);
 
-    ComponentPosition getAbsolutePosition();
+	virtual void unHover(ComponentPosition mousePosition, SDL_Event event);
+
+	virtual void render(Renderer *renderer);
+
+	ComponentPosition getAbsolutePosition();
 };
 
 #endif //LAKLOK_BASE_H

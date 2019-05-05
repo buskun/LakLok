@@ -21,27 +21,27 @@ public:
 	Node<DataType> *operator-(int shift) {
 		if (shift == 0) return this;
 		if (shift == 1) return this->previousNode;
-		if (this->previousNode) return *( this->previousNode ) - ( shift - 1 );
+		if (this->previousNode) return *(this->previousNode) - (shift - 1);
 		return nullptr;
 	}
 
 	Node<DataType> *operator+(int shift) {
 		if (shift == 0) return this;
-		if (shift < 0) return this - ( -shift );
+		if (shift < 0) return this - (-shift);
 		if (shift == 1) return this->nextNode;
-		if (this->nextNode) return *( this->nextNode ) + ( shift - 1 );
+		if (this->nextNode) return *(this->nextNode) + (shift - 1);
 		return nullptr;
 	}
 
-	DataType getNodeData( ) {
+	DataType getNodeData() {
 		return this->nodeData;
 	}
 
-	int getID( ) {
+	int getID() {
 		return this->ID;
 	}
 
-	int getValue( ) {
+	int getValue() {
 		return this->value;
 	}
 
@@ -120,19 +120,19 @@ class Array {
 	}
 
 public:
-	Array( ) {
+	Array() {
 		this->size = 0;
 		this->IDCounter = 0;
 	}
 
-	~Array( ) {
+	~Array() {
 		for (Node<DataType> *currentNode = this->first, *temp; currentNode; currentNode = temp) {
 			temp = *currentNode + 1;
 			delete currentNode;
 		}
 	}
 
-	int getSize( ) {
+	int getSize() {
 		return this->size;
 	}
 
@@ -151,8 +151,8 @@ public:
 		return this;
 	}
 
-	DataType pop( ) {
-		if (!this->last) return ( DataType ) nullptr;
+	DataType pop() {
+		if (!this->last) return (DataType) nullptr;
 
 		DataType nodeData = this->last->getNodeData();
 		Node<DataType> *lastNode = this->last;
@@ -184,8 +184,8 @@ public:
 		return this;
 	}
 
-	DataType shift( ) {
-		if (!this->first) return ( DataType ) nullptr;
+	DataType shift() {
+		if (!this->first) return (DataType) nullptr;
 
 		DataType nodeData = this->first->getNodeData();
 		Node<DataType> *firstNode = this->first;
@@ -237,11 +237,11 @@ public:
 		return this;
 	}
 
-	Node<DataType> *getFirstNode( ) {
+	Node<DataType> *getFirstNode() {
 		return this->first;
 	}
 
-	Node<DataType> *getLastNode( ) {
+	Node<DataType> *getLastNode() {
 		return this->last;
 	}
 
@@ -261,10 +261,10 @@ public:
 	}
 
 	DataType operator()(int index) {
-		return ( *this )[index]->getNodeData();
+		return (*this)[index]->getNodeData();
 	}
 
-	DataType operator()( ) {
+	DataType operator()() {
 		return this->getNodeData();
 	}
 
@@ -281,7 +281,7 @@ public:
 				else previousNode->setNextNode(*currentNode + 1);
 
 				if (!*currentNode + 1) this->last = previousNode;
-				else ( *currentNode + 1 )->setPreviousNode(previousNode);
+				else (*currentNode + 1)->setPreviousNode(previousNode);
 
 				DataType data = currentNode->getNodeData();
 				delete currentNode;
@@ -300,8 +300,28 @@ public:
 				if (!previousNode) this->first = *currentNode + 1;
 				else previousNode->setNextNode(*currentNode + 1);
 
-				if (!( *currentNode + 1 )) this->last = previousNode;
-				else ( *currentNode + 1 )->setPreviousNode(previousNode);
+				if (!(*currentNode + 1)) this->last = previousNode;
+				else (*currentNode + 1)->setPreviousNode(previousNode);
+
+				DataType data = currentNode->getNodeData();
+				delete currentNode;
+				this->size--;
+				return data;
+			}
+		}
+		return nullptr;
+	}
+
+	DataType removeByValue(DataType value) {
+
+		for (Node<DataType> *currentNode = this->first, *previousNode = nullptr; currentNode;
+		     previousNode = currentNode, currentNode = *currentNode + 1) {
+			if (currentNode->getNodeData() == value) {
+				if (!previousNode) this->first = *currentNode + 1;
+				else previousNode->setNextNode(*currentNode + 1);
+
+				if (!(*currentNode + 1)) this->last = previousNode;
+				else (*currentNode + 1)->setPreviousNode(previousNode);
 
 				DataType data = currentNode->getNodeData();
 				delete currentNode;
@@ -316,9 +336,9 @@ public:
 		bool swapped = false;
 		for (int i = this->size - 1; i > 0; swapped = false, i--) {
 			Node<DataType> *fNode = this->first;
-			Node<DataType> *temp = ( *fNode ) + 1;
+			Node<DataType> *temp = (*fNode) + 1;
 			for (int j = 0; j < i; j++, fNode = temp) {
-				Node<DataType> *sNode = ( *fNode ) + 1;
+				Node<DataType> *sNode = (*fNode) + 1;
 				if (!compare(fNode, sNode)) {
 					this->swap(fNode, sNode);
 					swapped = true;

@@ -9,18 +9,18 @@ protected:
 	Array<Component *> *children = nullptr;
 public:
 	explicit Container(RendererController *rendererController, int renderIndex = 0,
-	                   ComponentSize componentSize = { 0, 0 }, ComponentPosition componentPosition = { 0, 0, POSITION_ABSOLUTE });
+	                   ComponentSize componentSize = {0, 0},
+	                   ComponentPosition componentPosition = {0, 0, POSITION_ABSOLUTE});
 
-	~Container( );
+	~Container();
 
-	// TODO re-append and re-prepend
 	Container *append(Component *child);
 
 	Container *prepend(Component *child);
 
 	Container *insertByRenderIndex(Component *child);
 
-	Array<Component *> *getChildren( );
+	Array<Component *> *getChildren() override;
 
 	void click(ComponentPosition clickPosition, SDL_Event event) override;
 
