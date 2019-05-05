@@ -62,6 +62,7 @@ int WinMain(int argc, char *argv[]) {
     mainGame2(gameScene);
     mainGame3(gameScene);
     mainGame4(gameScene);
+    introGame1(gameScene);
     eventManager->on(SDL_MOUSEBUTTONDOWN, [&](SDL_Event event) {
         ComponentPosition clickPosition = {0, 0, POSITION_ABSOLUTE};
         SDL_GetMouseState(&clickPosition.x, &clickPosition.y);

@@ -14,18 +14,20 @@ void mainGame1(GameScenes *gameScenes) {
     const GameProp GAME_PROP = gameScenes->getGameProp();
     int bW, bH, score = 0;
 
-    SDL_Texture *bgTexture = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/bgmaingame1.jpg");
-    SDL_Texture *box = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/box.png");
-    SDL_Texture *canRed = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/canRed.png");
-    SDL_Texture *canBlue = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/canBlue.png");
-    SDL_Texture *canYellow = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/canYellow.png");
-    SDL_Texture *canGreen = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/canGreen.png");
-    SDL_Texture *game1Q1 = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/game1Q1.png");
-    SDL_Texture *gameTrue = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/true.png");
-    SDL_Texture *gameFalse = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/false.png");
-    SDL_Texture *game1Q2 = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/mainGame_2.jpg");
-    SDL_Texture *game1Q3 = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/mainGame_3.jpg");
-    SDL_Texture *game1Q4 = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/mainGame_4.jpg");
+    SDL_Texture *bgTexture = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame1/bgmaingame1.jpg");
+    SDL_Texture *box = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame1/box.png");
+    SDL_Texture *newbox = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame1/box.png");
+    SDL_Texture *backmain = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame1/box.png");
+    SDL_Texture *canRed = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame1/canRed.png");
+    SDL_Texture *canBlue = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame1/canBlue.png");
+    SDL_Texture *canYellow = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame1/canYellow.png");
+    SDL_Texture *canGreen = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame1/canGreen.png");
+    SDL_Texture *game1Q1 = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame1/game1Q1.png");
+    SDL_Texture *gameTrue = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame1/true.png");
+    SDL_Texture *gameFalse = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame1/false.png");
+    SDL_Texture *game1Q2 = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame1/mainGame_2.jpg");
+    SDL_Texture *game1Q3 = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame1/mainGame_3.jpg");
+    SDL_Texture *game1Q4 = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame1/mainGame_4.jpg");
     SDL_QueryTexture(bgTexture, nullptr, nullptr, &bW, &bH);
     sceneContainer->setPosition({0, 0});
     auto background = new ImageView(SDLRendererController, bgTexture, 1, {1600, 900}, {0, 0, POSITION_RELATIVE});
@@ -35,7 +37,7 @@ void mainGame1(GameScenes *gameScenes) {
     auto gameX = new ImageView(SDLRendererController, gameFalse, 10, {300, 300}, {300, 300, POSITION_RELATIVE});
     gameX->show(false);
     sceneContainer->append(gameX);
-    int imgState = 60, red = 0, green = 0, blue = 0, yellow = 0;
+    int imgState = 10;
     int *answer = new int[4];
     sceneContainer->append(background);
     auto q1 = new ImageView(SDLRendererController, game1Q1, 10, {300, 300}, {645, 300, POSITION_RELATIVE});
@@ -51,9 +53,10 @@ void mainGame1(GameScenes *gameScenes) {
                                  "",
                                  {50, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf", {255, 255, 255}},
                                  3, {675, 50, POSITION_ABSOLUTE});
-    timer->setInterval([=]() mutable {
-        textTime->changeText(std::to_string(imgState--));
-    }, 1000/*1 วิมีสองรูป*/);
+    auto textscore = new TextView(SDLRendererController,
+                                 "",
+                                 {200, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf", {255, 255, 255}},
+                                 20, {675, 50, POSITION_ABSOLUTE});
 
     auto showNewQuestion = [=]() mutable {
         srand(time(nullptr));
@@ -165,4 +168,33 @@ void mainGame1(GameScenes *gameScenes) {
                                                                 },
                                                                 2, {200, 300}, {1100, 600, POSITION_RELATIVE}));
 
+    timer->setInterval([=]() mutable {
+        textTime->changeText(std::to_string(imgState--));
+        if(imgState<=0) {
+            canBlueA->show(false);
+            canRedB->show(false);
+            canGreenC->show(false);
+            canYellowD->show(false);
+            auto boxend = sceneContainer->append(new Button(SDLRendererController,
+                                              "", {200, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf",
+                                                       {255, 255, 255}},
+                                              box,
+                                              [=](Touchable *button, ComponentPosition clickPosition,
+                                                  SDL_Event event)mutable {
+                                                textscore->changeText(std::to_string(score));
+                                                sceneContainer->append(textscore);
+                                              },
+                                              16, {300, 100}, {1250, 750, POSITION_ABSOLUTE}));
+
+            sceneContainer->append(new Button(SDLRendererController,
+                                                         "MENU", {50, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf",
+                                                                   {255, 255, 255}},
+                                                         box,
+                                                         [=](Touchable *button, ComponentPosition clickPosition,
+                                                             SDL_Event event)mutable {
+
+                                                         },
+                                                         16, {300, 100}, {1250, 750, POSITION_ABSOLUTE}));
+        }
+    }, 1000);
 }

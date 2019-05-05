@@ -46,7 +46,7 @@ void mainMenu(GameScenes *gameScenes) {
     sceneContainer->append(background);
     auto firstImage = new TouchableImage(SDLRendererController, mainGame_1._1,
                                          [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
-                                             gameScenes->setCurrentSceneName("mainGame1") ;//todo
+                                             gameScenes->setCurrentSceneName("introGame1") ;//todo
                                          },
                                          1, {200, 200}, {200, 150, POSITION_RELATIVE});
     sceneContainer->append(firstImage);
