@@ -14,6 +14,7 @@ class Scene {
 	RendererController *rendererController = nullptr;
 	Array<std::function<void(Scene *)>> *gameTickCallback = nullptr;
 	std::function<void(Scene *)> enterSceneCallback;
+	std::function<void(Scene *)> exitSceneCallback;
 
 public:
 	Scene(std::string &&sceneName, RendererController *rendererController);
@@ -24,11 +25,15 @@ public:
 
 	Scene *onEnterScene(std::function<void(Scene *)> &&callback);
 
+	Scene *onExitScene(std::function<void(Scene *)> &&callback);
+
 	Scene *renderScene(Renderer *renderer);
 
 	Scene *gameTick();
 
 	Scene *enterScene();
+
+	Scene *exitScene();
 
 	Container *getSceneContainer();
 };
