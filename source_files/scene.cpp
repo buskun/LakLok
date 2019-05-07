@@ -21,6 +21,11 @@ Scene *Scene::onEnterScene(std::function<void(Scene *)> &&callback) {
 	return this;
 }
 
+Scene* Scene::onExitScene(std::function<void(Scene *)> &&callback) {
+    this->enterSceneCallback = callback;
+    return this;
+}
+
 Scene *Scene::renderScene(Renderer *renderer) {
 	this->sceneContainer->render(renderer);
 	return this;
@@ -37,6 +42,11 @@ Scene *Scene::gameTick() {
 Scene *Scene::enterScene() {
 	enterSceneCallback(this);
 	return this;
+}
+
+Scene* Scene::exitScene() {
+    exitSceneCallback(this);
+    return this;
 }
 
 Container *Scene::getSceneContainer() {
@@ -60,8 +70,9 @@ GameScenes *GameScenes::setCurrentSceneName(std::string &&newSceneName) {
 		if (sceneName == newSceneName) foundKey = true;
 	});
 	if (foundKey) {
+	    this->sceneList[this->currentScene]->exitScene();
 		this->currentScene = newSceneName;
-		sceneList[this->currentScene]->enterScene();
+		this->sceneList[this->currentScene]->enterScene();
 	}
 	return this;
 }
