@@ -87,18 +87,13 @@ void mainMenu(GameScenes *gameScenes) {
         }
         imgState = (imgState + 1) % 4;
     }, 500/*1 วิมีสองรูป*/);
-    auto text = new TextView(SDLRendererController,
-                             "Hello world!",
-                             {24, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf", {255, 255, 255}});
-    text->setHoverText("Hello world!", {24, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf", {255, 255, 255}});
-    sceneContainer->append(text);
 
 	SDL::setCustomCursor(GAME_PROP.RESOURCE_PATH + "/img/image.bmp", 0, 0);
 	SDL::setSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
 
 	eventManager->on(SDL_MOUSEBUTTONDOWN, [=](SDL_Event event) {
-		text->show(!text->isShown());
-		SDL::toggleCursor();
+	    SDL::useCustomCursor();
+	    SDL::useSystemCursor();
 	});
 
 	scene->onGameTick([](Scene *currentScene) {

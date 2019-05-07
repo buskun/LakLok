@@ -167,6 +167,26 @@ void mainGame1(GameScenes *gameScenes) {
                                                                     }, 1000);
                                                                 },
                                                                 2, {200, 300}, {1100, 600, POSITION_RELATIVE}));
+    auto boxend = sceneContainer->append(new Button(SDLRendererController,
+                                                    "", {200, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf",
+                                                         {255, 255, 255}},
+                                                    box,
+                                                    [=](Touchable *button, ComponentPosition clickPosition,
+                                                        SDL_Event event)mutable {
+                                                        textscore->changeText(std::to_string(score));
+                                                        sceneContainer->append(textscore);
+                                                    },
+                                                    16, {300, 100}, {1250, 750, POSITION_ABSOLUTE}))->show(false);
+
+    auto backToMenu = sceneContainer->append(new Button(SDLRendererController,
+                                      "MENU", {50, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf",
+                                               {255, 255, 255}},
+                                      box,
+                                      [=](Touchable *button, ComponentPosition clickPosition,
+                                          SDL_Event event)mutable {
+
+                                      },
+                                      16, {300, 100}, {1250, 750, POSITION_ABSOLUTE}))->show(false);
 
     timer->setInterval([=]() mutable {
         textTime->changeText(std::to_string(imgState--));
@@ -175,26 +195,10 @@ void mainGame1(GameScenes *gameScenes) {
             canRedB->show(false);
             canGreenC->show(false);
             canYellowD->show(false);
-            auto boxend = sceneContainer->append(new Button(SDLRendererController,
-                                              "", {200, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf",
-                                                       {255, 255, 255}},
-                                              box,
-                                              [=](Touchable *button, ComponentPosition clickPosition,
-                                                  SDL_Event event)mutable {
-                                                textscore->changeText(std::to_string(score));
-                                                sceneContainer->append(textscore);
-                                              },
-                                              16, {300, 100}, {1250, 750, POSITION_ABSOLUTE}));
-
-            sceneContainer->append(new Button(SDLRendererController,
-                                                         "MENU", {50, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf",
-                                                                   {255, 255, 255}},
-                                                         box,
-                                                         [=](Touchable *button, ComponentPosition clickPosition,
-                                                             SDL_Event event)mutable {
-
-                                                         },
-                                                         16, {300, 100}, {1250, 750, POSITION_ABSOLUTE}));
+            boxend->show(true);
+            backToMenu->show(true);
         }
     }, 1000);
+
+
 }
