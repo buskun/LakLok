@@ -54,9 +54,9 @@ void mainGame1(GameScenes *gameScenes) {
                                  {50, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf", {255, 255, 255}},
                                  3, {675, 50, POSITION_ABSOLUTE});
     auto textscore = new TextView(SDLRendererController,
-                                 "",
-                                 {200, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf", {255, 255, 255}},
-                                 20, {675, 50, POSITION_ABSOLUTE});
+                                  "",
+                                  {200, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf", {255, 255, 255}},
+                                  20, {675, 50, POSITION_ABSOLUTE});
 
     auto showNewQuestion = [=]() mutable {
         srand(time(nullptr));
@@ -179,26 +179,31 @@ void mainGame1(GameScenes *gameScenes) {
                                                     16, {300, 100}, {1250, 750, POSITION_ABSOLUTE}))->show(false);
 
     auto backToMenu = sceneContainer->append(new Button(SDLRendererController,
-                                      "MENU", {50, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf",
-                                               {255, 255, 255}},
-                                      box,
-                                      [=](Touchable *button, ComponentPosition clickPosition,
-                                          SDL_Event event)mutable {
+                                                        "MENU",
+                                                        {50, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf",
+                                                         {255, 255, 255}},
+                                                        box,
+                                                        [=](Touchable *button, ComponentPosition clickPosition,
+                                                            SDL_Event event)mutable {
 
-                                      },
-                                      16, {300, 100}, {1250, 750, POSITION_ABSOLUTE}))->show(false);
+                                                        },
+                                                        16, {300, 100}, {1250, 750, POSITION_ABSOLUTE}))->show(false);
 
-    timer->setInterval([=]() mutable {
-        textTime->changeText(std::to_string(imgState--));
-        if(imgState<=0) {
-            canBlueA->show(false);
-            canRedB->show(false);
-            canGreenC->show(false);
-            canYellowD->show(false);
-            boxend->show(true);
-            backToMenu->show(true);
-        }
-    }, 1000);
+    scene->onEnterScene([=](Scene *scene) mutable {
+        timer->setInterval([=]() mutable {
+            textTime->changeText(std::to_string(imgState--));
+            if (imgState <= 0) {
+                canBlueA->show(false);
+                canRedB->show(false);
+                canGreenC->show(false);
+                canYellowD->show(false);
+                boxend->show(true);
+                backToMenu->show(true);
+            }
+        }, 1000);
+    });
 
-
+    scene->onExitScene([=](Scene *scene)mutable{
+        timer->stop();
+    });
 }
