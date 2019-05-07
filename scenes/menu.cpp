@@ -10,9 +10,6 @@ void mainMenu(GameScenes *gameScenes) {
     SDL_Renderer *SDLRenderer = SDLRendererController->getSDLRenderer();
 
     const GameProp GAME_PROP = gameScenes->getGameProp();
-
-    GameProp gameProp = gameScenes->getGameProp();
-
     SDL_Texture *bgTexture = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/bG_main.jpg");
 
     typedef struct {
@@ -92,14 +89,18 @@ void mainMenu(GameScenes *gameScenes) {
     }, 500/*1 วิมีสองรูป*/);
     auto text = new TextView(SDLRendererController,
                              "Hello world!",
-                             {24, gameProp.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf", {255, 255, 255}});
-    text->setHoverText("Hello world!", {24, gameProp.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf", {255, 255, 255}});
+                             {24, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf", {255, 255, 255}});
+    text->setHoverText("Hello world!", {24, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf", {255, 255, 255}});
     sceneContainer->append(text);
 
-    eventManager->on(SDL_MOUSEBUTTONDOWN, [=](SDL_Event event) {
-        text->show(!text->isShown());
-    });
+	SDL::setCustomCursor(GAME_PROP.RESOURCE_PATH + "/img/image.bmp", 0, 0);
+	SDL::setSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
 
-    scene->onGameTick([](Scene *currentScene) {
-    });
+	eventManager->on(SDL_MOUSEBUTTONDOWN, [=](SDL_Event event) {
+		text->show(!text->isShown());
+		SDL::toggleCursor();
+	});
+
+	scene->onGameTick([](Scene *currentScene) {
+	});
 }

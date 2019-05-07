@@ -13,19 +13,24 @@ class Scene {
 	Container *sceneContainer = nullptr;
 	RendererController *rendererController = nullptr;
 	Array<std::function<void(Scene *)>> *gameTickCallback = nullptr;
+	std::function<void(Scene *)> enterSceneCallback;
 
 public:
 	Scene(std::string &&sceneName, RendererController *rendererController);
 
-	const std::string &getSceneName( );
+	const std::string &getSceneName();
 
 	Scene *onGameTick(std::function<void(Scene *)> &&callback);
 
+	Scene *onEnterScene(std::function<void(Scene *)> &&callback);
+
 	Scene *renderScene(Renderer *renderer);
 
-	Scene *gameTick( );
+	Scene *gameTick();
 
-	Container *getSceneContainer( );
+	Scene *enterScene();
+
+	Container *getSceneContainer();
 };
 
 class GameScenes {
@@ -34,11 +39,11 @@ class GameScenes {
 	Array<std::string> *sceneNameList = nullptr;
 	RendererController *rendererController = nullptr;
 	EventManager *eventManager = nullptr;
-	GameProp gameProp = { };
+	GameProp gameProp = {};
 public:
 	GameScenes(RendererController *rendererController, EventManager *eventManager, GameProp &&gameProp);
 
-	const std::string &getCurrentSceneName( );
+	const std::string &getCurrentSceneName();
 
 	GameScenes *setCurrentSceneName(std::string &&newSceneName);
 
@@ -48,13 +53,13 @@ public:
 
 	Scene *getScene(const std::string &&sceneName);
 
-	Scene *getCurrentScene( );
+	Scene *getCurrentScene();
 
-	RendererController *getRendererController( );
+	RendererController *getRendererController();
 
-	const GameProp &getGameProp( );
+	const GameProp &getGameProp();
 
-	EventManager *getEventManager( );
+	EventManager *getEventManager();
 };
 
 #endif //LAKLOK_SCENE_H
