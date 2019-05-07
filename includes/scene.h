@@ -13,8 +13,8 @@ class Scene {
 	Container *sceneContainer = nullptr;
 	RendererController *rendererController = nullptr;
 	Array<std::function<void(Scene *)>> *gameTickCallback = nullptr;
-	std::function<void(Scene *)> enterSceneCallback;
-	std::function<void(Scene *)> exitSceneCallback;
+	std::function<void(Scene *)> enterSceneCallback = nullptr;
+	std::function<void(Scene *)> exitSceneCallback = nullptr;
 
 public:
 	Scene(std::string &&sceneName, RendererController *rendererController);
