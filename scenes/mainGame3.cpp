@@ -16,4 +16,5 @@ void mainGame3(GameScenes *gameScenes) {
     sceneContainer->setPosition({0, 0});
     auto background = new ImageView(SDLRendererController, bgTexture, 1, {1600, 900}, {0, 0, POSITION_RELATIVE});
     sceneContainer->append(background);
+
 }

@@ -27,53 +27,53 @@ void mainGame2(GameScenes *gameScenes) {
     auto background = new ImageView(SDLRendererController, bgTexture, 1, {1600, 900}, {0, 0, POSITION_RELATIVE});
     sceneContainer->append(background);
 
-    auto land1 = sceneContainer->append(new Button(SDLRendererController,
+    auto land1 = new Button(SDLRendererController,
                                                    "", { 18, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf", { 255, 255, 255 }},
                                                    land,
                                                    [&](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
                                                    },
-                                                   1, { 200, 200 }, { 100, 400, POSITION_ABSOLUTE }));
-    auto land2 = sceneContainer->append(new Button(SDLRendererController,
+                                                   1, { 200, 200 }, { 100, 400, POSITION_ABSOLUTE });
+    auto land2 = new Button(SDLRendererController,
                                                    "", { 18, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf", { 255, 255, 255 }},
                                                    land,
                                                    [&](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
                                                    },
-                                                   1, { 200, 200 }, { 300, 400, POSITION_ABSOLUTE }));
-    auto land3 = sceneContainer->append(new Button(SDLRendererController,
+                                                   1, { 200, 200 }, { 300, 400, POSITION_ABSOLUTE });
+    auto land3 = new Button(SDLRendererController,
                                                    "", { 18, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf", { 255, 255, 255 }},
                                                    land,
                                                    [&](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
                                                    },
-                                                   1, { 200, 200 }, { 500, 400, POSITION_ABSOLUTE }));
-    auto land4 = sceneContainer->append(new Button(SDLRendererController,
+                                                   1, { 200, 200 }, { 500, 400, POSITION_ABSOLUTE });
+    auto land4 = new Button(SDLRendererController,
                                                  "", { 18, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf", { 255, 255, 255 }},
                                                  land,
                                                  [&](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
                                                  },
-                                                 1, { 200, 200 }, { 700, 400, POSITION_ABSOLUTE }));
-    auto btnshop = sceneContainer->append(new Button(SDLRendererController,
+                                                 1, { 200, 200 }, { 700, 400, POSITION_ABSOLUTE });
+    auto btnshop = new Button(SDLRendererController,
                           "", { 18, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf", { 255, 255, 255 }},
                           shop,
                           [&](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
                           },
-                          3, { 300, 200 }, { 100, 700, POSITION_ABSOLUTE }));
-    auto btnwater = sceneContainer->append(new Button(SDLRendererController,
+                          3, { 300, 200 }, { 100, 700, POSITION_ABSOLUTE });
+    auto btnwater = new Button(SDLRendererController,
                                                  "", { 18, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf", { 255, 255, 255 }},
                                                  watering,
                                                  [&](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
                                                  },
-                                                 3, { 300, 200 }, { 410, 700, POSITION_ABSOLUTE }));
-    auto btnseed = sceneContainer->append(new Button(SDLRendererController,
+                                                 3, { 300, 200 }, { 410, 700, POSITION_ABSOLUTE });
+    auto btnseed = new Button(SDLRendererController,
                                                  "", { 18, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf", { 255, 255, 255 }},
                                                  seed,
                                                  [&](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
                                                  },
-                                                 3, { 300, 200 }, { 720, 700, POSITION_ABSOLUTE }));
-    auto btncompost = sceneContainer->append(new Button(SDLRendererController,
+                                                 3, { 300, 200 }, { 720, 700, POSITION_ABSOLUTE });
+    auto btncompost = new Button(SDLRendererController,
                                                  "", { 18, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf", { 255, 255, 255 }},
                                                  compost,
                                                  [&](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
                                                  },
-                                                 3, { 300, 200 }, { 1030, 700, POSITION_ABSOLUTE }));
+                                                 3, { 300, 200 }, { 1030, 700, POSITION_ABSOLUTE });
 
 }
