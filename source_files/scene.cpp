@@ -5,6 +5,8 @@ Scene::Scene(std::string &&sceneName, RendererController *rendererController) {
     this->rendererController = rendererController;
     this->sceneContainer = new Container(this->rendererController, 0, {0, 0}, {0, 0, POSITION_ABSOLUTE});
     this->gameTickCallback = new Array<std::function<void(Scene *)>>();
+    this->enterSceneCallback = new Array<std::function<void(Scene *)>>();
+    this->exitSceneCallback = new Array<std::function<void(Scene *)>>();
 }
 
 const std::string &Scene::getSceneName() {
@@ -17,12 +19,12 @@ Scene *Scene::onGameTick(std::function<void(Scene *)> &&callback) {
 }
 
 Scene *Scene::onEnterScene(std::function<void(Scene *)> &&callback) {
-    this->enterSceneCallback = callback;
+    this->enterSceneCallback->push(callback);
     return this;
 }
 
 Scene *Scene::onExitScene(std::function<void(Scene *)> &&callback) {
-    this->enterSceneCallback = callback;
+    this->exitSceneCallback->push(callback);
     return this;
 }
 
@@ -40,12 +42,16 @@ Scene *Scene::gameTick() {
 }
 
 Scene *Scene::enterScene() {
-    if (this->enterSceneCallback) enterSceneCallback(this);
+    this->enterSceneCallback->forEach([&](int index, int id, std::function<void(Scene *)> &&callback) {
+        callback(this);
+    });
     return this;
 }
 
 Scene *Scene::exitScene() {
-    if (this->exitSceneCallback) exitSceneCallback(this);
+    this->exitSceneCallback->forEach([&](int index, int id, std::function<void(Scene *)> &&callback) {
+        callback(this);
+    });
     return this;
 }
 
