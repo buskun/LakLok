@@ -50,7 +50,8 @@ void Container::click(ComponentPosition clickPosition, SDL_Event event) {
 		ComponentSize size = currentComponent->getNodeData()->getSize();
 
 		if (absolutePosition.x < clickPosition.x && clickPosition.x < absolutePosition.x + size.width
-		    && absolutePosition.y < clickPosition.y && clickPosition.y < absolutePosition.y + size.height) {
+		    && absolutePosition.y < clickPosition.y && clickPosition.y < absolutePosition.y + size.height
+		    && currentComponent->getNodeData()->isShown()) {
 			currentComponent->getNodeData()->click(clickPosition, event);
 			break;
 		}
