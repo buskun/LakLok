@@ -10,7 +10,7 @@ void mainMenu(GameScenes *gameScenes) {
     SDL_Renderer *SDLRenderer = SDLRendererController->getSDLRenderer();
 
     const GameProp GAME_PROP = gameScenes->getGameProp();
-    SDL_Texture *bgTexture = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/bG_main.jpg");
+    SDL_Texture *bgTexture = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/bG_main.png");
 
     typedef struct {
         SDL_Texture *_1;
@@ -39,7 +39,7 @@ void mainMenu(GameScenes *gameScenes) {
                                               10, { iW, iH },
                                               { GAME_PROP.WINDOW.WIDTH / 2 - iW / 2, GAME_PROP.WINDOW.HEIGHT / 2 - iH / 2,
                                                 POSITION_RELATIVE }));*/
-    auto background = new ImageView(SDLRendererController, bgTexture, 0, {bW, bH}, {-200, 0, POSITION_RELATIVE});
+    auto background = new ImageView(SDLRendererController, bgTexture, 0, {1600, 900}, {0, 0, POSITION_RELATIVE});
     sceneContainer->append(background);
     auto firstImage = new TouchableImage(SDLRendererController, mainGame_1._1,
                                          [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {

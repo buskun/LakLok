@@ -55,25 +55,41 @@ void mainGame2(GameScenes *gameScenes) {
                           "", { 18, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf", { 255, 255, 255 }},
                           shop,
                           [&](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
+
                           },
                           3, { 300, 200 }, { 100, 700, POSITION_ABSOLUTE });
     auto btnwater = new Button(SDLRendererController,
                                                  "", { 18, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf", { 255, 255, 255 }},
                                                  watering,
                                                  [&](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
+                                                     SDL::setCustomCursor(GAME_PROP.RESOURCE_PATH + "", 0, 0);
+                                                     SDL::setSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
+                                                     SDL::useSystemCursor();
                                                  },
                                                  3, { 300, 200 }, { 410, 700, POSITION_ABSOLUTE });
     auto btnseed = new Button(SDLRendererController,
                                                  "", { 18, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf", { 255, 255, 255 }},
                                                  seed,
                                                  [&](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
+                                                     SDL::setCustomCursor(GAME_PROP.RESOURCE_PATH + "", 0, 0);
+                                                     SDL::setSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
+                                                     SDL::useSystemCursor();
                                                  },
                                                  3, { 300, 200 }, { 720, 700, POSITION_ABSOLUTE });
     auto btncompost = new Button(SDLRendererController,
                                                  "", { 18, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf", { 255, 255, 255 }},
                                                  compost,
                                                  [&](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
+                                                     SDL::setCustomCursor(GAME_PROP.RESOURCE_PATH + "", 0, 0);
+                                                     SDL::setSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
+                                                     SDL::useSystemCursor();
                                                  },
                                                  3, { 300, 200 }, { 1030, 700, POSITION_ABSOLUTE });
+    sceneContainer->append(land1);
+    sceneContainer->append(land2);
+    sceneContainer->append(land3);
+    sceneContainer->append(land4);
+
+
 
 }

@@ -1,6 +1,7 @@
 #include "scene_list.h"
 #include <cstdlib>
 #include <time.h>
+
 void mainGame4(GameScenes *gameScenes) {
     Scene *scene = gameScenes->newScene("mainGame4");
     gameScenes->addScene(scene);
@@ -12,7 +13,11 @@ void mainGame4(GameScenes *gameScenes) {
     const GameProp GAME_PROP = gameScenes->getGameProp();
 
     GameProp gameProp = gameScenes->getGameProp();
-    int bW, bH;
+    auto *timer = new Timer();
+    int bW, bH, *score = new int;
+    *score = 0;
+    bool *answering = new bool;
+    *answering = false;
     SDL_Texture *bgTexture = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/bgmaingame4.jpg");
     SDL_Texture *box = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame1/box.png");
     SDL_Texture *gameTrue = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame1/true.png");
@@ -21,42 +26,18 @@ void mainGame4(GameScenes *gameScenes) {
     sceneContainer->setPosition({0, 0});
     auto background = new ImageView(SDLRendererController, bgTexture, 1, {1600, 900}, {0, 0, POSITION_RELATIVE});
     sceneContainer->append(background);
-    auto  A = new ImageView(SDLRendererController, box, 10, {300, 300}, {645, 300, POSITION_RELATIVE});
-    auto B = new ImageView(SDLRendererController, box, 10, {300, 300}, {645, 300, POSITION_RELATIVE});
-    auto C = new ImageView(SDLRendererController, box, 10, {300, 300}, {645, 300, POSITION_RELATIVE});
-    auto D = new ImageView(SDLRendererController, box, 10, {300, 300}, {645, 300, POSITION_RELATIVE});
-    auto boxA = new Button(SDLRendererController,
-                              " ", {50, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf",
-                                                        {255, 255, 255}},
-                              box,
-                              [=](Touchable *button, ComponentPosition clickPosition,
-                                  SDL_Event event) mutable {
-                              },
-                              50, {600, 200}, {200, 350, POSITION_ABSOLUTE});
-    auto boxB = new Button(SDLRendererController,
-                              "  ", {50, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf",
-                                                      {255, 255, 255}},
-                              box,
-                              [=](Touchable *button, ComponentPosition clickPosition,
-                                  SDL_Event event) mutable {
-                              },
-                              50, {600, 200}, {200, 600, POSITION_ABSOLUTE});
-    auto boxC = new Button(SDLRendererController,
-                              " ", {50, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf",
-                                                          {255, 255, 255}},
-                              box,
-                              [=](Touchable *button, ComponentPosition clickPosition,
-                                  SDL_Event event) mutable {
-                              },
-                              50, {600, 200}, {850, 600, POSITION_ABSOLUTE});
-    auto boxD= new Button(SDLRendererController,
-                              "  ", {50, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf",
-                                                                   {255, 255, 255}},
-                              box,
-                              [=](Touchable *button, ComponentPosition clickPosition,
-                                  SDL_Event event) mutable {
-                              },
-                              50, {600, 200}, {850, 350, POSITION_ABSOLUTE});
+    sceneContainer->append(new ImageView(SDLRendererController, box, 10, {600, 150}, {850, 650, POSITION_RELATIVE}));
+    ImageView *choices[] = {
+            new ImageView(SDLRendererController, box, 10, {600, 150}, {150, 450, POSITION_RELATIVE}),
+            new ImageView(SDLRendererController, box, 10, {600, 150}, {850, 450, POSITION_RELATIVE}),
+            new ImageView(SDLRendererController, box, 10, {600, 150}, {150, 650, POSITION_RELATIVE}),
+            new ImageView(SDLRendererController, box, 10, {600, 150}, {850, 650, POSITION_RELATIVE})
+    };
+
+    sceneContainer->append(choices[0]);
+    sceneContainer->append(choices[1]);
+    sceneContainer->append(choices[2]);
+    sceneContainer->append(choices[3]);
     auto showNewQuestion = [=]() mutable {
         srand(time(nullptr));
         int randomQ = rand() % 29;
@@ -70,7 +51,7 @@ void mainGame4(GameScenes *gameScenes) {
             case 5:
             case 6:
             case 7:
-                boxA->show(true);
+                choices[0]->show(true);
                 break;
             case 8:
             case 9:
@@ -80,7 +61,7 @@ void mainGame4(GameScenes *gameScenes) {
             case 13:
             case 14:
             case 15:
-                boxB->show(true);
+                choices[1]->show(true);
                 break;
             case 16:
             case 17:
@@ -90,23 +71,30 @@ void mainGame4(GameScenes *gameScenes) {
             case 21:
             case 22:
             case 23:
-                boxC->show(true);
+                choices[2]->show(true);
                 break;
             case 24:
             case 25:
             case 26:
             case 27:
             case 28:
-                boxD->show(true);
+                choices[3]->show(true);
                 break;
             default:;
         }
     };
     showNewQuestion();
-    /*sceneContainer->append(boxQ1->show(false));
-    sceneContainer->append(boxQ1A1->show(false));
-    sceneContainer->append(boxQ1A2->show(false));
-    sceneContainer->append(boxQ1A3->show(false));
-    sceneContainer->append(boxQ1A4->show(false));*/
+    auto Q1 = new TouchableText(SDLRendererController, "8;p8;p8;p8;p8;8p8;8;8p;8p8;;88;p;\nhuihuihiu",
+                                {50, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf", {255, 255, 255}},
+                                [=](Touchable *touchable, ComponentPosition clickPosition, SDL_Event event) mutable{
+                                    if (*answering) return;
+                                    *answering = true;
 
+                                    timer->setTimeout([=]() mutable {
+
+                                        showNewQuestion();
+                                        *answering = false;
+                                    }, 1000);
+                                },10,{ 150, 450, POSITION_RELATIVE });
+    sceneContainer->append(Q1);
 }
