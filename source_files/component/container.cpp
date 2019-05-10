@@ -12,33 +12,6 @@ Container::~Container() {
 	delete this->children;
 }
 
-Component *Container::append(Component *child) {
-	if (child->getParent()) {
-		child->getParent()->getChildren()->removeByValue(child);
-	}
-	this->children->push(child, child->getRenderIndex());
-	child->setParent(this);
-	return child;
-}
-
-Component *Container::prepend(Component *child) {
-	if (child->getParent()) {
-		child->getParent()->getChildren()->removeByValue(child);
-	}
-	this->children->unshift(child, child->getRenderIndex());
-	child->setParent(this);
-	return child;
-}
-
-Component *Container::insertByRenderIndex(Component *child) {
-	if (child->getParent()) {
-		child->getParent()->getChildren()->removeByValue(child);
-	}
-	this->children->insert(child, child->getRenderIndex());
-	child->setParent(this);
-	return child;
-}
-
 Array<Component *> *Container::getChildren() {
 	return this->children;
 }
