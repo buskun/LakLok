@@ -28,17 +28,7 @@ void mainMenu(GameScenes *gameScenes) {
     SDL_Texture *mainGame_2 = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/mainGame_2.jpg");
     SDL_Texture *mainGame_3 = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/mainGame_3.jpg");
     SDL_Texture *mainGame_4 = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/mainGame_4.jpg");
-    int bW, bH;
 
-    SDL_QueryTexture(bgTexture, nullptr, nullptr, &bW, &bH);
-    sceneContainer->setPosition({0, 0});
-    /*sceneContainer->append(new TouchableImage(SDLRendererController, imgTexture,
-                                              [ ](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
-                                                  std::cout << "Image clicked" << std::endl;
-                                              },
-                                              10, { iW, iH },
-                                              { GAME_PROP.WINDOW.WIDTH / 2 - iW / 2, GAME_PROP.WINDOW.HEIGHT / 2 - iH / 2,
-                                                POSITION_RELATIVE }));*/
     auto background = new ImageView(SDLRendererController, bgTexture, 0, {1600, 900}, {0, 0, POSITION_RELATIVE});
     sceneContainer->append(background);
     auto firstImage = new TouchableImage(SDLRendererController, mainGame_1._1,
@@ -86,9 +76,8 @@ void mainMenu(GameScenes *gameScenes) {
             default:;
         }
         imgState = (imgState + 1) % 4;
-    }, 500/*1 วิมีสองรูป*/);
+    }, 500);
 
-	SDL::setCustomCursor(GAME_PROP.RESOURCE_PATH + "/img/image.bmp", 0, 0);
 	SDL::setSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
 
 	eventManager->on(SDL_MOUSEBUTTONDOWN, [=](SDL_Event event) {
