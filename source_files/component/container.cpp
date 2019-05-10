@@ -12,31 +12,31 @@ Container::~Container() {
 	delete this->children;
 }
 
-Container *Container::append(Component *child) {
+Component *Container::append(Component *child) {
 	if (child->getParent()) {
 		child->getParent()->getChildren()->removeByValue(child);
 	}
 	this->children->push(child, child->getRenderIndex());
 	child->setParent(this);
-	return this;
+	return child;
 }
 
-Container *Container::prepend(Component *child) {
+Component *Container::prepend(Component *child) {
 	if (child->getParent()) {
 		child->getParent()->getChildren()->removeByValue(child);
 	}
 	this->children->unshift(child, child->getRenderIndex());
 	child->setParent(this);
-	return this;
+	return child;
 }
 
-Container *Container::insertByRenderIndex(Component *child) {
+Component *Container::insertByRenderIndex(Component *child) {
 	if (child->getParent()) {
 		child->getParent()->getChildren()->removeByValue(child);
 	}
 	this->children->insert(child, child->getRenderIndex());
 	child->setParent(this);
-	return this;
+	return child;
 }
 
 Array<Component *> *Container::getChildren() {
