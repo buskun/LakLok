@@ -34,7 +34,7 @@ public:
 
 	Component *getParent();
 
-	virtual Array<Component *> *getChildren();
+	virtual Array<Component *> *getChildren() = 0;
 
 	int getRenderIndex();
 
@@ -50,13 +50,13 @@ public:
 
 	bool isHovered();
 
-	virtual void click(ComponentPosition clickPosition, SDL_Event event);
+	virtual void click(ComponentPosition clickPosition, SDL_Event event) = 0;
 
-	virtual void hover(ComponentPosition mousePosition, SDL_Event event);
+	virtual void hover(ComponentPosition mousePosition, SDL_Event event) = 0;
 
-	virtual void unHover(ComponentPosition mousePosition, SDL_Event event);
+	virtual void unHover(ComponentPosition mousePosition, SDL_Event event) = 0;
 
-	virtual void render(Renderer *renderer);
+	virtual void render(Renderer *renderer) = 0;
 
 	ComponentPosition getAbsolutePosition();
 };

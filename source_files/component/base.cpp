@@ -39,10 +39,6 @@ int Component::getRenderIndex() {
 	return this->renderIndex;
 }
 
-Array<Component *> *Component::getChildren() {
-	return nullptr;
-}
-
 ComponentPosition Component::setPosition(ComponentPosition componentPosition) {
 	if (componentPosition.x) this->position.x = componentPosition.x;
 	if (componentPosition.y) this->position.y = componentPosition.y;
@@ -71,14 +67,6 @@ bool Component::isShown() {
 bool Component::isHovered() {
 	return this->hovered;
 }
-
-void Component::click(ComponentPosition clickPosition, SDL_Event event) {}
-
-void Component::hover(ComponentPosition mousePosition, SDL_Event event) {}
-
-void Component::unHover(ComponentPosition mousePosition, SDL_Event event) {}
-
-void Component::render(Renderer *renderer) {}
 
 ComponentPosition Component::getAbsolutePosition() {
 	if (this->position.positionFlag == POSITION_ABSOLUTE) return this->position;
