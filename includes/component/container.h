@@ -14,11 +14,11 @@ public:
 
 	~Container();
 
-	Container *append(Component *child);
+	Component *append(Component *child);
 
-	Container *prepend(Component *child);
+	Component *prepend(Component *child);
 
-	Container *insertByRenderIndex(Component *child);
+	Component *insertByRenderIndex(Component *child);
 
 	Array<Component *> *getChildren() override;
 
