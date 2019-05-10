@@ -14,11 +14,35 @@ public:
 
 	~Container();
 
-	Container *append(Component *child);
+	template<typename ComponentType>
+	ComponentType *append(ComponentType *child){
+		if (child->getParent()) {
+			child->getParent()->getChildren()->removeByValue(child);
+		}
+		this->children->push(child, child->getRenderIndex());
+		child->setParent(this);
+		return child;
+	}
 
-	Container *prepend(Component *child);
+	template<typename ComponentType>
+	ComponentType *prepend(ComponentType *child){
+		if (child->getParent()) {
+			child->getParent()->getChildren()->removeByValue(child);
+		}
+		this->children->unshift(child, child->getRenderIndex());
+		child->setParent(this);
+		return child;
+	}
 
-	Container *insertByRenderIndex(Component *child);
+	template<typename ComponentType>
+	ComponentType *insertByRenderIndex(ComponentType *child) {
+		if (child->getParent()) {
+			child->getParent()->getChildren()->removeByValue(child);
+		}
+		this->children->insert(child, child->getRenderIndex());
+		child->setParent(this);
+		return child;
+	}
 
 	Array<Component *> *getChildren() override;
 
