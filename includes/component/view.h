@@ -14,10 +14,10 @@ protected:
 
 public:
 	explicit View(RendererController *rendererController, int renderIndex = 0,
-	              ComponentSize componentSize = { 0, 0 },
-	              ComponentPosition componentPosition = { 0, 0, POSITION_RELATIVE });
+	              ComponentSize componentSize = {0, 0},
+	              ComponentPosition componentPosition = {0, 0, POSITION_RELATIVE});
 
-	~View( );
+	~View();
 
 	void render(Renderer *renderer) override;
 
@@ -29,16 +29,16 @@ public:
 class ImageView : public View {
 public:
 	ImageView(RendererController *rendererController, SDL_Texture *imageTexture, int renderIndex = 0,
-	          ComponentSize componentSize = { 0, 0 },
-	          ComponentPosition componentPosition = { 0, 0, POSITION_RELATIVE });
+	          ComponentSize componentSize = {0, 0},
+	          ComponentPosition componentPosition = {0, 0, POSITION_RELATIVE});
 
 	ImageView *setHoverImage(SDL_Texture *imageTexture);
 };
 
 class TextView : public View {
 protected:
-	TextProp textProp = { };
-	TextProp hoverTextProp = { };
+	TextProp textProp = {};
+	TextProp hoverTextProp = {};
 	TTF_Font *font = nullptr;
 	TTF_Font *hoverFont = nullptr;
 	std::string text;
@@ -46,15 +46,15 @@ protected:
 public:
 	TextView(RendererController *rendererController,
 	         std::string &&text, TextProp &&textProp,
-	         int renderIndex = 0, ComponentPosition componentPosition = { 0, 0, POSITION_RELATIVE });
+	         int renderIndex = 0, ComponentPosition componentPosition = {0, 0, POSITION_RELATIVE});
 
-	~TextView( );
+	~TextView();
 
 	TextView *changeText(std::string &&text);
 
 	TextView *setHoverText(std::string &&hoverText, TextProp &&hoverTextProp);
 
-	const std::string &getText( );
+	const std::string &getText();
 };
 
 #endif //LAKLOK_VIEW_H
