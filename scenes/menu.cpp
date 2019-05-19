@@ -119,4 +119,6 @@ void mainMenu(GameScenes *gameScenes) {
 
     scene->onGameTick([](Scene *currentScene) {
     });
+
+	SDL::setSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
 }

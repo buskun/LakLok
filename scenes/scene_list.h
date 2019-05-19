@@ -1,6 +1,8 @@
 #ifndef LAKLOK_SCENE_LIST_H
 #define LAKLOK_SCENE_LIST_H
 
+#include <functional>
+
 #include "../includes/SDL_util.h"
 #include "../includes/renderer.h"
 #include "../includes/scene.h"
