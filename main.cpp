@@ -18,7 +18,7 @@
 #include "scenes/scene_list.h"
 
 #define WINDOW_WIDTH 1600
-#define WINDOW_HEIGHT 900
+#define WINDOW_HEIGHT  900
 
 int WinMain(int argc, char *argv[]) {
     int errorCode = 0;
@@ -33,9 +33,11 @@ int WinMain(int argc, char *argv[]) {
         return errorCode;
     }
 
+    SDL::setSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
+
     GameProp gameProp = {};
     gameProp.NAME = "LakLok";
-    gameProp.FPS = 144;
+    gameProp.FPS = 30;
     gameProp.TICK_TIME = 100;
     gameProp.RESOURCE_PATH = (std::string) SDL_GetBasePath() + (DEBUG ? "../resources" : "resources");
 
@@ -49,16 +51,21 @@ int WinMain(int argc, char *argv[]) {
     gameProp.WINDOW.Y = (DM.h - WINDOW_HEIGHT) / 2;
 
     auto SDLRendererController = new RendererController((GameProp &&) gameProp,
-                                                        SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI,
+                                                        SDL_WINDOW_SHOWN,
                                                         SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-
+    GameScenes *gameScene;
     auto *eventManager = new EventManager();
 
-    auto *gameScene = new GameScenes(SDLRendererController, eventManager, (GameProp &&) gameProp);
+    gameScene = new GameScenes(SDLRendererController, eventManager, (GameProp &&) gameProp);
 
     // Scenes
-    menu(gameScene);
-
+    mainMenu(gameScene);
+    mainGame1(gameScene);
+    mainGame2(gameScene);
+    mainGame3(gameScene);
+    mainGame4(gameScene);
+    introGame1(gameScene);
+    mainGame2Shop(gameScene);
     eventManager->on(SDL_MOUSEBUTTONDOWN, [&](SDL_Event event) {
         ComponentPosition clickPosition = {0, 0, POSITION_ABSOLUTE};
         SDL_GetMouseState(&clickPosition.x, &clickPosition.y);
@@ -67,7 +74,7 @@ int WinMain(int argc, char *argv[]) {
 
     Scene *lastHoveredScene = nullptr;
 
-    eventManager->on(SDL_MOUSEMOTION, [&](SDL_Event event) {
+    eventManager->on(SDL_MOUSEMOTION, [=](SDL_Event event) mutable {
         ComponentPosition mousePosition = {0, 0, POSITION_ABSOLUTE};
         SDL_GetMouseState(&mousePosition.x, &mousePosition.y);
         if (lastHoveredScene) {
@@ -78,7 +85,7 @@ int WinMain(int argc, char *argv[]) {
         lastHoveredScene = gameScene->getCurrentScene();
     });
 
-    SDLRendererController->addRenderer(0, [&](Renderer *renderer) {
+    SDLRendererController->addRenderer(0, [=](Renderer *renderer) {
         gameScene->getCurrentScene()->renderScene(renderer);
     });
 
@@ -91,9 +98,9 @@ int WinMain(int argc, char *argv[]) {
                     });
         }
         SDLRendererController->renderTick();
-    }, 1 /*s*/ * (1000 /*ms*/ / 1 /*s*/) * (1 /*s*/ / gameProp.FPS /*frames*/));
+    }, 1000 / gameProp.FPS);
 
-    timer->setInterval([&]() {
+    timer->setInterval([=]() {
         eventManager->gameTick();
         gameScene->getCurrentScene()->gameTick();
     }, gameProp.TICK_TIME);
