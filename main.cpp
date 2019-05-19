@@ -33,6 +33,8 @@ int WinMain(int argc, char *argv[]) {
         return errorCode;
     }
 
+    SDL::setSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
+
     GameProp gameProp = {};
     gameProp.NAME = "LakLok";
     gameProp.FPS = 30;
@@ -63,6 +65,7 @@ int WinMain(int argc, char *argv[]) {
     mainGame3(gameScene);
     mainGame4(gameScene);
     introGame1(gameScene);
+    mainGame2Shop(gameScene);
     eventManager->on(SDL_MOUSEBUTTONDOWN, [&](SDL_Event event) {
         ComponentPosition clickPosition = {0, 0, POSITION_ABSOLUTE};
         SDL_GetMouseState(&clickPosition.x, &clickPosition.y);
