@@ -36,84 +36,84 @@ void mainGame4(GameScenes *gameScenes) {
     sceneContainer->append(gameX);
     bool *answer = new bool[4];
     auto Q1C1 = new Button(SDLRendererController,
-                           "สวัสดี1", {50, GAME_PROP.RESOURCE_PATH + "/fonts/PrintAble4U.ttf",
-                                       {255, 255, 255}},
-                           box,
-                           [=](Touchable *button, ComponentPosition clickPosition,
-                               SDL_Event event)mutable {
-                           },
-                           16, {500, 150}, {300, 450, POSITION_ABSOLUTE});
+                                                  "สวัสดี1", {50, GAME_PROP.RESOURCE_PATH + "/fonts/PrintAble4U.ttf",
+                                                            {255, 255, 255}},
+                                                  box,
+                                                  [=](Touchable *button, ComponentPosition clickPosition,
+                                                      SDL_Event event)mutable {
+                                                  },
+                                                  16, {500, 150}, {300, 450, POSITION_ABSOLUTE});
     auto Q1C2 = new Button(SDLRendererController,
-                           "สวัสดี2", {50, GAME_PROP.RESOURCE_PATH + "/fonts/PrintAble4U.ttf",
-                                       {255, 255, 255}},
-                           box,
-                           [=](Touchable *button, ComponentPosition clickPosition,
-                               SDL_Event event)mutable {
-                               *answering = true;
-                           },
-                           16, {500, 150}, {1000, 450, POSITION_ABSOLUTE});
+                      "สวัสดี2", {50, GAME_PROP.RESOURCE_PATH + "/fonts/PrintAble4U.ttf",
+                                  {255, 255, 255}},
+                      box,
+                      [=](Touchable *button, ComponentPosition clickPosition,
+                          SDL_Event event)mutable {
+                          *answering = true;
+                      },
+                      16, {500, 150}, {1000, 450, POSITION_ABSOLUTE});
     auto Q1C3 = new Button(SDLRendererController,
-                           "สวัสดี3", {50, GAME_PROP.RESOURCE_PATH + "/fonts/PrintAble4U.ttf",
-                                       {255, 255, 255}},
-                           box,
-                           [=](Touchable *button, ComponentPosition clickPosition,
-                               SDL_Event event)mutable {
+                      "สวัสดี3", {50, GAME_PROP.RESOURCE_PATH + "/fonts/PrintAble4U.ttf",
+                                  {255, 255, 255}},
+                      box,
+                      [=](Touchable *button, ComponentPosition clickPosition,
+                          SDL_Event event)mutable {
 
-                               *answering = true;
-                           },
-                           16, {500, 150}, {300, 650, POSITION_ABSOLUTE});
+                          *answering = true;
+                      },
+                      16, {500, 150}, {300, 650, POSITION_ABSOLUTE});
     auto Q1C4 = new Button(SDLRendererController,
-                           "สวัสดี4", {50, GAME_PROP.RESOURCE_PATH + "/fonts/PrintAble4U.ttf",
-                                       {255, 255, 255}},
-                           box,
-                           [=](Touchable *button, ComponentPosition clickPosition,
-                               SDL_Event event)mutable {
+                      "สวัสดี4", {50, GAME_PROP.RESOURCE_PATH + "/fonts/PrintAble4U.ttf",
+                                  {255, 255, 255}},
+                      box,
+                      [=](Touchable *button, ComponentPosition clickPosition,
+                          SDL_Event event)mutable {
 
-                               *answering = true;
-                           },
-                           16, {500, 150}, {1000, 650, POSITION_ABSOLUTE});
-    auto  Q2C1 = new Button(SDLRendererController,
-                            "สวัสดี5", {50, GAME_PROP.RESOURCE_PATH + "/fonts/PrintAble4U.ttf",
-                                        {255, 255, 255}},
-                            box,
-                            [=](Touchable *button, ComponentPosition clickPosition,
-                                SDL_Event event)mutable {
-
-
-                                *answering = true;
-                            },
-                            16, {500, 150}, {300, 450, POSITION_ABSOLUTE});
-    auto Q2C2 = new Button(SDLRendererController,
-                           "สวัสดี6", {50, GAME_PROP.RESOURCE_PATH + "/fonts/PrintAble4U.ttf",
-                                       {255, 255, 255}},
-                           box,
-                           [=](Touchable *button, ComponentPosition clickPosition,
-                               SDL_Event event)mutable {
+                          *answering = true;
+                      },
+                      16, {500, 150}, {1000, 650, POSITION_ABSOLUTE});
+   auto  Q2C1 = new Button(SDLRendererController,
+                      "สวัสดี5", {50, GAME_PROP.RESOURCE_PATH + "/fonts/PrintAble4U.ttf",
+                                  {255, 255, 255}},
+                      box,
+                      [=](Touchable *button, ComponentPosition clickPosition,
+                          SDL_Event event)mutable {
 
 
-                               *answering = true;
-                           },
-                           16, {500, 150}, {1000, 450, POSITION_ABSOLUTE});
+                          *answering = true;
+                      },
+                      16, {500, 150}, {300, 450, POSITION_ABSOLUTE});
+   auto Q2C2 = new Button(SDLRendererController,
+                      "สวัสดี6", {50, GAME_PROP.RESOURCE_PATH + "/fonts/PrintAble4U.ttf",
+                                  {255, 255, 255}},
+                      box,
+                      [=](Touchable *button, ComponentPosition clickPosition,
+                          SDL_Event event)mutable {
+
+
+                          *answering = true;
+                      },
+                      16, {500, 150}, {1000, 450, POSITION_ABSOLUTE});
     auto Q2C3 = new Button(SDLRendererController,
-                           "สวัสดี7", {50, GAME_PROP.RESOURCE_PATH + "/fonts/PrintAble4U.ttf",
-                                       {255, 255, 255}},
-                           box,
-                           [=](Touchable *button, ComponentPosition clickPosition,
-                               SDL_Event event)mutable {
+                      "สวัสดี7", {50, GAME_PROP.RESOURCE_PATH + "/fonts/PrintAble4U.ttf",
+                                  {255, 255, 255}},
+                      box,
+                      [=](Touchable *button, ComponentPosition clickPosition,
+                          SDL_Event event)mutable {
 
 
-                               *answering = true;
-                           },
-                           16, {500, 150}, {300, 650, POSITION_ABSOLUTE});
+                          *answering = true;
+                      },
+                      16, {500, 150}, {300, 650, POSITION_ABSOLUTE});
     auto Q2C4 = new Button(SDLRendererController,
-                           "สวัสดี8", {50, GAME_PROP.RESOURCE_PATH + "/fonts/PrintAble4U.ttf",
-                                       {255, 255, 255}},
-                           box,
-                           [=](Touchable *button, ComponentPosition clickPosition,
-                               SDL_Event event)mutable {
-                               *answering = true;
-                           },
-                           16, {500, 150}, {1000, 650, POSITION_ABSOLUTE});
+                      "สวัสดี8", {50, GAME_PROP.RESOURCE_PATH + "/fonts/PrintAble4U.ttf",
+                                  {255, 255, 255}},
+                      box,
+                      [=](Touchable *button, ComponentPosition clickPosition,
+                          SDL_Event event)mutable {
+                          *answering = true;
+                      },
+                      16, {500, 150}, {1000, 650, POSITION_ABSOLUTE});
     auto A = new Button(SDLRendererController,
                         "", {50, GAME_PROP.RESOURCE_PATH + "/fonts/PrintAble4U.ttf",
                              {255, 255, 255}},
@@ -163,13 +163,13 @@ void mainGame4(GameScenes *gameScenes) {
                         },
                         10, {600, 150}, {850, 650, POSITION_ABSOLUTE});
     auto boxEnd = new Button(SDLRendererController,
-                             "Your score = ", {50, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf",
-                                               {255, 255, 255}},
-                             box,
-                             [=](Touchable *button, ComponentPosition clickPosition,
-                                 SDL_Event event) mutable {
-                             },
-                             50, {500, 300}, {600, 300, POSITION_ABSOLUTE});
+                                                    "Your score = ", {50, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf",
+                                                                      {255, 255, 255}},
+                                                    box,
+                                                    [=](Touchable *button, ComponentPosition clickPosition,
+                                                        SDL_Event event) mutable {
+                                                    },
+                           50, {500, 300}, {600, 300, POSITION_ABSOLUTE});
 
     int randomQ = 0;
     auto showNewQuestion = [=]() mutable {
@@ -198,10 +198,10 @@ void mainGame4(GameScenes *gameScenes) {
                 answer[0] = true;
                 break;
             case 2: Q2C1->show(true);
-                Q2C2->show(true);
-                Q2C3->show(true);
-                Q2C4->show(true);
-                answer[1] = true;
+                    Q2C2->show(true);
+                    Q2C3->show(true);
+                    Q2C4->show(true);
+                    answer[1] = true;
                 break;
             case 3:Q2C1->show(true);
                 Q2C2->show(true);
@@ -248,87 +248,87 @@ void mainGame4(GameScenes *gameScenes) {
                                                    SDL_Event event) mutable {
                                                },
                                                50, {500, 100}, {20, 20, POSITION_ABSOLUTE}));
-    A = new Button(SDLRendererController,
-                   "A", {50, GAME_PROP.RESOURCE_PATH + "/fonts/PrintAble4U.ttf",
-                         {255, 255, 255}},
-                   box,
-                   [=](Touchable *button, ComponentPosition clickPosition,
-                       SDL_Event event)mutable {
-                       if (*answering) return;
-                       *answering = true;
-                       auto result = answer[0] ? gameC : gameX;
-                       *score += answer[0] ? 100 : 0;
-                       result->show(true);
-                       timer->setTimeout([=]() mutable {
-                           result->show(false);
-                           showNewQuestion();
-                           *answering = false;
-                       }, 1000);
-                       boxEnd->getTextView()->changeText("Your score = " + std::to_string(*score));
-                   },
-                   10, {150, 150}, {150, 450, POSITION_ABSOLUTE});
+     A = new Button(SDLRendererController,
+                                                    "A", {50, GAME_PROP.RESOURCE_PATH + "/fonts/PrintAble4U.ttf",
+                                                              {255, 255, 255}},
+                                                    box,
+                                                    [=](Touchable *button, ComponentPosition clickPosition,
+                                                        SDL_Event event)mutable {
+                                                        if (*answering) return;
+                                                        *answering = true;
+                                                        auto result = answer[0] ? gameC : gameX;
+                                                        *score += answer[0] ? 100 : 0;
+                                                        result->show(true);
+                                                        timer->setTimeout([=]() mutable {
+                                                            result->show(false);
+                                                            showNewQuestion();
+                                                            *answering = false;
+                                                        }, 1000);
+                                                        boxEnd->getTextView()->changeText("Your score = " + std::to_string(*score));
+                                                    },
+                                                    10, {150, 150}, {150, 450, POSITION_ABSOLUTE});
     sceneContainer->append(A);
-    B = new Button(SDLRendererController,
-                   "B", {50, GAME_PROP.RESOURCE_PATH + "/fonts/PrintAble4U.ttf",
-                         {255, 255, 255}},
-                   box,
-                   [=](Touchable *button, ComponentPosition clickPosition,
-                       SDL_Event event)mutable {
-                       if (*answering) return;
-                       *answering = true;
-                       auto result = answer[1] ? gameC : gameX;
-                       *score += answer[1] ? 100 : 0;
-                       result->show(true);
-                       timer->setTimeout([=]() mutable {
-                                             result->show(false);
-                                             showNewQuestion();
-                                             *answering = false;
-                                         }
-                               , 1000);
-                       boxEnd->getTextView()->changeText("Your score = " + std::to_string(*score));
-                   },
-                   10, {150, 150}, {850, 450, POSITION_ABSOLUTE});
+     B = new Button(SDLRendererController,
+                      "B", {50, GAME_PROP.RESOURCE_PATH + "/fonts/PrintAble4U.ttf",
+                                  {255, 255, 255}},
+                      box,
+                      [=](Touchable *button, ComponentPosition clickPosition,
+                          SDL_Event event)mutable {
+                          if (*answering) return;
+                          *answering = true;
+                          auto result = answer[1] ? gameC : gameX;
+                          *score += answer[1] ? 100 : 0;
+                          result->show(true);
+                          timer->setTimeout([=]() mutable {
+                              result->show(false);
+                              showNewQuestion();
+                              *answering = false;
+                          }
+                          , 1000);
+                          boxEnd->getTextView()->changeText("Your score = " + std::to_string(*score));
+                      },
+                      10, {150, 150}, {850, 450, POSITION_ABSOLUTE});
     sceneContainer->append(B);
     C = new Button(SDLRendererController,
-                   "C", {50, GAME_PROP.RESOURCE_PATH + "/fonts/PrintAble4U.ttf",
-                         {255, 255, 255}},
-                   box,
-                   [=](Touchable *button, ComponentPosition clickPosition,
-                       SDL_Event event)mutable {
-                       if (*answering) return;
-                       *answering = true;
-                       auto result = answer[2] ? gameC : gameX;
-                       *score += answer[2] ? 100 : 0;
-                       result->show(true);
-                       timer->setTimeout([=]() mutable {
-                           result->show(false);
-                           showNewQuestion();
-                           *answering = false;
-                       }, 1000);
-                       boxEnd->getTextView()->changeText("Your score = " + std::to_string(*score));
-                   },
+                      "C", {50, GAME_PROP.RESOURCE_PATH + "/fonts/PrintAble4U.ttf",
+                                  {255, 255, 255}},
+                      box,
+                      [=](Touchable *button, ComponentPosition clickPosition,
+                          SDL_Event event)mutable {
+                          if (*answering) return;
+                          *answering = true;
+                          auto result = answer[2] ? gameC : gameX;
+                          *score += answer[2] ? 100 : 0;
+                          result->show(true);
+                          timer->setTimeout([=]() mutable {
+                              result->show(false);
+                              showNewQuestion();
+                              *answering = false;
+                          }, 1000);
+                          boxEnd->getTextView()->changeText("Your score = " + std::to_string(*score));
+                      },
 
-                   10, {150, 150}, {150, 650, POSITION_ABSOLUTE});
+                      10, {150, 150}, {150, 650, POSITION_ABSOLUTE});
     sceneContainer->append(C);
     D = new Button(SDLRendererController,
-                   "D", {50, GAME_PROP.RESOURCE_PATH + "/fonts/PrintAble4U.ttf",
-                         {255, 255, 255}},
-                   box,
-                   [=](Touchable *button, ComponentPosition clickPosition,
-                       SDL_Event event)mutable {
-                       if (*answering) return;
-                       *answering = true;
-                       auto result = answer[3] ? gameC : gameX;
-                       *score += answer[3] ? 100 : 0;
-                       result->show(true);
-                       timer->setTimeout([=]() mutable {
-                           result->show(false);
-                           showNewQuestion();
-                           *answering = false;
-                       }, 1000);
-                       boxEnd->getTextView()->changeText("Your score = " + std::to_string(*score));
-                   },
-                   10, {150, 150}, {850, 650, POSITION_ABSOLUTE});
+                      "D", {50, GAME_PROP.RESOURCE_PATH + "/fonts/PrintAble4U.ttf",
+                                  {255, 255, 255}},
+                      box,
+                      [=](Touchable *button, ComponentPosition clickPosition,
+                          SDL_Event event)mutable {
+                          if (*answering) return;
+                          *answering = true;
+                          auto result = answer[3] ? gameC : gameX;
+                          *score += answer[3] ? 100 : 0;
+                          result->show(true);
+                          timer->setTimeout([=]() mutable {
+                              result->show(false);
+                              showNewQuestion();
+                              *answering = false;
+                          }, 1000);
+                          boxEnd->getTextView()->changeText("Your score = " + std::to_string(*score));
+                      },
+                      10, {150, 150}, {850, 650, POSITION_ABSOLUTE});
     sceneContainer->append(D);
 
 }

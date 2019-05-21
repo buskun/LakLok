@@ -53,11 +53,11 @@ TextView::TextView(RendererController *rendererController,
 	this->textProp = textProp;
 	this->font = TTF_OpenFont(this->textProp.fontName.c_str(), this->textProp.fontSize);
 
-	TTF_SizeText(this->font, this->text.c_str(),
+	TTF_SizeUTF8(this->font, this->text.c_str(),
 	             &this->size.width, &this->size.height);
 
 	this->texture = SDL_CreateTextureFromSurface(this->rendererController->getSDLRenderer(),
-	                                             TTF_RenderText_Solid(this->font, this->text.c_str(),
+	                                             TTF_RenderUTF8_Solid(this->font, this->text.c_str(),
 	                                                                  this->textProp.fontColor));
 }
 
