@@ -27,17 +27,18 @@ void mainGame2(GameScenes *gameScenes) {
     SDL_Texture *landwSeed = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame2/landwSeed.png");
     SDL_Texture *landwWaterwSeed = SDL::loadTexture(SDLRenderer,
                                                     GAME_PROP.RESOURCE_PATH + "/img/maingame2/landwWaterwSeed.png");
-
+    SDL_Texture *goB2 = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame2/Gob2.png");
+    int *money = new int{0};
     SDL_QueryTexture(bgTexture, nullptr, nullptr, &bW, &bH);
     sceneContainer->setPosition({0, 0});
     auto landseed = new ImageView(SDLRendererController, landwSeed, 2, {200, 200}, {100, 400, POSITION_RELATIVE});
     auto landwaterseed = new ImageView(SDLRendererController, landwWaterwSeed, 2, {200, 200},
                                        {100, 400, POSITION_RELATIVE});
     auto waterIcon = new ImageView(SDLRendererController, water, 2, {200, 200}, {100, 400, POSITION_RELATIVE});
-    auto landwater1 = new ImageView(SDLRendererController, landWater, 2, {400, 400}, {100, 400, POSITION_RELATIVE});
-    auto landwater2 = new ImageView(SDLRendererController, landWater, 2, {400, 400}, {400, 400, POSITION_RELATIVE});
-    auto landwater3 = new ImageView(SDLRendererController, landWater, 2, {400, 400}, {800, 400, POSITION_RELATIVE});
-    auto landwater4 = new ImageView(SDLRendererController, landWater, 2, {400, 400}, {1100, 400, POSITION_RELATIVE});
+    auto landwater1 = new ImageView(SDLRendererController, landWater, 2, {300, 300}, {100, 400, POSITION_RELATIVE});
+    auto landwater2 = new ImageView(SDLRendererController, landWater, 2, {300, 300}, {400, 400, POSITION_RELATIVE});
+    auto landwater3 = new ImageView(SDLRendererController, landWater, 2, {300, 300}, {800, 400, POSITION_RELATIVE});
+    auto landwater4 = new ImageView(SDLRendererController, landWater, 2, {300, 300}, {1100, 400, POSITION_RELATIVE});
     auto background = new ImageView(SDLRendererController, bgTexture, 1, {1600, 900}, {0, 0, POSITION_RELATIVE});
     sceneContainer->append(background);
     auto land1 = new Button(SDLRendererController,
@@ -50,7 +51,7 @@ void mainGame2(GameScenes *gameScenes) {
                                     *selectionState = 0;
                                 }
                             },
-                            1, {400, 400}, {100, 400, POSITION_ABSOLUTE});
+                            1, {300, 300}, {100, 400, POSITION_ABSOLUTE});
     auto land2 = new Button(SDLRendererController,
                             "", {18, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf", {255, 255, 255}},
                             land,
@@ -61,7 +62,7 @@ void mainGame2(GameScenes *gameScenes) {
                                     *selectionState = 0;
                                 }
                             },
-                            1, {400, 400}, {400, 400, POSITION_ABSOLUTE});
+                            1, {300, 300}, {400, 400, POSITION_ABSOLUTE});
     auto land3 = new Button(SDLRendererController,
                             "", {18, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf", {255, 255, 255}},
                             land,
@@ -72,7 +73,7 @@ void mainGame2(GameScenes *gameScenes) {
                                     *selectionState = 0;
                                 }
                             },
-                            1, {400, 400}, {800, 400, POSITION_ABSOLUTE});
+                            1, {300, 300}, {800, 400, POSITION_ABSOLUTE});
     auto land4 = new Button(SDLRendererController,
                             "", {18, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf", {255, 255, 255}},
                             land,
@@ -83,13 +84,13 @@ void mainGame2(GameScenes *gameScenes) {
                                     *selectionState = 0;
                                 }
                             },
-                            1, {400, 400}, {1100, 400, POSITION_ABSOLUTE});
+                            1, {300, 300}, {1100, 400, POSITION_ABSOLUTE});
     auto btnshop = new TouchableImage(SDLRendererController,
                                       shopN,
                                       [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
                                           gameScenes->setCurrentSceneName("mainGame2Shop");
                                       },
-                                      3, {360, 150}, {0, 0, POSITION_RELATIVE});
+                                      3, {100, 100}, {0, 0, POSITION_RELATIVE});
     auto btnwater = new TouchableImage(SDLRendererController,
                                        water,
                                        [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
@@ -97,9 +98,9 @@ void mainGame2(GameScenes *gameScenes) {
                                                                 50, 50);
                                            SDL::useCustomCursor();
                                            *selectionState = 1;
-
+                                           *money +=100;
                                        },
-                                       3, {360, 150}, {0, 0, POSITION_RELATIVE});
+                                       3, {150, 150}, {0, 0, POSITION_RELATIVE});
     auto btnseed = new TouchableImage(SDLRendererController,
                                       seed,
                                       [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
@@ -108,7 +109,7 @@ void mainGame2(GameScenes *gameScenes) {
                                           SDL::useCustomCursor();
                                           *selectionState = 2;
                                       },
-                                      3, {360, 150}, {0, 0, POSITION_RELATIVE});
+                                      3, {150, 150}, {0, 0, POSITION_RELATIVE});
     auto btncompost = new TouchableImage(SDLRendererController,
                                          compost,
                                          [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
@@ -116,7 +117,20 @@ void mainGame2(GameScenes *gameScenes) {
                                              btnseed->show(false);
                                              *selectionState = 3;
                                          },
-                                         3, {360, 150}, {0, 0, POSITION_RELATIVE});
+                                         3, {150, 150}, {0, 0, POSITION_RELATIVE});
+    auto boxmoney = sceneContainer->append(new Button(SDLRendererController,
+                                                    "Your score = ", {50, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf",
+                                                                      {0, 0, 0}},
+                                                                      goB2,
+                                                    [=](Touchable *button, ComponentPosition clickPosition,
+                                                        SDL_Event event) mutable {
+                                                    },
+                                                    50, {625, 100}, {1000, 50, POSITION_ABSOLUTE}));
+    boxmoney->getTextView()->changeText("Your money = " + std::to_string(*money));
+    ComponentSize textSize = boxmoney->getTextView()->getSize();
+    boxmoney->getTextView()->setPosition({(boxmoney->getSize().width - textSize.width) / 2,
+                                        (boxmoney->getSize().height - textSize.height) / 2});
+
     auto icon1Container = new Container(SDLRendererController, 2, {360, 150}, {25, 700, POSITION_ABSOLUTE});
     icon1Container->append(new ImageView(SDLRendererController, goB, 2, {360, 150}, {0, 0, POSITION_RELATIVE}));
     icon1Container->append(btnshop);
