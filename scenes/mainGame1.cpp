@@ -7,16 +7,13 @@ void mainGame1(GameScenes *gameScenes) {
 	Container *sceneContainer = scene->getSceneContainer();
 	RendererController *SDLRendererController = gameScenes->getRendererController();
 	SDL_Renderer *SDLRenderer = SDLRendererController->getSDLRenderer();
-
 	const GameProp GAME_PROP = gameScenes->getGameProp();
 	auto *timer = new Timer();
-
 	SDL_Texture *box = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame1/box.png");
 
 	sceneContainer->append(new ImageView(SDLRendererController,
 	                                     SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame1/bgmaingame1.jpg"),
 	                                     -1, {1600, 900}, {0, 0, POSITION_RELATIVE}));
-
 	ImageView *game1Q[12];
 	for (int i = 1; i <= 12; i++) {
 		if (1 <= i && i <= 3)
@@ -69,10 +66,8 @@ void mainGame1(GameScenes *gameScenes) {
 		game1Q[randomQ]->show(true);
 		answer[randomQ / 3] = true;
 	};
-
 	int *score = new int{0};
 	bool *answering = new bool{false};
-
 	auto canClickFunction = [=](int index) mutable {
 		return [=](Touchable *button, ComponentPosition clickPosition,
 		           SDL_Event event) mutable {
@@ -144,7 +139,7 @@ void mainGame1(GameScenes *gameScenes) {
 
 	scene->onEnterScene([=](Scene *scene) mutable {
 		init();
-		int imgState = 10;
+		int imgState = 60;
 		textTime->changeText(std::to_string(imgState));
 		timer->setInterval([=]() mutable {
 			textTime->changeText(std::to_string(--imgState));
@@ -153,7 +148,6 @@ void mainGame1(GameScenes *gameScenes) {
 				ComponentSize textSize = boxEnd->getTextView()->getSize();
 				boxEnd->getTextView()->setPosition({(boxEnd->getSize().width - textSize.width) / 2,
 				                                    (boxEnd->getSize().height - textSize.height) / 2});
-
 				for (auto &question : game1Q) question->show(false);
 				gameC->show(false);
 				gameX->show(false);
