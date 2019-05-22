@@ -34,7 +34,7 @@ public:
 
 	Component *getParent();
 
-	virtual Array<Component *> *getChildren() {};
+	virtual Array<Component *> *getChildren() { return nullptr; };
 
 	int getRenderIndex();
 
