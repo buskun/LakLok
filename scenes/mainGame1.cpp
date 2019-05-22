@@ -10,7 +10,6 @@ void mainGame1(GameScenes *gameScenes) {
 	const GameProp GAME_PROP = gameScenes->getGameProp();
 	auto *timer = new Timer();
 	SDL_Texture *box = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame1/box.png");
-
 	sceneContainer->append(new ImageView(SDLRendererController,
 	                                     SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame1/bgmaingame1.jpg"),
 	                                     -1, {1600, 900}, {0, 0, POSITION_RELATIVE}));

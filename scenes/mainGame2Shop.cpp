@@ -20,7 +20,7 @@ void mainGame2Shop(GameScenes *gameScenes) {
     auto btn = sceneContainer->append(new Button(SDLRendererController,
                                                  "back", {50, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf",
                                                            {0, 0, 0}},
-                                                 goB,
+                                                  goB,
                                                  [=](Touchable *button, ComponentPosition clickPosition,
                                                      SDL_Event event)mutable {
                                                      gameScenes->setCurrentSceneName("mainGame2");
