@@ -2,7 +2,7 @@
 #include <cstdlib>
 #include <time.h>
 
-void mainGame1(GameScenes *gameScenes) {
+void mainGame1(GameScenes *gameScenes, Game *game) {
 	Scene *scene = gameScenes->newScene("mainGame1");
 	Container *sceneContainer = scene->getSceneContainer();
 	RendererController *SDLRendererController = gameScenes->getRendererController();
@@ -39,10 +39,10 @@ void mainGame1(GameScenes *gameScenes) {
 	}
 	auto gameC = sceneContainer->append(new ImageView(SDLRendererController,
 	                                                  SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame1/true.png"),
-	                                                  10, {300, 300}, {300, 300, POSITION_RELATIVE}))->show(false);
+	                                                  10, {400, 400}, {300, 250, POSITION_RELATIVE}))->show(false);
 	auto gameX = sceneContainer->append(new ImageView(SDLRendererController,
 	                                                  SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame1/false.png"),
-	                                                  10, {300, 300}, {300, 300, POSITION_RELATIVE}))->show(false);
+	                                                  10, {400, 400}, {900, 200, POSITION_RELATIVE}))->show(false);
 	auto boxOfTime = sceneContainer->append(new ImageView(SDLRendererController, box, 2, {300, 100}, {645, 25, POSITION_RELATIVE}));
 	auto textTime = sceneContainer->append(new TextView(SDLRendererController,
 	                                                    "-",
@@ -108,7 +108,6 @@ void mainGame1(GameScenes *gameScenes) {
 	                                                },
 	                                                50, {500, 300}, {600, 300, POSITION_ABSOLUTE}));
 	boxEnd->show(false);
-
 	auto backToMenu = sceneContainer->append(new Button(SDLRendererController,
 	                                                    "MENU",
 	                                                    {50, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf",
@@ -135,7 +134,6 @@ void mainGame1(GameScenes *gameScenes) {
 		backToMenu->show(false);
 		showNewQuestion();
 	};
-
 	scene->onEnterScene([=](Scene *scene) mutable {
 		init();
 		int imgState = 60;
@@ -162,8 +160,8 @@ void mainGame1(GameScenes *gameScenes) {
 			}
 		}, 1000);
 	});
-
 	scene->onExitScene([=](Scene *scene) mutable {
 		timer->stop();
+		game->setScore(game->getScore() + *score);
 	});
 }

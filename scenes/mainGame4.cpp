@@ -3,7 +3,7 @@
 #include <cstdlib>
 #include <time.h>
 
-void mainGame4(GameScenes *gameScenes) {
+void mainGame4(GameScenes *gameScenes, Game *game) {
 	Scene *scene = gameScenes->newScene("mainGame4");
 	gameScenes->addScene(scene);
 
@@ -351,5 +351,8 @@ void mainGame4(GameScenes *gameScenes) {
         boxEnd->getTextView()->changeText("Your score = " + std::to_string(*score));
 		showNewQuestion();
 	});
+    scene->onExitScene([=](Scene *scene) mutable {
+        game->setScore(game->getScore() + *score);
+    });
 
 }

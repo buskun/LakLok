@@ -13,16 +13,17 @@
 #include "../includes/component/view.h"
 #include "../includes/component/touchable.h"
 #include "../includes/component/container.h"
+#include "../includes/Game.h"
 
-void mainMenu(GameScenes *gameScenes);
-void mainGame1(GameScenes *gameScenes);
-void mainGame2(GameScenes *gameScenes);
-void mainGame3(GameScenes *gameScenes);
-void mainGame4(GameScenes *gameScenes);
-void introGame1(GameScenes *gameScenes);
-void introGame3(GameScenes *gameScenes);
-void introGame4(GameScenes *gameScenes);
-void introGame2(GameScenes *gameScenes);
-void mainGame2Shop(GameScenes *gameScenes);
+void mainMenu(GameScenes *gameScenes, Game *game);
+void mainGame1(GameScenes *gameScenes, Game *game);
+void mainGame2(GameScenes *gameScenes, Game *game);
+void mainGame3(GameScenes *gameScenes, Game *game);
+void mainGame4(GameScenes *gameScenes, Game *game);
+void introGame1(GameScenes *gameScenes, Game *game);
+void introGame3(GameScenes *gameScenes, Game *game);
+void introGame4(GameScenes *gameScenes, Game *game);
+void introGame2(GameScenes *gameScenes, Game *game);
+void mainGame2Shop(GameScenes *gameScenes, Game *game);
 
 #endif //LAKLOK_SCENE_LIST_H

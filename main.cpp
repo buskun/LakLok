@@ -14,6 +14,7 @@
 #include "includes/component/container.h"
 #include "includes/util/timercpp.h"
 #include "includes/scene.h"
+#include "includes/Game.h"
 
 #include "scenes/scene_list.h"
 
@@ -58,17 +59,18 @@ int WinMain(int argc, char *argv[]) {
 
     gameScene = new GameScenes(SDLRendererController, eventManager, (GameProp &&) gameProp);
 
+    Game *game = new Game();
     // Scenes
-    mainMenu(gameScene);
-    mainGame1(gameScene);
-    mainGame2(gameScene);
-    mainGame3(gameScene);
-    mainGame4(gameScene);
-    introGame1(gameScene);
-    introGame2(gameScene);
-    introGame3(gameScene);
-    introGame4(gameScene);
-    mainGame2Shop(gameScene);
+    mainMenu(gameScene, game);
+    mainGame1(gameScene, game);
+    mainGame2(gameScene, game);
+    mainGame3(gameScene, game);
+    mainGame4(gameScene, game);
+    introGame1(gameScene, game);
+    introGame2(gameScene, game);
+    introGame3(gameScene, game);
+    introGame4(gameScene, game);
+    mainGame2Shop(gameScene, game);
 
     eventManager->on(SDL_MOUSEBUTTONDOWN, [&](SDL_Event event) {
         ComponentPosition clickPosition = {0, 0, POSITION_ABSOLUTE};
@@ -80,8 +82,8 @@ int WinMain(int argc, char *argv[]) {
         ComponentPosition mousePosition = {0, 0, POSITION_ABSOLUTE};
         SDL_GetMouseState(&mousePosition.x, &mousePosition.y);
         if (gameScene->getCurrentScene()) {
-	        gameScene->getCurrentScene()->getSceneContainer()->unHover(mousePosition, event);
-	        gameScene->getCurrentScene()->getSceneContainer()->hover(mousePosition, event);
+            gameScene->getCurrentScene()->getSceneContainer()->unHover(mousePosition, event);
+            gameScene->getCurrentScene()->getSceneContainer()->hover(mousePosition, event);
         }
     });
 

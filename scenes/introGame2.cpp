@@ -5,7 +5,7 @@
 #include <cstdlib>
 #include <time.h>
 
-void introGame2(GameScenes *gameScenes) {
+void introGame2(GameScenes *gameScenes, Game *game) {
     Scene *scene = gameScenes->newScene("introGame2");
     gameScenes->addScene(scene);
     Container *sceneContainer = scene->getSceneContainer();

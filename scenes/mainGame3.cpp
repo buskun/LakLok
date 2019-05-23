@@ -1,6 +1,6 @@
 #include "scene_list.h"
 
-void mainGame3(GameScenes *gameScenes) {
+void mainGame3(GameScenes *gameScenes, Game *game) {
     Scene *scene = gameScenes->newScene("mainGame3");
     gameScenes->addScene(scene);
     Container *sceneContainer = scene->getSceneContainer();
@@ -207,5 +207,7 @@ void mainGame3(GameScenes *gameScenes) {
     });
     scene->onExitScene([=](Scene *scene) mutable {
         timer->stop();
+        game->setScore(game->getScore() + *score*100);
     });
+
 }

@@ -2,7 +2,7 @@
 #include <cstdlib>
 #include <time.h>
 
-void mainGame2(GameScenes *gameScenes) {
+void mainGame2(GameScenes *gameScenes, Game *game) {
     Scene *scene = gameScenes->newScene("mainGame2");
     gameScenes->addScene(scene);
     Container *sceneContainer = scene->getSceneContainer();
@@ -12,7 +12,9 @@ void mainGame2(GameScenes *gameScenes) {
     const GameProp GAME_PROP = gameScenes->getGameProp();
     GameProp gameProp = gameScenes->getGameProp();
     int bW, bH;
+    int *score = new int{0};
     int *numberofseed = new int{1};
+    *numberofseed = game->getSeed();
     int *wateron = new int{0};
     int *seedon = new int{0};
     int *composton = new int{0};
@@ -58,17 +60,28 @@ void mainGame2(GameScenes *gameScenes) {
     SDL_Texture *goB2 = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame2/Gob2.png");
     SDL_Texture *axe = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame2/ax.png");
     SDL_Texture *item = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame2/cabinet.png");
-    SDL_Texture *item2  = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame2/chair.png");
+    SDL_Texture *item2 = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame2/chair.png");
     SDL_Texture *item3 = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame2/itempaper.png");
     SDL_Texture *item4 = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame2/table.png");
-    auto Gotitem1 = new ImageView(SDLRendererController, item, 1, {400, 400}, {500, 800, POSITION_RELATIVE});
-    auto Gotitem2 = new ImageView(SDLRendererController, item2, 1, {400, 400}, {500, 800, POSITION_RELATIVE});
-    auto Gotitem3 = new ImageView(SDLRendererController, item3, 1, {400, 400}, {500, 800, POSITION_RELATIVE});
-    auto Gotitem4 = new ImageView(SDLRendererController, item4, 1, {400, 400}, {500, 800, POSITION_RELATIVE});
-    sceneContainer->append(Gotitem1->show(true));
-    sceneContainer->append(Gotitem2->show(true));
-    sceneContainer->append(Gotitem3->show(true));
-    sceneContainer->append(Gotitem4->show(true));
+    SDL_Texture *box = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame1/box.png");
+    auto Gotitem1 = new ImageView(SDLRendererController, item, 1, {400, 400}, {625, 100, POSITION_RELATIVE});
+    auto Gotitem2 = new ImageView(SDLRendererController, item2, 1, {400, 400}, {625, 100, POSITION_RELATIVE});
+    auto Gotitem3 = new ImageView(SDLRendererController, item3, 1, {400, 400}, {625, 85, POSITION_RELATIVE});
+    auto Gotitem4 = new ImageView(SDLRendererController, item4, 1, {400, 400}, {625, 100, POSITION_RELATIVE});
+    sceneContainer->append(Gotitem1->show(false));
+    sceneContainer->append(Gotitem2->show(false));
+    sceneContainer->append(Gotitem3->show(false));
+    sceneContainer->append(Gotitem4->show(false));
+    auto boxitem = sceneContainer->append(new Button(SDLRendererController,
+                                                     "Your Got item ",
+                                                     {50, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf",
+                                                      {255, 255, 255}},
+                                                     box,
+                                                     [=](Touchable *button, ComponentPosition clickPosition,
+                                                         SDL_Event event) mutable {
+                                                     },
+                                                     50, {350, 100}, {650, 25, POSITION_ABSOLUTE}));
+    sceneContainer->append(boxitem->show(false));
     int *money = new int{0};
     auto *timer = new Timer();
     SDL_QueryTexture(bgTexture, nullptr, nullptr, &bW, &bH);
@@ -79,20 +92,24 @@ void mainGame2(GameScenes *gameScenes) {
                                                          {0, 0, 0}},
                                                         50, {750, 775, POSITION_ABSOLUTE}));
     sceneContainer->append(seedshow);
-    seedshow->changeText("x"+std::to_string(*numberofseed));
+    seedshow->changeText("x" + std::to_string(*numberofseed));
     auto boxmoney = sceneContainer->append(new Button(SDLRendererController,
-                                                      "Your score = ",
+                                                      "-",
                                                       {50, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf",
                                                        {0, 0, 0}},
                                                       goB2,
                                                       [=](Touchable *button, ComponentPosition clickPosition,
                                                           SDL_Event event) mutable {
                                                       },
-                                                      50, {625, 100}, {1000, 50, POSITION_ABSOLUTE}));
+                                                      50, {750, 100}, {950, 50, POSITION_ABSOLUTE}));
     boxmoney->getTextView()->changeText("Your money = " + std::to_string(*money));
     ComponentSize textSize = boxmoney->getTextView()->getSize();
-    boxmoney->getTextView()->setPosition({(boxmoney->getSize().width - textSize.width) / 2,
+    boxmoney->getTextView()->setPosition({(boxmoney->getSize().width - textSize.width) / 2 - 50,
                                           (boxmoney->getSize().height - textSize.height) / 2});
+    auto **land1 = new TouchableImage *;
+    auto **land2 = new TouchableImage *;
+    auto **land3 = new TouchableImage *;
+    auto **land4 = new TouchableImage *;
     auto tree1 = new TouchableImage(SDLRendererController,
                                     lvfive,
                                     [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
@@ -113,35 +130,45 @@ void mainGame2(GameScenes *gameScenes) {
                                             *Axeon = 0;
                                             boxmoney->getTextView()->changeText(
                                                     "Your money = " + std::to_string(*money));
+                                            game->setMoney(*money);
                                             srand(time(nullptr));
+                                            *score += 500;
+                                            game->setScore(*score);
+                                            (*numberofitem)++;
+                                            game->setItem(*numberofitem);
                                             int randomQ;
-                                            randomQ = rand() % 3;
-                                            switch (randomQ)
-                                            {
-
-                                                case 1 :
+                                            randomQ = rand() % 4;
+                                            switch (randomQ) {
+                                                case 0 :
+                                                    Gotitem1->show(true);
+                                                    boxitem->show(true);
                                                     timer->setTimeout([=]() {
-                                                        Gotitem1->show(true);
-                                                    }, 3000);Gotitem1->show(false);
-                                                    *numberofitem +=1 ;
+                                                        Gotitem1->show(false);
+                                                    }, 3000);
                                                     break;
-                                                case 2 :timer->setTimeout([=]() {
-                                                        Gotitem2->show(true);
-                                                    }, 3000);Gotitem2->show(false);
-                                                    *numberofitem +=1 ;
+                                                case 1 :
+                                                    Gotitem2->show(true);
+                                                    boxitem->show(true);
+                                                    timer->setTimeout([=]() {
+                                                        Gotitem2->show(false);
+                                                    }, 3000);
                                                     break;
-                                                case 3:timer->setTimeout([=]() {
-                                                        Gotitem3->show(true);
-                                                    }, 3000);Gotitem3->show(false);
-                                                    *numberofitem +=1 ;
+                                                case 2:
+                                                    Gotitem3->show(true);
+                                                    boxitem->show(true);
+                                                    timer->setTimeout([=]() {
+                                                        Gotitem3->show(false);
+                                                    }, 3000);
                                                     break;
-                                                case 4: timer->setTimeout([=]() {
-                                                        Gotitem4->show(true);
-                                                    }, 3000);Gotitem4->show(false);
-                                                    *numberofitem +=1 ;
+                                                case 3:
+                                                    Gotitem4->show(true);
+                                                    boxitem->show(true);
+                                                    timer->setTimeout([=]() {
+                                                        Gotitem4->show(false);
+                                                    }, 3000);
                                                     break;
                                             }
-
+                                            (*land1)->show(true);
                                         }
                                     },
                                     1, {400, 600}, {150, 100, POSITION_ABSOLUTE});
@@ -163,36 +190,51 @@ void mainGame2(GameScenes *gameScenes) {
                                             *money += 100;
                                             button->show(false);
                                             *Axeon = 0;
+                                            *score += 500;
+                                            game->setScore(*score);
                                             boxmoney->getTextView()->changeText(
                                                     "Your money = " + std::to_string(*money));
+                                            game->setMoney(*money);
                                             srand(time(nullptr));
+                                            (*numberofitem)++;
+                                            game->setItem(*numberofitem);
                                             int randomQ;
-                                            randomQ = rand() % 3;
-                                            switch (randomQ)
-                                            {
-
-                                                case 1 :
+                                            randomQ = rand() % 4;
+                                            switch (randomQ) {
+                                                case 0 :
+                                                    boxitem->show(true);
+                                                    Gotitem1->show(true);
                                                     timer->setTimeout([=]() {
-                                                        Gotitem1->show(true);
-                                                    }, 3000);Gotitem1->show(false);
-                                                    *numberofitem +=1 ;
+                                                        Gotitem1->show(false);
+                                                        boxitem->show(false);
+                                                    }, 3000);
                                                     break;
-                                                case 2 :timer->setTimeout([=]() {
-                                                        Gotitem2->show(true);
-                                                    }, 3000);Gotitem2->show(false);
-                                                    *numberofitem +=1 ;
+                                                case 1 :
+                                                    boxitem->show(true);
+                                                    Gotitem2->show(true);
+                                                    timer->setTimeout([=]() {
+                                                        Gotitem2->show(false);
+                                                        boxitem->show(false);
+                                                    }, 3000);
                                                     break;
-                                                case 3:timer->setTimeout([=]() {
-                                                        Gotitem3->show(true);
-                                                    }, 3000);Gotitem3->show(false);
-                                                    *numberofitem +=1 ;
+                                                case 2:
+                                                    boxitem->show(true);
+                                                    Gotitem3->show(true);
+                                                    timer->setTimeout([=]() {
+                                                        Gotitem3->show(false);
+                                                        boxitem->show(false);
+                                                    }, 3000);
                                                     break;
-                                                case 4: timer->setTimeout([=]() {
-                                                        Gotitem4->show(true);
-                                                    }, 3000);Gotitem4->show(false);
-                                                    *numberofitem +=1 ;
+                                                case 3:
+                                                    boxitem->show(true);
+                                                    Gotitem4->show(true);
+                                                    timer->setTimeout([=]() {
+                                                        Gotitem4->show(false);
+                                                        boxitem->show(false);
+                                                    }, 3000);
                                                     break;
                                             }
+                                            (*land2)->show(true);
                                         }
                                     },
                                     1, {400, 600}, {475, 100, POSITION_ABSOLUTE});
@@ -214,36 +256,52 @@ void mainGame2(GameScenes *gameScenes) {
                                             *money += 100;
                                             button->show(false);
                                             *Axeon = 0;
+                                            *score += 500;
+                                            game->setScore(*score);
                                             boxmoney->getTextView()->changeText(
                                                     "Your money = " + std::to_string(*money));
+                                            game->setMoney(*money);
                                             srand(time(nullptr));
+                                            (*numberofitem)++;
+                                            game->setItem(*numberofitem);
                                             int randomQ;
-                                            randomQ = rand() % 3;
-                                            switch (randomQ)
-                                            {
+                                            randomQ = rand() % 4;
+                                            switch (randomQ) {
 
-                                                case 1 :
+                                                case 0 :
+                                                    boxitem->show(true);
+                                                    Gotitem1->show(true);
                                                     timer->setTimeout([=]() {
-                                                        Gotitem1->show(true);
-                                                    }, 3000);Gotitem1->show(false);
-                                                    *numberofitem +=1 ;
+                                                        Gotitem1->show(false);
+                                                        boxitem->show(false);
+                                                    }, 3000);
                                                     break;
-                                                case 2 :timer->setTimeout([=]() {
-                                                        Gotitem2->show(true);
-                                                    }, 3000);Gotitem2->show(false);
-                                                    *numberofitem +=1 ;
+                                                case 1 :
+                                                    boxitem->show(true);
+                                                    Gotitem2->show(true);
+                                                    timer->setTimeout([=]() {
+                                                        Gotitem2->show(false);
+                                                        boxitem->show(false);
+                                                    }, 3000);
                                                     break;
-                                                case 3:timer->setTimeout([=]() {
-                                                        Gotitem3->show(true);
-                                                    }, 3000);Gotitem3->show(false);
-                                                    *numberofitem +=1 ;
+                                                case 2:
+                                                    boxitem->show(true);
+                                                    Gotitem3->show(true);
+                                                    timer->setTimeout([=]() {
+                                                        Gotitem3->show(false);
+                                                        boxitem->show(false);
+                                                    }, 3000);
                                                     break;
-                                                case 4: timer->setTimeout([=]() {
-                                                        Gotitem4->show(true);
-                                                    }, 3000);Gotitem4->show(false);
-                                                    *numberofitem +=1 ;
+                                                case 3:
+                                                    boxitem->show(true);
+                                                    Gotitem4->show(true);
+                                                    timer->setTimeout([=]() {
+                                                        Gotitem4->show(false);
+                                                        boxitem->show(false);
+                                                    }, 3000);
                                                     break;
                                             }
+                                            (*land3)->show(true);
                                         }
                                     },
                                     1, {400, 600}, {800, 100, POSITION_ABSOLUTE});
@@ -267,34 +325,49 @@ void mainGame2(GameScenes *gameScenes) {
                                             *Axeon = 0;
                                             boxmoney->getTextView()->changeText(
                                                     "Your money = " + std::to_string(*money));
+                                            game->setMoney(*money);
                                             srand(time(nullptr));
+                                            (*numberofitem)++;
+                                            game->setItem(*numberofitem);
                                             int randomQ;
-                                            randomQ = rand() % 3;
-                                            switch (randomQ)
-                                            {
-
-                                                case 1 :
+                                            *score += 500;
+                                            game->setScore(*score);
+                                            randomQ = rand() % 4;
+                                            switch (randomQ) {
+                                                case 0 :
+                                                    boxitem->show(true);
+                                                    Gotitem1->show(true);
                                                     timer->setTimeout([=]() {
-                                                        Gotitem1->show(true);
-                                                    }, 3000);Gotitem1->show(false);
-                                                    *numberofitem +=1 ;
+                                                        Gotitem1->show(false);
+                                                        boxitem->show(false);
+                                                    }, 3000);
                                                     break;
-                                                case 2 :timer->setTimeout([=]() {
-                                                        Gotitem2->show(true);
-                                                    }, 3000);Gotitem2->show(false);
-                                                    *numberofitem +=1 ;
+                                                case 1 :
+                                                    boxitem->show(true);
+                                                    Gotitem2->show(true);
+                                                    timer->setTimeout([=]() {
+                                                        Gotitem2->show(false);
+                                                        boxitem->show(false);
+                                                    }, 3000);
                                                     break;
-                                                case 3:timer->setTimeout([=]() {
-                                                        Gotitem3->show(true);
-                                                    }, 3000);Gotitem3->show(false);
-                                                    *numberofitem +=1 ;
+                                                case 2:
+                                                    boxitem->show(true);
+                                                    Gotitem3->show(true);
+                                                    timer->setTimeout([=]() {
+                                                        Gotitem3->show(false);
+                                                        boxitem->show(false);
+                                                    }, 3000);
                                                     break;
-                                                case 4: timer->setTimeout([=]() {
-                                                        Gotitem4->show(true);
-                                                    }, 3000);Gotitem4->show(false);
-                                                    *numberofitem +=1 ;
+                                                case 3:
+                                                    boxitem->show(true);
+                                                    Gotitem4->show(true);
+                                                    timer->setTimeout([=]() {
+                                                        Gotitem4->show(false);
+                                                        boxitem->show(false);
+                                                    }, 3000);
                                                     break;
                                             }
+                                            (*land4)->show(true);
                                         }
                                     },
                                     1, {400, 600}, {1100, 100, POSITION_ABSOLUTE});
@@ -322,7 +395,6 @@ void mainGame2(GameScenes *gameScenes) {
                                                     tree2->show(true);
                                                     button->show(false);
                                                 }
-
                                             },
                                             1, {200, 400}, {525, 300, POSITION_ABSOLUTE});
     auto landwater3lv4 = new TouchableImage(SDLRendererController,
@@ -858,7 +930,6 @@ void mainGame2(GameScenes *gameScenes) {
                                                 *watergetA = 1;
                                                 *wateron = 0;
                                                 landwaterseed1->show(true);
-                                                std::cout << "kuy";
                                                 button->show(false);
                                             }
                                         },
@@ -921,13 +992,14 @@ void mainGame2(GameScenes *gameScenes) {
                                                  *composton = 0;
 
                                              }
-                                             if (SDL::isCustomCursor && *seedon == 1&&*numberofseed >0 ) {
+                                             if (SDL::isCustomCursor && *seedon == 1 && *numberofseed > 0) {
                                                  SDL::useSystemCursor();
                                                  landwaterseed1->show(true);
                                                  button->show(false);
                                                  *seedon = 0;
                                                  (*numberofseed)--;
-                                                 seedshow->changeText("x"+std::to_string(*numberofseed));
+                                                 seedshow->changeText("x" + std::to_string(*numberofseed));
+                                                 game->setSeed(game->getSeed() + *numberofseed);
                                              }
                                          },
                                          1, {200, 200}, {200, 500, POSITION_ABSOLUTE});
@@ -939,13 +1011,14 @@ void mainGame2(GameScenes *gameScenes) {
                                                  *compostgetB = 1;
                                                  *composton = 0;
                                              }
-                                             if (SDL::isCustomCursor && *seedon == 1&&*numberofseed >0) {
+                                             if (SDL::isCustomCursor && *seedon == 1 && *numberofseed > 0) {
                                                  SDL::useSystemCursor();
                                                  landwaterseed2->show(true);
                                                  button->show(false);
                                                  *seedon = 0;
                                                  (*numberofseed)--;
-                                                 seedshow->changeText("x"+std::to_string(*numberofseed));
+                                                 seedshow->changeText("x" + std::to_string(*numberofseed));
+                                                 game->setSeed(game->getSeed() + *numberofseed);
                                              }
                                          },
                                          1, {200, 200}, {525, 500, POSITION_ABSOLUTE});
@@ -958,13 +1031,14 @@ void mainGame2(GameScenes *gameScenes) {
                                                  *composton = 0;
                                                  landwaterseed3->show(true);
                                              }
-                                             if (SDL::isCustomCursor && *seedon == 1&&*numberofseed >0) {
+                                             if (SDL::isCustomCursor && *seedon == 1 && *numberofseed > 0) {
                                                  SDL::useSystemCursor();
                                                  landwaterseed3->show(true);
                                                  button->show(false);
                                                  *seedon = 0;
                                                  (*numberofseed)--;
-                                                 seedshow->changeText("x"+std::to_string(*numberofseed));
+                                                 seedshow->changeText("x" + std::to_string(*numberofseed));
+                                                 game->setSeed(game->getSeed() + *numberofseed);
                                              }
                                          },
                                          1, {200, 200}, {850, 500, POSITION_ABSOLUTE});
@@ -976,123 +1050,128 @@ void mainGame2(GameScenes *gameScenes) {
                                                  *compostgetD = 1;
                                                  *composton = 0;
                                              }
-                                             if (SDL::isCustomCursor && *seedon == 1&&*numberofseed >0) {
+                                             if (SDL::isCustomCursor && *seedon == 1 && *numberofseed > 0) {
                                                  SDL::useSystemCursor();
                                                  landwaterseed4->show(true);
                                                  button->show(false);
                                                  *seedon = 0;
                                                  (*numberofseed)--;
-                                                 seedshow->changeText("x"+std::to_string(*numberofseed));
+                                                 seedshow->changeText("x" + std::to_string(*numberofseed));
+                                                 game->setSeed(game->getSeed() + *numberofseed);
                                              }
                                          },
                                          1, {200, 200}, {1175, 500, POSITION_ABSOLUTE});
     auto background = new ImageView(SDLRendererController, bgTexture, -1, {1600, 900}, {0, 0, POSITION_RELATIVE});
     sceneContainer->append(background);
-    auto land1 = new TouchableImage(SDLRendererController,
-                                    land,
-                                    [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
-                                        if (SDL::isCustomCursor && *wateron == 1) {
-                                            landwater1->show(true);
-                                            SDL::useSystemCursor();
-                                            *wateron = 0;
-                                            *watergetA = 1;
-                                            button->show(false);
-                                        }
-                                        if (SDL::isCustomCursor && *seedon == 1&&*numberofseed >0) {
-                                            landseed1->show(true);
-                                            SDL::useSystemCursor();
-                                            *seedon = 0;
-                                            *seedgetA = 1;
-                                            button->show(false);
-                                            (*numberofseed)--;
-                                            seedshow->changeText("x"+std::to_string(*numberofseed));
-                                        }
-                                        if (SDL::isCustomCursor && *composton == 1) {
-                                            SDL::useSystemCursor();
-                                            *compostgetA = 1;
-                                            *composton = 0;
-                                        }
+    *land1 = new TouchableImage(SDLRendererController,
+                                land,
+                                [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
+                                    if (SDL::isCustomCursor && *wateron == 1) {
+                                        landwater1->show(true);
+                                        SDL::useSystemCursor();
+                                        *wateron = 0;
+                                        *watergetA = 1;
+                                        button->show(false);
+                                    }
+                                    if (SDL::isCustomCursor && *seedon == 1 && *numberofseed > 0) {
+                                        landseed1->show(true);
+                                        SDL::useSystemCursor();
+                                        *seedon = 0;
+                                        *seedgetA = 1;
+                                        button->show(false);
+                                        (*numberofseed)--;
+                                        seedshow->changeText("x" + std::to_string(*numberofseed));
+                                        game->setSeed(*numberofseed);
+                                    }
+                                    if (SDL::isCustomCursor && *composton == 1) {
+                                        SDL::useSystemCursor();
+                                        *compostgetA = 1;
+                                        *composton = 0;
+                                    }
 
-                                    },
-                                    1, {200, 200}, {200, 500, POSITION_ABSOLUTE});
-    auto land2 = new TouchableImage(SDLRendererController,
-                                    land,
-                                    [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
-                                        if (SDL::isCustomCursor && *wateron == 1) {
-                                            landwater2->show(true);
-                                            SDL::useSystemCursor();
-                                            *wateron = 0;
-                                            *watergetB = 1;
-                                            button->show(false);
-                                        }
-                                        if (SDL::isCustomCursor && *seedon == 1&&*numberofseed >0) {
-                                            landseed2->show(true);
-                                            SDL::useSystemCursor();
-                                            *seedon = 0;
-                                            *seedgetB = 1;
-                                            button->show(false);
-                                            (*numberofseed)--;
-                                            seedshow->changeText("x"+std::to_string(*numberofseed));
-                                        }
-                                        if (SDL::isCustomCursor && *composton == 1) {
-                                            SDL::useSystemCursor();
-                                            *compostgetB = 1;
-                                            *composton = 0;
-                                        }
-                                    },
-                                    1, {200, 200}, {525, 500, POSITION_ABSOLUTE});
-    auto land3 = new TouchableImage(SDLRendererController,
-                                    land,
-                                    [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
-                                        if (SDL::isCustomCursor && *wateron == 1) {
-                                            landwater3->show(true);
-                                            SDL::useSystemCursor();
-                                            *wateron = 0;
-                                            *watergetC = 1;
-                                            button->show(false);
-                                        }
-                                        if (SDL::isCustomCursor && *seedon == 1&&*numberofseed >0) {
-                                            landseed3->show(true);
-                                            SDL::useSystemCursor();
-                                            *seedon = 0;
-                                            *seedgetC = 1;
-                                            button->show(false);
-                                            (*numberofseed)--;
-                                            seedshow->changeText("x"+std::to_string(*numberofseed));
-                                        }
-                                        if (SDL::isCustomCursor && *composton == 1) {
-                                            SDL::useSystemCursor();
-                                            *compostgetC = 1;
-                                            *composton = 0;
-                                        }
-                                    },
-                                    1, {200, 200}, {850, 500, POSITION_ABSOLUTE});
-    auto land4 = new TouchableImage(SDLRendererController,
-                                    land,
-                                    [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
-                                        if (SDL::isCustomCursor && *wateron == 1) {
-                                            landwater4->show(true);
-                                            SDL::useSystemCursor();
-                                            *wateron = 0;
-                                            *watergetD = 1;
-                                            button->show(false);
-                                        }
-                                        if (SDL::isCustomCursor && *seedon == 1 &&*numberofseed >0 ) {
-                                            landseed4->show(true);
-                                            SDL::useSystemCursor();
-                                            *seedon = 0;
-                                            *seedgetD = 1;
-                                            button->show(false);
-                                            (*numberofseed)--;
-                                            seedshow->changeText("x"+std::to_string(*numberofseed));
-                                        }
-                                        if (SDL::isCustomCursor && *composton == 1) {
-                                            SDL::useSystemCursor();
-                                            *compostgetD = 1;
-                                            *composton = 0;
-                                        }
-                                    },
-                                    1, {200, 200}, {1175, 500, POSITION_ABSOLUTE});
+                                },
+                                1, {200, 200}, {200, 500, POSITION_ABSOLUTE});
+    *land2 = new TouchableImage(SDLRendererController,
+                                land,
+                                [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
+                                    if (SDL::isCustomCursor && *wateron == 1) {
+                                        landwater2->show(true);
+                                        SDL::useSystemCursor();
+                                        *wateron = 0;
+                                        *watergetB = 1;
+                                        button->show(false);
+                                    }
+                                    if (SDL::isCustomCursor && *seedon == 1 && *numberofseed > 0) {
+                                        landseed2->show(true);
+                                        SDL::useSystemCursor();
+                                        *seedon = 0;
+                                        *seedgetB = 1;
+                                        button->show(false);
+                                        (*numberofseed)--;
+                                        seedshow->changeText("x" + std::to_string(*numberofseed));
+                                        game->setSeed(*numberofseed);
+                                    }
+                                    if (SDL::isCustomCursor && *composton == 1) {
+                                        SDL::useSystemCursor();
+                                        *compostgetB = 1;
+                                        *composton = 0;
+                                    }
+                                },
+                                1, {200, 200}, {525, 500, POSITION_ABSOLUTE});
+    *land3 = new TouchableImage(SDLRendererController,
+                                land,
+                                [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
+                                    if (SDL::isCustomCursor && *wateron == 1) {
+                                        landwater3->show(true);
+                                        SDL::useSystemCursor();
+                                        *wateron = 0;
+                                        *watergetC = 1;
+                                        button->show(false);
+                                    }
+                                    if (SDL::isCustomCursor && *seedon == 1 && *numberofseed > 0) {
+                                        landseed3->show(true);
+                                        SDL::useSystemCursor();
+                                        *seedon = 0;
+                                        *seedgetC = 1;
+                                        button->show(false);
+                                        (*numberofseed)--;
+                                        seedshow->changeText("x" + std::to_string(*numberofseed));
+                                        game->setSeed(*numberofseed);
+                                    }
+                                    if (SDL::isCustomCursor && *composton == 1) {
+                                        SDL::useSystemCursor();
+                                        *compostgetC = 1;
+                                        *composton = 0;
+                                    }
+                                },
+                                1, {200, 200}, {850, 500, POSITION_ABSOLUTE});
+    *land4 = new TouchableImage(SDLRendererController,
+                                land,
+                                [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
+                                    if (SDL::isCustomCursor && *wateron == 1) {
+                                        landwater4->show(true);
+                                        SDL::useSystemCursor();
+                                        *wateron = 0;
+                                        *watergetD = 1;
+                                        button->show(false);
+                                    }
+                                    if (SDL::isCustomCursor && *seedon == 1 && *numberofseed > 0) {
+                                        landseed4->show(true);
+                                        SDL::useSystemCursor();
+                                        *seedon = 0;
+                                        *seedgetD = 1;
+                                        button->show(false);
+                                        (*numberofseed)--;
+                                        seedshow->changeText("x" + std::to_string(*numberofseed));
+                                        game->setSeed(*numberofseed);
+                                    }
+                                    if (SDL::isCustomCursor && *composton == 1) {
+                                        SDL::useSystemCursor();
+                                        *compostgetD = 1;
+                                        *composton = 0;
+                                    }
+                                },
+                                1, {200, 200}, {1175, 500, POSITION_ABSOLUTE});
     auto Axe = new TouchableImage(SDLRendererController,
                                   axe,
                                   [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
@@ -1153,9 +1232,10 @@ void mainGame2(GameScenes *gameScenes) {
     icon4Container->append(new ImageView(SDLRendererController, goB, 2, {360, 150}, {0, 0, POSITION_RELATIVE}));
     icon4Container->append(btncompost);
     sceneContainer->append(icon4Container);
-    sceneContainer->append(land2);
-    sceneContainer->append(land3);
-    sceneContainer->append(land4);
+    sceneContainer->append(*land1);
+    sceneContainer->append(*land2);
+    sceneContainer->append(*land3);
+    sceneContainer->append(*land4);
     sceneContainer->append(landwaterseed1);
     landwaterseed1->show(false);
     sceneContainer->append(landwaterseed2);
@@ -1181,7 +1261,6 @@ void mainGame2(GameScenes *gameScenes) {
     landseed3->show(false);
     sceneContainer->append(landseed4);
     landseed4->show(false);
-    sceneContainer->append(land1);
     sceneContainer->append(Axe);
     //------------------------------------------------//
     sceneContainer->append(land1lv1->show(false));
@@ -1240,5 +1319,44 @@ void mainGame2(GameScenes *gameScenes) {
     sceneContainer->append(tree2->show(false));
     sceneContainer->append(tree3->show(false));
     sceneContainer->append(tree4->show(false));
+    auto backToMenu = sceneContainer->append(new Button(SDLRendererController,
+                                                        "MENU",
+                                                        {50, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf",
+                                                         {255, 255, 255}},
+                                                        box,
+                                                        [=](Touchable *button, ComponentPosition clickPosition,
+                                                            SDL_Event event) mutable {
+                                                            gameScenes->setCurrentSceneName("menu");
+                                                        },
+                                                        50, {300, 100}, {1100, 775, POSITION_ABSOLUTE}));
+    auto reset = sceneContainer->append(new Button(SDLRendererController,
+                                                   "reset",
+                                                   {50, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf",
+                                                    {255, 255, 255}},
+                                                   box,
+                                                   [=](Touchable *button, ComponentPosition clickPosition,
+                                                       SDL_Event event) mutable {
+                                                       SDL::useSystemCursor();
+                                                       *wateron = 0;
+                                                       *seedon = 0;
+                                                       *Axeon = 0;
+                                                       *composton = 0;
+                                                   },
+                                                   50, {150, 100}, {1400, 550, POSITION_ABSOLUTE}));
 
+    scene->onEnterScene([=](Scene *scene) {
+        *score = game->getScore();
+        *money = game->getMoney();
+        *numberofseed = game->getSeed();
+        *numberofitem = game->getItem();
+        boxmoney->getTextView()->changeText("Your money =" + std::to_string(*money));
+        seedshow->changeText("x" + std::to_string(*numberofseed));
+    });
+    scene->onExitScene([=](Scene *scene) {
+        SDL::useSystemCursor();
+        *wateron = 0;
+        *seedon = 0;
+        *Axeon = 0;
+        *composton = 0;
+    });
 }
