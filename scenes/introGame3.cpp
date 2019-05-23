@@ -16,7 +16,7 @@ void introGame3(GameScenes *gameScenes) {
 
     SDL_Texture *box = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame1/box.png");
     sceneContainer->append(new ImageView(SDLRendererController,
-                                         SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/bgmaingame3.jpg"),
+                                         SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/bG_main.png"),
                                          1, {1600, 900}, {0, 0, POSITION_RELATIVE}));
     auto textTime = sceneContainer->append(new TextView(SDLRendererController,
                                                         "-",
