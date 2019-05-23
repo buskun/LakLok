@@ -264,7 +264,7 @@ void mainGame4(GameScenes *gameScenes) {
 	                                                        SDL_Event event) mutable {
 		                                                    gameScenes->setCurrentSceneName("menu");
 	                                                    },
-	                                                    16, {200, 75}, {1400, 20, POSITION_ABSOLUTE}))->show(false);
+	                                                    16, {200, 75}, {1400, 20, POSITION_ABSOLUTE}));
 
 	auto boxEnd = sceneContainer->append(new Button(SDLRendererController,
 	                                                "Your score = 0",
