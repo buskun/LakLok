@@ -78,3 +78,7 @@ ComponentPosition Component::getAbsolutePosition() {
 
 	return {0, 0, POSITION_ABSOLUTE};
 }
+
+Array<Component *> *Component::getChildren() {
+	return nullptr;
+}

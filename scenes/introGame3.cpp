@@ -1,13 +1,12 @@
 //
 // Created by Acer on 23/5/2562.
 //
-
 #include "scene_list.h"
 #include <cstdlib>
 #include <time.h>
 
-void introGame4(GameScenes *gameScenes) {
-    Scene *scene = gameScenes->newScene("introGame4");
+void introGame3(GameScenes *gameScenes) {
+    Scene *scene = gameScenes->newScene("introGame3");
     gameScenes->addScene(scene);
     Container *sceneContainer = scene->getSceneContainer();
     RendererController *SDLRendererController = gameScenes->getRendererController();
@@ -25,7 +24,7 @@ void introGame4(GameScenes *gameScenes) {
                                                         50, {750, 300, POSITION_ABSOLUTE}));
     textTime->show(false);
     auto introBG = sceneContainer->append(new ImageView(SDLRendererController,
-                                                        SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame4/howtoGame4.png"),
+                                                        SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame3/howtoGame3.png"),
                                                         10, {1600, 900}, {0, 0, POSITION_RELATIVE}));
     auto boxC = sceneContainer->append(new ImageView(SDLRendererController, box, 10, {200, 250}, {705, 290, POSITION_RELATIVE}))->show(false);
     auto button = sceneContainer->append(new Button(SDLRendererController,
@@ -44,7 +43,7 @@ void introGame4(GameScenes *gameScenes) {
                                                             textTime->changeText(std::to_string(count--));
                                                         }, 1000);
                                                         timer->setTimeout([=]() {
-                                                            gameScenes->setCurrentSceneName("mainGame4");
+                                                            gameScenes->setCurrentSceneName("mainGame3");
                                                             timer->stop();
                                                         }, 3000);
                                                         boxC->show(true);
@@ -57,3 +56,4 @@ void introGame4(GameScenes *gameScenes) {
         boxC->show(false);
     });
 }
+

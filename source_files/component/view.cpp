@@ -44,6 +44,11 @@ ImageView *ImageView::setHoverImage(SDL_Texture *imageTexture) {
 	return this;
 }
 
+ImageView *ImageView::setImage(SDL_Texture *imageTexture) {
+	this->texture = imageTexture;
+	return this;
+}
+
 TextView::TextView(RendererController *rendererController,
                    std::string &&text, TextProp &&textProp,
                    int renderIndex, ComponentPosition componentPosition)

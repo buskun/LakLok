@@ -65,6 +65,9 @@ int WinMain(int argc, char *argv[]) {
     mainGame3(gameScene);
     mainGame4(gameScene);
     introGame1(gameScene);
+    introGame2(gameScene);
+    introGame3(gameScene);
+    introGame4(gameScene);
     mainGame2Shop(gameScene);
 
     eventManager->on(SDL_MOUSEBUTTONDOWN, [&](SDL_Event event) {
@@ -73,17 +76,13 @@ int WinMain(int argc, char *argv[]) {
         gameScene->getCurrentScene()->getSceneContainer()->click(clickPosition, event);
     });
 
-    Scene *lastHoveredScene = nullptr;
-
-    eventManager->on(SDL_MOUSEMOTION, [=](SDL_Event event) mutable {
+    eventManager->on(SDL_MOUSEMOTION, [&](SDL_Event event) {
         ComponentPosition mousePosition = {0, 0, POSITION_ABSOLUTE};
         SDL_GetMouseState(&mousePosition.x, &mousePosition.y);
-        if (lastHoveredScene) {
-            lastHoveredScene->getSceneContainer()->unHover(mousePosition, event);
-            lastHoveredScene = nullptr;
+        if (gameScene->getCurrentScene()) {
+	        gameScene->getCurrentScene()->getSceneContainer()->unHover(mousePosition, event);
+	        gameScene->getCurrentScene()->getSceneContainer()->hover(mousePosition, event);
         }
-        gameScene->getCurrentScene()->getSceneContainer()->hover(mousePosition, event);
-        lastHoveredScene = gameScene->getCurrentScene();
     });
 
     SDLRendererController->addRenderer(0, [=](Renderer *renderer) {
