@@ -264,7 +264,7 @@ void mainGame4(GameScenes *gameScenes) {
 	                                                        SDL_Event event) mutable {
 		                                                    gameScenes->setCurrentSceneName("menu");
 	                                                    },
-	                                                    16, {200, 75}, {1400, 20, POSITION_ABSOLUTE}));
+	                                                    16, {200, 75}, {1400, 20, POSITION_ABSOLUTE}))->show(false);
 
 	auto boxEnd = sceneContainer->append(new Button(SDLRendererController,
 	                                                "Your score = 0",
@@ -332,6 +332,7 @@ void mainGame4(GameScenes *gameScenes) {
 	scene->onEnterScene([=](Scene *scene) mutable {
 		gameC->show(false);
 		gameX->show(false);
+		backToMenu->show(false);
 
 		for (int i = 0; i < 25; i++) {
 			questions[i].Q->show(false);
