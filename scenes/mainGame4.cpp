@@ -333,6 +333,11 @@ void mainGame4(GameScenes *gameScenes) {
 		gameC->show(false);
 		gameX->show(false);
 		backToMenu->show(false);
+		boxEnd->setPosition( {-85, 10, POSITION_ABSOLUTE});
+        (*A)->show(true);
+        (*B)->show(true);
+        (*C)->show(true);
+        (*D)->show(true);
 
 		for (int i = 0; i < 25; i++) {
 			questions[i].Q->show(false);
@@ -341,7 +346,10 @@ void mainGame4(GameScenes *gameScenes) {
 			questions[i].A[2]->show(false);
 			questions[i].A[3]->show(false);
 		}
-
+        *questionNumber = 0;
+		*score = 0;
+        boxEnd->getTextView()->changeText("Your score = " + std::to_string(*score));
 		showNewQuestion();
 	});
+
 }
