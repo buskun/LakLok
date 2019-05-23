@@ -97,6 +97,7 @@ void mainGame3(GameScenes *gameScenes) {
                                                             if (*checkA ==1 ){
                                                                 (*score)++;
                                                                 gameC1->show(true);
+
                                                             }
                                                         },
                                                         1, {200, 200}, {40, 270, POSITION_ABSOLUTE}))->show(false);
@@ -108,6 +109,7 @@ void mainGame3(GameScenes *gameScenes) {
                                                             if (*checkB ==1 ){
                                                                 (*score)++;
                                                                 gameC2->show(true);
+
                                                             }
                                                         },
                                                         1, {400, 400}, {400, 600, POSITION_ABSOLUTE}))->show(false);
@@ -145,7 +147,6 @@ void mainGame3(GameScenes *gameScenes) {
                                                         },
                                                         1, {400, 400}, {1150, 500, POSITION_ABSOLUTE}))->show(false);
     boxEnd->show(false);
-
     auto init = [=]() mutable {
         *score = 0;
         textTime->setPosition({1380, 50});
@@ -165,6 +166,11 @@ void mainGame3(GameScenes *gameScenes) {
         gameC4->show(false);
         gameC5->show(false);
         keyQ->show(false);
+        *checkA =0;
+        *checkB =0;
+        *checkC =0;
+        *checkD =0;
+        *checkF =0;
     };
     scene->onEnterScene([=](Scene *scene) mutable {
         init();

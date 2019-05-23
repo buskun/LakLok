@@ -1,4 +1,6 @@
 #include "scene_list.h"
+#include <cstdlib>
+#include <time.h>
 
 void mainGame2(GameScenes *gameScenes) {
     Scene *scene = gameScenes->newScene("mainGame2");
@@ -10,9 +12,11 @@ void mainGame2(GameScenes *gameScenes) {
     const GameProp GAME_PROP = gameScenes->getGameProp();
     GameProp gameProp = gameScenes->getGameProp();
     int bW, bH;
+    int *numberofseed = new int{1};
     int *wateron = new int{0};
     int *seedon = new int{0};
     int *composton = new int{0};
+    int *Axeon = new int{0};
     int *watergetA = new int{0};
     int *seedgetA = new int{0};
     int *compostgetA = new int{0};
@@ -26,15 +30,24 @@ void mainGame2(GameScenes *gameScenes) {
     int *seedgetD = new int{0};
     int *compostgetD = new int{0};
     int *checkLvOftree = new int{0};
+    int *numberofitem = new int{0};
     SDL_Texture *bgTexture = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame2/bgmaingame2.png");
     SDL_Texture *compost = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame2/compost.png");
-    SDL_Texture *lvone = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame2/lv1.png");
-    SDL_Texture *lvtwo = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame2/lv2.png");
-    SDL_Texture *lvthree = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame2/lv3.png");
-    SDL_Texture *lvfour = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame2/lv4.png");
+    SDL_Texture *lvone = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame2/landlv1.png");
+    SDL_Texture *lvonewater = SDL::loadTexture(SDLRenderer,
+                                               GAME_PROP.RESOURCE_PATH + "/img/maingame2/landwwaterlv1.png");
+    SDL_Texture *lvtwo = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame2/landlv2.png");
+    SDL_Texture *lvtwowater = SDL::loadTexture(SDLRenderer,
+                                               GAME_PROP.RESOURCE_PATH + "/img/maingame2/landwwaterlv2.png");
+    SDL_Texture *lvthree = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame2/landlv3.png");
+    SDL_Texture *lvthteewater = SDL::loadTexture(SDLRenderer,
+                                                 GAME_PROP.RESOURCE_PATH + "/img/maingame2/landwwaterlv3.png");
+    SDL_Texture *lvfour = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame2/landlv4.png");
+    SDL_Texture *lvfourwater = SDL::loadTexture(SDLRenderer,
+                                                GAME_PROP.RESOURCE_PATH + "/img/maingame2/landlv4wwater.png");
+    SDL_Texture *lvfive = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame2/lv5.png");
     SDL_Texture *seed = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame2/seed.png");
     SDL_Texture *shopN = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame2/ShopNo.png");
-    SDL_Texture *waterIng = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame2/watering.png");
     SDL_Texture *water = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame2/water.png");
     SDL_Texture *land = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame2/land.png");
     SDL_Texture *landWater = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame2/landWater.png");
@@ -43,303 +56,741 @@ void mainGame2(GameScenes *gameScenes) {
     SDL_Texture *landwWaterwSeed = SDL::loadTexture(SDLRenderer,
                                                     GAME_PROP.RESOURCE_PATH + "/img/maingame2/landwWaterwSeed.png");
     SDL_Texture *goB2 = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame2/Gob2.png");
+    SDL_Texture *axe = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame2/ax.png");
+    SDL_Texture *item = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame2/cabinet.png");
+    SDL_Texture *item2  = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame2/chair.png");
+    SDL_Texture *item3 = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame2/itempaper.png");
+    SDL_Texture *item4 = SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame2/table.png");
+    auto Gotitem1 = new ImageView(SDLRendererController, item, 1, {400, 400}, {500, 800, POSITION_RELATIVE});
+    auto Gotitem2 = new ImageView(SDLRendererController, item2, 1, {400, 400}, {500, 800, POSITION_RELATIVE});
+    auto Gotitem3 = new ImageView(SDLRendererController, item3, 1, {400, 400}, {500, 800, POSITION_RELATIVE});
+    auto Gotitem4 = new ImageView(SDLRendererController, item4, 1, {400, 400}, {500, 800, POSITION_RELATIVE});
+    sceneContainer->append(Gotitem1->show(true));
+    sceneContainer->append(Gotitem2->show(true));
+    sceneContainer->append(Gotitem3->show(true));
+    sceneContainer->append(Gotitem4->show(true));
     int *money = new int{0};
+    auto *timer = new Timer();
     SDL_QueryTexture(bgTexture, nullptr, nullptr, &bW, &bH);
     sceneContainer->setPosition({0, 0});
-    auto lv1on1 = new ImageView(SDLRendererController, lvone, 100, {200, 200}, {290, 550, POSITION_RELATIVE});
-    auto lv1on2 = new ImageView(SDLRendererController, lvone, 50, {50, 50}, {615, 550, POSITION_RELATIVE});
-    auto lv1on3 = new ImageView(SDLRendererController, lvone, 50, {50, 50}, {940, 550, POSITION_RELATIVE});
-    auto lv1on4 = new ImageView(SDLRendererController, lvone, 50, {50, 50}, {1265,550, POSITION_RELATIVE});
-    auto landwaterseed1lv1 = new TouchableImage(SDLRendererController,
-                                             landwWaterwSeed,
-                                             [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
-                                                 if (SDL::isCustomCursor && *composton == 1) {
-                                                    /* SDL::useSystemCursor();
-                                                     *compostgetA = 0;
-                                                     if (*checkLvOftree == 0) {
-                                                         lv1on1->show(true);
-
-                                                     }
-                                                     if (*checkLvOftree == 1) {
-                                                         lv1on1->show(true);
-                                                         *checkLvOftree = 2;
-                                                         lv1on1->show(false);
-                                                     }
-                                                     if (*checkLvOftree == 2) {
-                                                         lv1on1->show(true);
-                                                         *checkLvOftree = 3;
-                                                         lv1on1->show(false);
-                                                     }
-                                                     if (*checkLvOftree == 3) {
-                                                         lv1on1->show(true);
-                                                         *checkLvOftree = 4;
-                                                         lv1on1->show(false);
-                                                     }
-                                                     if (*checkLvOftree == 4) {
-                                                         lv1on1->show(true);
-                                                         *checkLvOftree = 5;
-                                                         lv1on1->show(false);
-                                                     }
-                                                     (*checkLvOftree)++ ;*/
-
-                                                 }
-                                             },
-                                             1, {200, 200}, {200, 500, POSITION_ABSOLUTE});
-    auto landwaterseed2lv1 = new TouchableImage(SDLRendererController,
-                                             landwWaterwSeed,
-                                             [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
-                                                 if (SDL::isCustomCursor && *composton == 1) {
-                                                     SDL::useSystemCursor();
-                                                     *compostgetA = 1;
-                                                     lv1on2->show(true);
-                                                 }
-                                             },
-                                             1, {200, 200}, {525, 500, POSITION_ABSOLUTE});
-    auto landwaterseed3lv1 = new TouchableImage(SDLRendererController,
-                                             landwWaterwSeed,
-                                             [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
-                                                 if (SDL::isCustomCursor && *composton == 1) {
-                                                     SDL::useSystemCursor();
-                                                     *compostgetC = 1;
-                                                     lv1on3->show(true);
-                                                 }
-                                             },
-                                             1, {200, 200}, {850, 500, POSITION_ABSOLUTE});
-    auto landwaterseed4lv1 = new TouchableImage(SDLRendererController,
-                                             landwWaterwSeed,
-                                             [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
-                                                 if (SDL::isCustomCursor && *composton == 1) {
-                                                     SDL::useSystemCursor();
-                                                     *compostgetD = 1;
-                                                     lv1on4->show(true);
-                                                 }
-                                             },
-                                             1, {200, 200}, {1175, 500, POSITION_ABSOLUTE});
-
-    auto landseed1lv1 = new TouchableImage(SDLRendererController,
-                                        landwSeed,
-                                        [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
-                                            if (SDL::isCustomCursor && *composton == 1) {
-                                                SDL::useSystemCursor();
-                                                *compostgetA = 1;
-                                                *composton = 0;
-                                            }
-                                            if (SDL::isCustomCursor && *wateron == 1) {
-                                                SDL::useSystemCursor();
-                                                *watergetA = 1;
-                                                *wateron = 0;
-                                                landwaterseed1lv1->show(true);
-                                                std::cout << "kuy";
-                                                button->show(false);
-                                            }
-                                        },
-                                        2, {200, 200}, {200, 500, POSITION_ABSOLUTE});
-    auto landseed2lv1 = new TouchableImage(SDLRendererController,
-                                        landwSeed,
-                                        [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
-                                            if (SDL::isCustomCursor && *composton == 1) {
-                                                SDL::useSystemCursor();
-                                                *compostgetB = 1;
-                                                *composton = 0;
-                                            }
-                                            if (SDL::isCustomCursor && *wateron == 1) {
-                                                SDL::useSystemCursor();
-                                                *wateron = 0;
-                                                landwaterseed2lv1->show(true);
-                                                button->show(false);
-                                            }
-                                        },
-                                        2, {200, 200}, {525, 500, POSITION_ABSOLUTE});
-    auto landseed3lv1 = new TouchableImage(SDLRendererController,
-                                        landwSeed,
-                                        [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
-                                            if (SDL::isCustomCursor && *composton == 1) {
-                                                SDL::useSystemCursor();
-                                                *compostgetC = 1;
-                                                *composton = 0;
-                                            }
-                                            if (SDL::isCustomCursor && *wateron == 1) {
-                                                SDL::useSystemCursor();
-                                                *wateron = 0;
-                                                landwaterseed3lv1->show(true);
-                                                button->show(false);
-                                            }
-                                        },
-                                        2, {200, 200}, {850, 500, POSITION_ABSOLUTE});
-    auto landseed4lv1 = new TouchableImage(SDLRendererController,
-                                        landwSeed,
-                                        [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
-                                            if (SDL::isCustomCursor && *composton == 1) {
-                                                SDL::useSystemCursor();
-                                                *compostgetD = 1;
-                                                *composton = 0;
-                                            }
-                                            if (SDL::isCustomCursor && *wateron == 1) {
-                                                SDL::useSystemCursor();
-                                                *wateron = 0;
-                                                landwaterseed4lv1->show(true);
-                                                button->show(false);
-                                            }
-                                        },
-                                        2, {200, 200}, {1175, 500, POSITION_ABSOLUTE});
-    auto landwater1lv1 = new TouchableImage(SDLRendererController,
-                                         landWater,
-                                         [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
-                                             if (SDL::isCustomCursor && *composton == 1) {
-                                                 SDL::useSystemCursor();
-                                                 *compostgetA = 1;
-                                                 *composton = 0;
-                                             }
-                                             if (SDL::isCustomCursor && *seedon == 1) {
-                                                 SDL::useSystemCursor();
-                                                 landwaterseed1lv1->show(true);
-                                                 button->show(false);
-                                             }
-                                         },
-                                         1, {200, 200}, {200, 500, POSITION_ABSOLUTE});
-    auto landwater2lv1 = new TouchableImage(SDLRendererController,
-                                         landWater,
-                                         [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
-                                             if (SDL::isCustomCursor && *composton == 1) {
-                                                 SDL::useSystemCursor();
-                                                 *compostgetB = 1;
-                                                 *composton = 0;
-                                             }
-                                             if (SDL::isCustomCursor && *seedon == 1) {
-                                                 SDL::useSystemCursor();
-                                                 landwaterseed2lv1->show(true);
-                                                 button->show(false);
-                                             }
-                                         },
-                                         1, {200, 200}, {525, 500, POSITION_ABSOLUTE});
-    auto landwater3lv1 = new TouchableImage(SDLRendererController,
-                                         landWater,
-                                         [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
-                                             if (SDL::isCustomCursor && *composton == 1) {
-                                                 SDL::useSystemCursor();
-                                                 *compostgetC = 1;
-                                                 *composton = 0;
-                                                 landwaterseed1lv1->show(true);
-                                             }
-                                             if (SDL::isCustomCursor && *seedon == 1) {
-                                                 SDL::useSystemCursor();
-                                                 landwaterseed3lv1->show(true);
-                                                 button->show(false);
-                                             }
-                                         },
-                                         1, {200, 200}, {850, 500, POSITION_ABSOLUTE});
-    auto landwater4lv1 = new TouchableImage(SDLRendererController,
-                                         landWater,
-                                         [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
-                                             if (SDL::isCustomCursor && *composton == 1) {
-                                                 SDL::useSystemCursor();
-                                                 *compostgetD = 1;
-                                                 *composton = 0;
-                                             }
-                                             if (SDL::isCustomCursor && *seedon == 1) {
-                                                 SDL::useSystemCursor();
-                                                 landwaterseed4lv1->show(true);
-                                                 button->show(false);
-                                             }
-                                         },
-                                         1, {200, 200}, {1175, 500, POSITION_ABSOLUTE});
-    auto land1lv1 = new TouchableImage(SDLRendererController,
-                                    land,
+    auto seedshow = sceneContainer->append(new TextView(SDLRendererController,
+                                                        "x1",
+                                                        {50, GAME_PROP.RESOURCE_PATH + "/fonts/PrintAble4U.ttf",
+                                                         {0, 0, 0}},
+                                                        50, {750, 775, POSITION_ABSOLUTE}));
+    sceneContainer->append(seedshow);
+    seedshow->changeText("x"+std::to_string(*numberofseed));
+    auto boxmoney = sceneContainer->append(new Button(SDLRendererController,
+                                                      "Your score = ",
+                                                      {50, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf",
+                                                       {0, 0, 0}},
+                                                      goB2,
+                                                      [=](Touchable *button, ComponentPosition clickPosition,
+                                                          SDL_Event event) mutable {
+                                                      },
+                                                      50, {625, 100}, {1000, 50, POSITION_ABSOLUTE}));
+    boxmoney->getTextView()->changeText("Your money = " + std::to_string(*money));
+    ComponentSize textSize = boxmoney->getTextView()->getSize();
+    boxmoney->getTextView()->setPosition({(boxmoney->getSize().width - textSize.width) / 2,
+                                          (boxmoney->getSize().height - textSize.height) / 2});
+    auto tree1 = new TouchableImage(SDLRendererController,
+                                    lvfive,
                                     [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
                                         if (SDL::isCustomCursor && *wateron == 1) {
-                                            landwater1lv1->show(true);
                                             SDL::useSystemCursor();
                                             *wateron = 0;
                                             *watergetA = 1;
-                                            button->show(false);
-                                        }
-                                        if (SDL::isCustomCursor && *seedon == 1) {
-                                            landseed1lv1->show(true);
-                                            SDL::useSystemCursor();
-                                            *seedon = 0;
-                                            *seedgetA = 1;
-                                            button->show(false);
                                         }
                                         if (SDL::isCustomCursor && *composton == 1) {
                                             SDL::useSystemCursor();
                                             *compostgetA = 1;
                                             *composton = 0;
                                         }
+                                        if (SDL::isCustomCursor && *Axeon == 1) {
+                                            SDL::useSystemCursor();
+                                            *money += 100;
+                                            button->show(false);
+                                            *Axeon = 0;
+                                            boxmoney->getTextView()->changeText(
+                                                    "Your money = " + std::to_string(*money));
+                                            srand(time(nullptr));
+                                            int randomQ;
+                                            randomQ = rand() % 3;
+                                            switch (randomQ)
+                                            {
+
+                                                case 1 :
+                                                    timer->setTimeout([=]() {
+                                                        Gotitem1->show(true);
+                                                    }, 3000);Gotitem1->show(false);
+                                                    *numberofitem +=1 ;
+                                                    break;
+                                                case 2 :timer->setTimeout([=]() {
+                                                        Gotitem2->show(true);
+                                                    }, 3000);Gotitem2->show(false);
+                                                    *numberofitem +=1 ;
+                                                    break;
+                                                case 3:timer->setTimeout([=]() {
+                                                        Gotitem3->show(true);
+                                                    }, 3000);Gotitem3->show(false);
+                                                    *numberofitem +=1 ;
+                                                    break;
+                                                case 4: timer->setTimeout([=]() {
+                                                        Gotitem4->show(true);
+                                                    }, 3000);Gotitem4->show(false);
+                                                    *numberofitem +=1 ;
+                                                    break;
+                                            }
+
+                                        }
                                     },
-                                    1, {200, 200}, {200, 500, POSITION_ABSOLUTE});
-    sceneContainer->append(land1lv1->show(false));
-    auto land2lv1 = new TouchableImage(SDLRendererController,
-                                    land,
+                                    1, {400, 600}, {150, 100, POSITION_ABSOLUTE});
+    auto tree2 = new TouchableImage(SDLRendererController,
+                                    lvfive,
                                     [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
                                         if (SDL::isCustomCursor && *wateron == 1) {
-                                            landwater2lv1->show(true);
                                             SDL::useSystemCursor();
                                             *wateron = 0;
                                             *watergetB = 1;
-                                            button->show(false);
-                                        }
-                                        if (SDL::isCustomCursor && *seedon == 1) {
-                                            landseed2lv1->show(true);
-                                            SDL::useSystemCursor();
-                                            *seedon = 0;
-                                            *seedgetB = 1;
-                                            button->show(false);
                                         }
                                         if (SDL::isCustomCursor && *composton == 1) {
                                             SDL::useSystemCursor();
                                             *compostgetB = 1;
                                             *composton = 0;
                                         }
+                                        if (SDL::isCustomCursor && *Axeon == 1) {
+                                            SDL::useSystemCursor();
+                                            *money += 100;
+                                            button->show(false);
+                                            *Axeon = 0;
+                                            boxmoney->getTextView()->changeText(
+                                                    "Your money = " + std::to_string(*money));
+                                            srand(time(nullptr));
+                                            int randomQ;
+                                            randomQ = rand() % 3;
+                                            switch (randomQ)
+                                            {
+
+                                                case 1 :
+                                                    timer->setTimeout([=]() {
+                                                        Gotitem1->show(true);
+                                                    }, 3000);Gotitem1->show(false);
+                                                    *numberofitem +=1 ;
+                                                    break;
+                                                case 2 :timer->setTimeout([=]() {
+                                                        Gotitem2->show(true);
+                                                    }, 3000);Gotitem2->show(false);
+                                                    *numberofitem +=1 ;
+                                                    break;
+                                                case 3:timer->setTimeout([=]() {
+                                                        Gotitem3->show(true);
+                                                    }, 3000);Gotitem3->show(false);
+                                                    *numberofitem +=1 ;
+                                                    break;
+                                                case 4: timer->setTimeout([=]() {
+                                                        Gotitem4->show(true);
+                                                    }, 3000);Gotitem4->show(false);
+                                                    *numberofitem +=1 ;
+                                                    break;
+                                            }
+                                        }
                                     },
-                                    1, {200, 200}, {525, 500, POSITION_ABSOLUTE});
-    auto land3lv1 = new TouchableImage(SDLRendererController,
-                                    land,
+                                    1, {400, 600}, {475, 100, POSITION_ABSOLUTE});
+    auto tree3 = new TouchableImage(SDLRendererController,
+                                    lvfive,
                                     [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
                                         if (SDL::isCustomCursor && *wateron == 1) {
-                                            landwater3lv1->show(true);
                                             SDL::useSystemCursor();
                                             *wateron = 0;
                                             *watergetC = 1;
-                                            button->show(false);
-                                        }
-                                        if (SDL::isCustomCursor && *seedon == 1) {
-                                            landseed3lv1->show(true);
-                                            SDL::useSystemCursor();
-                                            *seedon = 0;
-                                            *seedgetC = 1;
-                                            button->show(false);
                                         }
                                         if (SDL::isCustomCursor && *composton == 1) {
                                             SDL::useSystemCursor();
                                             *compostgetC = 1;
                                             *composton = 0;
                                         }
+                                        if (SDL::isCustomCursor && *Axeon == 1) {
+                                            SDL::useSystemCursor();
+                                            *money += 100;
+                                            button->show(false);
+                                            *Axeon = 0;
+                                            boxmoney->getTextView()->changeText(
+                                                    "Your money = " + std::to_string(*money));
+                                            srand(time(nullptr));
+                                            int randomQ;
+                                            randomQ = rand() % 3;
+                                            switch (randomQ)
+                                            {
+
+                                                case 1 :
+                                                    timer->setTimeout([=]() {
+                                                        Gotitem1->show(true);
+                                                    }, 3000);Gotitem1->show(false);
+                                                    *numberofitem +=1 ;
+                                                    break;
+                                                case 2 :timer->setTimeout([=]() {
+                                                        Gotitem2->show(true);
+                                                    }, 3000);Gotitem2->show(false);
+                                                    *numberofitem +=1 ;
+                                                    break;
+                                                case 3:timer->setTimeout([=]() {
+                                                        Gotitem3->show(true);
+                                                    }, 3000);Gotitem3->show(false);
+                                                    *numberofitem +=1 ;
+                                                    break;
+                                                case 4: timer->setTimeout([=]() {
+                                                        Gotitem4->show(true);
+                                                    }, 3000);Gotitem4->show(false);
+                                                    *numberofitem +=1 ;
+                                                    break;
+                                            }
+                                        }
                                     },
-                                    1, {200, 200}, {850, 500, POSITION_ABSOLUTE});
-    auto land4lv1 = new TouchableImage(SDLRendererController,
-                                    land,
+                                    1, {400, 600}, {800, 100, POSITION_ABSOLUTE});
+    auto tree4 = new TouchableImage(SDLRendererController,
+                                    lvfive,
                                     [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
                                         if (SDL::isCustomCursor && *wateron == 1) {
-                                            landwater4lv1->show(true);
                                             SDL::useSystemCursor();
                                             *wateron = 0;
                                             *watergetD = 1;
-                                            button->show(false);
-                                        }
-                                        if (SDL::isCustomCursor && *seedon == 1) {
-                                            landseed4lv1->show(true);
-                                            SDL::useSystemCursor();
-                                            *seedon = 0;
-                                            *seedgetD = 1;
-                                            button->show(false);
                                         }
                                         if (SDL::isCustomCursor && *composton == 1) {
                                             SDL::useSystemCursor();
                                             *compostgetD = 1;
                                             *composton = 0;
                                         }
+                                        if (SDL::isCustomCursor && *Axeon == 1) {
+                                            SDL::useSystemCursor();
+                                            *money += 100;
+                                            button->show(false);
+                                            *Axeon = 0;
+                                            boxmoney->getTextView()->changeText(
+                                                    "Your money = " + std::to_string(*money));
+                                            srand(time(nullptr));
+                                            int randomQ;
+                                            randomQ = rand() % 3;
+                                            switch (randomQ)
+                                            {
+
+                                                case 1 :
+                                                    timer->setTimeout([=]() {
+                                                        Gotitem1->show(true);
+                                                    }, 3000);Gotitem1->show(false);
+                                                    *numberofitem +=1 ;
+                                                    break;
+                                                case 2 :timer->setTimeout([=]() {
+                                                        Gotitem2->show(true);
+                                                    }, 3000);Gotitem2->show(false);
+                                                    *numberofitem +=1 ;
+                                                    break;
+                                                case 3:timer->setTimeout([=]() {
+                                                        Gotitem3->show(true);
+                                                    }, 3000);Gotitem3->show(false);
+                                                    *numberofitem +=1 ;
+                                                    break;
+                                                case 4: timer->setTimeout([=]() {
+                                                        Gotitem4->show(true);
+                                                    }, 3000);Gotitem4->show(false);
+                                                    *numberofitem +=1 ;
+                                                    break;
+                                            }
+                                        }
                                     },
-                                    1, {200, 200}, {1175, 500, POSITION_ABSOLUTE});
+                                    1, {400, 600}, {1100, 100, POSITION_ABSOLUTE});
+    //------------------------------------------------------------------------------------------------------------------//
+    //------------------------------------------------------------------------------------------------------------------//
+    auto landwater1lv4 = new TouchableImage(SDLRendererController,
+                                            lvfourwater,
+                                            [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
+                                                if (SDL::isCustomCursor && *composton == 1) {
+                                                    SDL::useSystemCursor();
+                                                    *compostgetA = 1;
+                                                    *composton = 0;
+                                                    tree1->show(true);
+                                                    button->show(false);
+                                                }
+                                            },
+                                            1, {200, 400}, {200, 300, POSITION_ABSOLUTE});
+    auto landwater2lv4 = new TouchableImage(SDLRendererController,
+                                            lvfourwater,
+                                            [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
+                                                if (SDL::isCustomCursor && *composton == 1) {
+                                                    SDL::useSystemCursor();
+                                                    *compostgetB = 1;
+                                                    *composton = 0;
+                                                    tree2->show(true);
+                                                    button->show(false);
+                                                }
+
+                                            },
+                                            1, {200, 400}, {525, 300, POSITION_ABSOLUTE});
+    auto landwater3lv4 = new TouchableImage(SDLRendererController,
+                                            lvfourwater,
+                                            [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
+                                                if (SDL::isCustomCursor && *composton == 1) {
+                                                    SDL::useSystemCursor();
+                                                    *compostgetC = 1;
+                                                    *composton = 0;
+                                                    tree3->show(true);
+                                                    button->show(false);
+                                                }
+                                            },
+                                            1, {200, 400}, {850, 300, POSITION_ABSOLUTE});
+    auto landwater4lv4 = new TouchableImage(SDLRendererController,
+                                            lvfourwater,
+                                            [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
+                                                if (SDL::isCustomCursor && *composton == 1) {
+                                                    SDL::useSystemCursor();
+                                                    *compostgetD = 1;
+                                                    *composton = 0;
+                                                    tree4->show(true);
+                                                    button->show(false);
+                                                }
+                                            },
+                                            1, {200, 400}, {1175, 300, POSITION_ABSOLUTE});
+    auto land1lv4 = new TouchableImage(SDLRendererController,
+                                       lvfour,
+                                       [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
+                                           if (SDL::isCustomCursor && *wateron == 1) {
+                                               SDL::useSystemCursor();
+                                               *wateron = 0;
+                                               *watergetA = 1;
+                                               button->show(false);
+                                               landwater1lv4->show(true);
+                                           }
+                                           if (SDL::isCustomCursor && *composton == 1) {
+                                               SDL::useSystemCursor();
+                                               *compostgetA = 1;
+                                               *composton = 0;
+                                           }
+                                       },
+                                       1, {200, 400}, {200, 300, POSITION_ABSOLUTE});
+    auto land2lv4 = new TouchableImage(SDLRendererController,
+                                       lvfour,
+                                       [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
+                                           if (SDL::isCustomCursor && *wateron == 1) {
+
+                                               *wateron = 0;
+                                               *watergetB = 1;
+                                               SDL::useSystemCursor();
+                                               button->show(false);
+                                               landwater2lv4->show(true);
+                                           }
+                                           if (SDL::isCustomCursor && *composton == 1) {
+                                               SDL::useSystemCursor();
+                                               *compostgetB = 1;
+                                               *composton = 0;
+                                           }
+                                       },
+                                       1, {200, 400}, {525, 300, POSITION_ABSOLUTE});
+    auto land3lv4 = new TouchableImage(SDLRendererController,
+                                       lvfour,
+                                       [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
+                                           if (SDL::isCustomCursor && *wateron == 1) {
+                                               SDL::useSystemCursor();
+                                               *wateron = 0;
+                                               *watergetC = 1;
+                                               button->show(false);
+                                               landwater3lv4->show(true);
+
+                                           }
+
+                                           if (SDL::isCustomCursor && *composton == 1) {
+                                               SDL::useSystemCursor();
+                                               *compostgetC = 1;
+                                               *composton = 0;
+                                           }
+                                       },
+                                       1, {200, 400}, {850, 300, POSITION_ABSOLUTE});
+    auto land4lv4 = new TouchableImage(SDLRendererController,
+                                       lvfour,
+                                       [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
+                                           if (SDL::isCustomCursor && *wateron == 1) {
+                                               SDL::useSystemCursor();
+                                               *wateron = 0;
+                                               *watergetD = 1;
+                                               button->show(false);
+                                               landwater4lv4->show(true);
+                                           }
+                                           if (SDL::isCustomCursor && *composton == 1) {
+                                               SDL::useSystemCursor();
+                                               *compostgetD = 1;
+                                               *composton = 0;
+                                           }
+                                       },
+                                       1, {200, 400}, {1175, 300, POSITION_ABSOLUTE});
+    //------------------------------------------------------------------------------------------------------------------//
+    //------------------------------------------------------------------------------------------------------------------//
+    auto landwater1lv3 = new TouchableImage(SDLRendererController,
+                                            lvthteewater,
+                                            [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
+                                                if (SDL::isCustomCursor && *composton == 1) {
+                                                    SDL::useSystemCursor();
+                                                    *compostgetA = 1;
+                                                    *composton = 0;
+                                                    land1lv4->show(true);
+                                                    button->show(false);
+
+                                                }
+                                            },
+                                            1, {200, 200}, {200, 500, POSITION_ABSOLUTE});
+    auto landwater2lv3 = new TouchableImage(SDLRendererController,
+                                            lvthteewater,
+                                            [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
+                                                if (SDL::isCustomCursor && *composton == 1) {
+                                                    SDL::useSystemCursor();
+                                                    *compostgetB = 1;
+                                                    *composton = 0;
+                                                    land2lv4->show(true);
+                                                    button->show(false);
+                                                }
+
+                                            },
+                                            1, {200, 200}, {525, 500, POSITION_ABSOLUTE});
+    auto landwater3lv3 = new TouchableImage(SDLRendererController,
+                                            lvthteewater,
+                                            [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
+                                                if (SDL::isCustomCursor && *composton == 1) {
+                                                    SDL::useSystemCursor();
+                                                    *compostgetC = 1;
+                                                    *composton = 0;
+                                                    land3lv4->show(true);
+                                                    button->show(false);
+                                                }
+                                            },
+                                            1, {200, 200}, {850, 500, POSITION_ABSOLUTE});
+    auto landwater4lv3 = new TouchableImage(SDLRendererController,
+                                            lvthteewater,
+                                            [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
+                                                if (SDL::isCustomCursor && *composton == 1) {
+                                                    SDL::useSystemCursor();
+                                                    *compostgetD = 1;
+                                                    *composton = 0;
+                                                    land4lv4->show(true);
+                                                    button->show(false);
+                                                }
+                                            },
+                                            1, {200, 200}, {1175, 500, POSITION_ABSOLUTE});
+    auto land1lv3 = new TouchableImage(SDLRendererController,
+                                       lvthree,
+                                       [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
+                                           if (SDL::isCustomCursor && *wateron == 1) {
+                                               SDL::useSystemCursor();
+                                               *wateron = 0;
+                                               *watergetA = 1;
+                                               button->show(false);
+                                               landwater1lv3->show(true);
+                                           }
+
+                                           if (SDL::isCustomCursor && *composton == 1) {
+                                               SDL::useSystemCursor();
+                                               *compostgetA = 1;
+                                               *composton = 0;
+                                           }
+                                       },
+                                       1, {200, 200}, {200, 500, POSITION_ABSOLUTE});
+    auto land2lv3 = new TouchableImage(SDLRendererController,
+                                       lvthree,
+                                       [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
+                                           if (SDL::isCustomCursor && *wateron == 1) {
+
+                                               SDL::useSystemCursor();
+                                               *wateron = 0;
+                                               *watergetB = 1;
+                                               button->show(false);
+                                               landwater2lv3->show(true);
+                                           }
+
+                                           if (SDL::isCustomCursor && *composton == 1) {
+                                               SDL::useSystemCursor();
+                                               *compostgetB = 1;
+                                               *composton = 0;
+                                           }
+                                       },
+                                       1, {200, 200}, {525, 500, POSITION_ABSOLUTE});
+    auto land3lv3 = new TouchableImage(SDLRendererController,
+                                       lvthree,
+                                       [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
+                                           if (SDL::isCustomCursor && *wateron == 1) {
+                                               SDL::useSystemCursor();
+                                               *wateron = 0;
+                                               *watergetC = 1;
+                                               button->show(false);
+                                               landwater3lv3->show(true);
+                                           }
+
+                                           if (SDL::isCustomCursor && *composton == 1) {
+                                               SDL::useSystemCursor();
+                                               *compostgetC = 1;
+                                               *composton = 0;
+                                           }
+                                       },
+                                       1, {200, 200}, {850, 500, POSITION_ABSOLUTE});
+    auto land4lv3 = new TouchableImage(SDLRendererController,
+                                       lvthree,
+                                       [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
+                                           if (SDL::isCustomCursor && *wateron == 1) {
+                                               SDL::useSystemCursor();
+                                               *wateron = 0;
+                                               *watergetD = 1;
+                                               button->show(false);
+                                               landwater4lv3->show(true);
+                                           }
+
+                                           if (SDL::isCustomCursor && *composton == 1) {
+                                               SDL::useSystemCursor();
+                                               *compostgetD = 1;
+                                               *composton = 0;
+                                           }
+                                       },
+                                       1, {200, 200}, {1175, 500, POSITION_ABSOLUTE});
+    //------------------------------------------------------------------------------------------------------------------//
+    //------------------------------------------------------------------------------------------------------------------//
+    auto landwater1lv2 = new TouchableImage(SDLRendererController,
+                                            lvtwowater,
+                                            [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
+                                                if (SDL::isCustomCursor && *composton == 1) {
+                                                    SDL::useSystemCursor();
+                                                    *compostgetA = 1;
+                                                    *composton = 0;
+                                                    land1lv3->show(true);
+                                                    button->show(false);
+                                                }
+                                            },
+                                            1, {200, 200}, {200, 500, POSITION_ABSOLUTE});
+    auto landwater2lv2 = new TouchableImage(SDLRendererController,
+                                            lvtwowater,
+                                            [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
+                                                if (SDL::isCustomCursor && *composton == 1) {
+                                                    SDL::useSystemCursor();
+                                                    *compostgetB = 1;
+                                                    *composton = 0;
+                                                    land2lv3->show(true);
+                                                    button->show(false);
+
+                                                }
+                                            },
+                                            1, {200, 200}, {525, 500, POSITION_ABSOLUTE});
+    auto landwater3lv2 = new TouchableImage(SDLRendererController,
+                                            lvtwowater,
+                                            [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
+                                                if (SDL::isCustomCursor && *composton == 1) {
+                                                    SDL::useSystemCursor();
+                                                    *compostgetC = 1;
+                                                    *composton = 0;
+                                                    land3lv3->show(true);
+                                                    button->show(false);
+                                                }
+                                            },
+                                            1, {200, 200}, {850, 500, POSITION_ABSOLUTE});
+    auto landwater4lv2 = new TouchableImage(SDLRendererController,
+                                            lvtwowater,
+                                            [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
+                                                if (SDL::isCustomCursor && *composton == 1) {
+                                                    SDL::useSystemCursor();
+                                                    *compostgetD = 1;
+                                                    *composton = 0;
+                                                    land4lv3->show(true);
+                                                    button->show(false);
+                                                }
+                                            },
+                                            1, {200, 200}, {1175, 500, POSITION_ABSOLUTE});
+    auto land1lv2 = new TouchableImage(SDLRendererController,
+                                       lvtwo,
+                                       [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
+                                           if (SDL::isCustomCursor && *wateron == 1) {
+                                               SDL::useSystemCursor();
+                                               *wateron = 0;
+                                               *watergetA = 1;
+                                               button->show(false);
+                                               landwater1lv2->show(true);
+                                           }
+
+                                           if (SDL::isCustomCursor && *composton == 1) {
+                                               SDL::useSystemCursor();
+                                               *compostgetA = 1;
+                                               *composton = 0;
+                                           }
+                                       },
+                                       1, {200, 200}, {200, 500, POSITION_ABSOLUTE});
+
+    auto land2lv2 = new TouchableImage(SDLRendererController,
+                                       lvtwo,
+                                       [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
+                                           if (SDL::isCustomCursor && *wateron == 1) {
+
+                                               SDL::useSystemCursor();
+                                               *wateron = 0;
+                                               *watergetB = 1;
+                                               button->show(false);
+                                               landwater2lv2->show(true);
+                                           }
+
+                                           if (SDL::isCustomCursor && *composton == 1) {
+                                               SDL::useSystemCursor();
+                                               *compostgetB = 1;
+                                               *composton = 0;
+                                           }
+                                       },
+                                       1, {200, 200}, {525, 500, POSITION_ABSOLUTE});
+    auto land3lv2 = new TouchableImage(SDLRendererController,
+                                       lvtwo,
+                                       [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
+                                           if (SDL::isCustomCursor && *wateron == 1) {
+                                               SDL::useSystemCursor();
+                                               *wateron = 0;
+                                               *watergetC = 1;
+                                               button->show(false);
+                                               landwater3lv2->show(true);
+                                           }
+
+                                           if (SDL::isCustomCursor && *composton == 1) {
+                                               SDL::useSystemCursor();
+                                               *compostgetC = 1;
+                                               *composton = 0;
+                                           }
+                                       },
+                                       1, {200, 200}, {850, 500, POSITION_ABSOLUTE});
+    auto land4lv2 = new TouchableImage(SDLRendererController,
+                                       lvtwo,
+                                       [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
+                                           if (SDL::isCustomCursor && *wateron == 1) {
+                                               SDL::useSystemCursor();
+                                               *wateron = 0;
+                                               *watergetD = 1;
+                                               button->show(false);
+                                               landwater4lv2->show(true);
+                                           }
+
+                                           if (SDL::isCustomCursor && *composton == 1) {
+                                               SDL::useSystemCursor();
+                                               *compostgetD = 1;
+                                               *composton = 0;
+                                           }
+                                       },
+                                       1, {200, 200}, {1175, 500, POSITION_ABSOLUTE});
+    //------------------------------------------------------------------------------------------------------------------//
+    //------------------------------------------------------------------------------------------------------------------//
+    auto landwater1lv1 = new TouchableImage(SDLRendererController,
+                                            lvonewater,
+                                            [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
+                                                if (SDL::isCustomCursor && *composton == 1) {
+                                                    SDL::useSystemCursor();
+                                                    *compostgetA = 1;
+                                                    *composton = 0;
+                                                    land1lv2->show(true);
+                                                    button->show(false);
+                                                }
+                                            },
+                                            1, {200, 200}, {200, 500, POSITION_ABSOLUTE});
+    auto landwater2lv1 = new TouchableImage(SDLRendererController,
+                                            lvonewater,
+                                            [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
+                                                if (SDL::isCustomCursor && *composton == 1) {
+                                                    SDL::useSystemCursor();
+                                                    *compostgetB = 1;
+                                                    *composton = 0;
+                                                    land2lv2->show(true);
+                                                    button->show(false);
+                                                }
+                                            },
+                                            1, {200, 200}, {525, 500, POSITION_ABSOLUTE});
+    auto landwater3lv1 = new TouchableImage(SDLRendererController,
+                                            lvonewater,
+                                            [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
+                                                if (SDL::isCustomCursor && *composton == 1) {
+                                                    SDL::useSystemCursor();
+                                                    *compostgetC = 1;
+                                                    *composton = 0;
+                                                    land3lv2->show(true);
+                                                    button->show(false);
+                                                }
+                                            },
+                                            1, {200, 200}, {850, 500, POSITION_ABSOLUTE});
+    auto landwater4lv1 = new TouchableImage(SDLRendererController,
+                                            lvonewater,
+                                            [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
+                                                if (SDL::isCustomCursor && *composton == 1) {
+                                                    SDL::useSystemCursor();
+                                                    *compostgetD = 1;
+                                                    *composton = 0;
+                                                    land4lv2->show(true);
+                                                    button->show(false);
+                                                }
+                                            },
+                                            1, {200, 200}, {1175, 500, POSITION_ABSOLUTE});
+    auto land1lv1 = new TouchableImage(SDLRendererController,
+                                       lvone,
+                                       [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
+                                           if (SDL::isCustomCursor && *wateron == 1) {
+                                               landwater1lv1->show(true);
+                                               SDL::useSystemCursor();
+                                               *wateron = 0;
+                                               *watergetA = 1;
+                                               button->show(false);
+                                           }
+                                           if (SDL::isCustomCursor && *composton == 1) {
+                                               SDL::useSystemCursor();
+                                               *compostgetA = 1;
+                                               *composton = 0;
+                                           }
+                                       },
+                                       1, {200, 200}, {200, 500, POSITION_ABSOLUTE});
+    sceneContainer->append(land1lv1->show(false));
+    auto land2lv1 = new TouchableImage(SDLRendererController,
+                                       lvone,
+                                       [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
+                                           if (SDL::isCustomCursor && *wateron == 1) {
+                                               landwater2lv1->show(true);
+                                               SDL::useSystemCursor();
+                                               *wateron = 0;
+                                               *watergetB = 1;
+                                               button->show(false);
+                                           }
+                                           if (SDL::isCustomCursor && *composton == 1) {
+                                               SDL::useSystemCursor();
+                                               *compostgetB = 1;
+                                               *composton = 0;
+                                           }
+                                       },
+                                       1, {200, 200}, {525, 500, POSITION_ABSOLUTE});
+    auto land3lv1 = new TouchableImage(SDLRendererController,
+                                       lvone,
+                                       [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
+                                           if (SDL::isCustomCursor && *wateron == 1) {
+                                               landwater3lv1->show(true);
+                                               SDL::useSystemCursor();
+                                               *wateron = 0;
+                                               *watergetC = 1;
+                                               button->show(false);
+                                           }
+
+                                           if (SDL::isCustomCursor && *composton == 1) {
+                                               SDL::useSystemCursor();
+                                               *compostgetC = 1;
+                                               *composton = 0;
+                                           }
+                                       },
+                                       1, {200, 200}, {850, 500, POSITION_ABSOLUTE});
+    auto land4lv1 = new TouchableImage(SDLRendererController,
+                                       lvone,
+                                       [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
+                                           if (SDL::isCustomCursor && *wateron == 1) {
+                                               landwater4lv1->show(true);
+                                               SDL::useSystemCursor();
+                                               *wateron = 0;
+                                               *watergetD = 1;
+                                               button->show(false);
+                                           }
+
+                                           if (SDL::isCustomCursor && *composton == 1) {
+                                               SDL::useSystemCursor();
+                                               *compostgetD = 1;
+                                               *composton = 0;
+                                           }
+                                       },
+                                       1, {200, 200}, {1175, 500, POSITION_ABSOLUTE});
 //------------------------------------------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------------------------------------------//
     auto landwaterseed1 = new TouchableImage(SDLRendererController,
@@ -349,32 +800,11 @@ void mainGame2(GameScenes *gameScenes) {
                                                      SDL::useSystemCursor();
                                                      *compostgetA = 0;
                                                      if (*checkLvOftree == 0) {
-                                                         lv1on1->show(true);
                                                          button->show(false);
                                                          land1lv1->show(true);
+                                                         *composton = 0;
                                                      }
-                                                     if (*checkLvOftree == 1) {
-                                                         lv1on1->show(true);
-                                                         *checkLvOftree = 2;
-                                                         lv1on1->show(false);
-                                                     }
-                                                     if (*checkLvOftree == 2) {
-                                                         lv1on1->show(true);
-                                                         *checkLvOftree = 3;
-                                                         lv1on1->show(false);
-                                                     }
-                                                     if (*checkLvOftree == 3) {
-                                                         lv1on1->show(true);
-                                                         *checkLvOftree = 4;
-                                                         lv1on1->show(false);
-                                                     }
-                                                     if (*checkLvOftree == 4) {
-                                                         lv1on1->show(true);
-                                                         *checkLvOftree = 5;
-                                                         lv1on1->show(false);
-                                                     }
-                                                     (*checkLvOftree)++ ;
-
+                                                     (*checkLvOftree)++;
                                                  }
                                              },
                                              1, {200, 200}, {200, 500, POSITION_ABSOLUTE});
@@ -384,7 +814,9 @@ void mainGame2(GameScenes *gameScenes) {
                                                  if (SDL::isCustomCursor && *composton == 1) {
                                                      SDL::useSystemCursor();
                                                      *compostgetA = 1;
-                                                     lv1on2->show(true);
+                                                     land2lv1->show(true);
+                                                     button->show(false);
+                                                     *composton = 0;
                                                  }
                                              },
                                              1, {200, 200}, {525, 500, POSITION_ABSOLUTE});
@@ -394,7 +826,9 @@ void mainGame2(GameScenes *gameScenes) {
                                                  if (SDL::isCustomCursor && *composton == 1) {
                                                      SDL::useSystemCursor();
                                                      *compostgetC = 1;
-                                                     lv1on3->show(true);
+                                                     land3lv1->show(true);
+                                                     button->show(false);
+                                                     *composton = 0;
                                                  }
                                              },
                                              1, {200, 200}, {850, 500, POSITION_ABSOLUTE});
@@ -404,7 +838,9 @@ void mainGame2(GameScenes *gameScenes) {
                                                  if (SDL::isCustomCursor && *composton == 1) {
                                                      SDL::useSystemCursor();
                                                      *compostgetD = 1;
-                                                     lv1on4->show(true);
+                                                     land4lv1->show(true);
+                                                     button->show(false);
+                                                     *composton = 0;
                                                  }
                                              },
                                              1, {200, 200}, {1175, 500, POSITION_ABSOLUTE});
@@ -485,10 +921,13 @@ void mainGame2(GameScenes *gameScenes) {
                                                  *composton = 0;
 
                                              }
-                                             if (SDL::isCustomCursor && *seedon == 1) {
+                                             if (SDL::isCustomCursor && *seedon == 1&&*numberofseed >0 ) {
                                                  SDL::useSystemCursor();
                                                  landwaterseed1->show(true);
                                                  button->show(false);
+                                                 *seedon = 0;
+                                                 (*numberofseed)--;
+                                                 seedshow->changeText("x"+std::to_string(*numberofseed));
                                              }
                                          },
                                          1, {200, 200}, {200, 500, POSITION_ABSOLUTE});
@@ -500,10 +939,13 @@ void mainGame2(GameScenes *gameScenes) {
                                                  *compostgetB = 1;
                                                  *composton = 0;
                                              }
-                                             if (SDL::isCustomCursor && *seedon == 1) {
+                                             if (SDL::isCustomCursor && *seedon == 1&&*numberofseed >0) {
                                                  SDL::useSystemCursor();
                                                  landwaterseed2->show(true);
                                                  button->show(false);
+                                                 *seedon = 0;
+                                                 (*numberofseed)--;
+                                                 seedshow->changeText("x"+std::to_string(*numberofseed));
                                              }
                                          },
                                          1, {200, 200}, {525, 500, POSITION_ABSOLUTE});
@@ -514,12 +956,15 @@ void mainGame2(GameScenes *gameScenes) {
                                                  SDL::useSystemCursor();
                                                  *compostgetC = 1;
                                                  *composton = 0;
-                                                 landwaterseed1->show(true);
+                                                 landwaterseed3->show(true);
                                              }
-                                             if (SDL::isCustomCursor && *seedon == 1) {
+                                             if (SDL::isCustomCursor && *seedon == 1&&*numberofseed >0) {
                                                  SDL::useSystemCursor();
                                                  landwaterseed3->show(true);
                                                  button->show(false);
+                                                 *seedon = 0;
+                                                 (*numberofseed)--;
+                                                 seedshow->changeText("x"+std::to_string(*numberofseed));
                                              }
                                          },
                                          1, {200, 200}, {850, 500, POSITION_ABSOLUTE});
@@ -531,14 +976,17 @@ void mainGame2(GameScenes *gameScenes) {
                                                  *compostgetD = 1;
                                                  *composton = 0;
                                              }
-                                             if (SDL::isCustomCursor && *seedon == 1) {
+                                             if (SDL::isCustomCursor && *seedon == 1&&*numberofseed >0) {
                                                  SDL::useSystemCursor();
                                                  landwaterseed4->show(true);
                                                  button->show(false);
+                                                 *seedon = 0;
+                                                 (*numberofseed)--;
+                                                 seedshow->changeText("x"+std::to_string(*numberofseed));
                                              }
                                          },
                                          1, {200, 200}, {1175, 500, POSITION_ABSOLUTE});
-    auto background = new ImageView(SDLRendererController, bgTexture, 1, {1600, 900}, {0, 0, POSITION_RELATIVE});
+    auto background = new ImageView(SDLRendererController, bgTexture, -1, {1600, 900}, {0, 0, POSITION_RELATIVE});
     sceneContainer->append(background);
     auto land1 = new TouchableImage(SDLRendererController,
                                     land,
@@ -550,12 +998,14 @@ void mainGame2(GameScenes *gameScenes) {
                                             *watergetA = 1;
                                             button->show(false);
                                         }
-                                        if (SDL::isCustomCursor && *seedon == 1) {
+                                        if (SDL::isCustomCursor && *seedon == 1&&*numberofseed >0) {
                                             landseed1->show(true);
                                             SDL::useSystemCursor();
                                             *seedon = 0;
                                             *seedgetA = 1;
                                             button->show(false);
+                                            (*numberofseed)--;
+                                            seedshow->changeText("x"+std::to_string(*numberofseed));
                                         }
                                         if (SDL::isCustomCursor && *composton == 1) {
                                             SDL::useSystemCursor();
@@ -575,12 +1025,14 @@ void mainGame2(GameScenes *gameScenes) {
                                             *watergetB = 1;
                                             button->show(false);
                                         }
-                                        if (SDL::isCustomCursor && *seedon == 1) {
+                                        if (SDL::isCustomCursor && *seedon == 1&&*numberofseed >0) {
                                             landseed2->show(true);
                                             SDL::useSystemCursor();
                                             *seedon = 0;
                                             *seedgetB = 1;
                                             button->show(false);
+                                            (*numberofseed)--;
+                                            seedshow->changeText("x"+std::to_string(*numberofseed));
                                         }
                                         if (SDL::isCustomCursor && *composton == 1) {
                                             SDL::useSystemCursor();
@@ -599,12 +1051,14 @@ void mainGame2(GameScenes *gameScenes) {
                                             *watergetC = 1;
                                             button->show(false);
                                         }
-                                        if (SDL::isCustomCursor && *seedon == 1) {
+                                        if (SDL::isCustomCursor && *seedon == 1&&*numberofseed >0) {
                                             landseed3->show(true);
                                             SDL::useSystemCursor();
                                             *seedon = 0;
                                             *seedgetC = 1;
                                             button->show(false);
+                                            (*numberofseed)--;
+                                            seedshow->changeText("x"+std::to_string(*numberofseed));
                                         }
                                         if (SDL::isCustomCursor && *composton == 1) {
                                             SDL::useSystemCursor();
@@ -623,12 +1077,14 @@ void mainGame2(GameScenes *gameScenes) {
                                             *watergetD = 1;
                                             button->show(false);
                                         }
-                                        if (SDL::isCustomCursor && *seedon == 1) {
+                                        if (SDL::isCustomCursor && *seedon == 1 &&*numberofseed >0 ) {
                                             landseed4->show(true);
                                             SDL::useSystemCursor();
                                             *seedon = 0;
                                             *seedgetD = 1;
                                             button->show(false);
+                                            (*numberofseed)--;
+                                            seedshow->changeText("x"+std::to_string(*numberofseed));
                                         }
                                         if (SDL::isCustomCursor && *composton == 1) {
                                             SDL::useSystemCursor();
@@ -637,7 +1093,15 @@ void mainGame2(GameScenes *gameScenes) {
                                         }
                                     },
                                     1, {200, 200}, {1175, 500, POSITION_ABSOLUTE});
-
+    auto Axe = new TouchableImage(SDLRendererController,
+                                  axe,
+                                  [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
+                                      SDL::setCustomCursor(GAME_PROP.RESOURCE_PATH + "/img/maingame2/ax.png",
+                                                           50, 50);
+                                      SDL::useCustomCursor();
+                                      *Axeon = 1;
+                                  },
+                                  3, {150, 150}, {1400, 700, POSITION_RELATIVE});
     auto btnshop = new TouchableImage(SDLRendererController,
                                       shopN,
                                       [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
@@ -660,6 +1124,7 @@ void mainGame2(GameScenes *gameScenes) {
                                                                50, 50);
                                           SDL::useCustomCursor();
                                           *seedon = 1;
+
                                       },
                                       3, {150, 150}, {110, 0, POSITION_RELATIVE});
     auto btncompost = new TouchableImage(SDLRendererController,
@@ -672,19 +1137,6 @@ void mainGame2(GameScenes *gameScenes) {
                                              *composton = 1;
                                          },
                                          3, {100, 100}, {125, 25, POSITION_RELATIVE});
-    auto boxmoney = sceneContainer->append(new Button(SDLRendererController,
-                                                      "Your score = ",
-                                                      {50, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf",
-                                                       {0, 0, 0}},
-                                                      goB2,
-                                                      [=](Touchable *button, ComponentPosition clickPosition,
-                                                          SDL_Event event) mutable {
-                                                      },
-                                                      50, {625, 100}, {1000, 50, POSITION_ABSOLUTE}));
-    boxmoney->getTextView()->changeText("Your money = " + std::to_string(*money));
-    ComponentSize textSize = boxmoney->getTextView()->getSize();
-    boxmoney->getTextView()->setPosition({(boxmoney->getSize().width - textSize.width) / 2,
-                                          (boxmoney->getSize().height - textSize.height) / 2});
     auto icon1Container = new Container(SDLRendererController, 2, {360, 150}, {25, 700, POSITION_ABSOLUTE});
     icon1Container->append(new ImageView(SDLRendererController, goB, 2, {360, 150}, {0, 0, POSITION_RELATIVE}));
     icon1Container->append(btnshop);
@@ -729,23 +1181,13 @@ void mainGame2(GameScenes *gameScenes) {
     landseed3->show(false);
     sceneContainer->append(landseed4);
     landseed4->show(false);
-    sceneContainer->append(lv1on1->show(false));
-    sceneContainer->append(lv1on2->show(false));
-    sceneContainer->append(lv1on3->show(false));
-    sceneContainer->append(lv1on4->show(false));
     sceneContainer->append(land1);
+    sceneContainer->append(Axe);
     //------------------------------------------------//
-    sceneContainer->append(land2lv1);
-    sceneContainer->append(land3lv1);
-    sceneContainer->append(land4lv1);
-    sceneContainer->append(landwaterseed1lv1);
-    landwaterseed1lv1->show(false);
-    sceneContainer->append(landwaterseed2lv1);
-    landwaterseed2lv1->show(false);
-    sceneContainer->append(landwaterseed3lv1);
-    landwaterseed3lv1->show(false);
-    sceneContainer->append(landwaterseed4lv1);
-    landwaterseed4lv1->show(false);
+    sceneContainer->append(land1lv1->show(false));
+    sceneContainer->append(land2lv1->show(false));
+    sceneContainer->append(land3lv1->show(false));
+    sceneContainer->append(land4lv1->show(false));
     sceneContainer->append(landwater1lv1);
     landwater1lv1->show(false);
     sceneContainer->append(landwater2lv1);
@@ -754,16 +1196,49 @@ void mainGame2(GameScenes *gameScenes) {
     landwater3lv1->show(false);
     sceneContainer->append(landwater4lv1);
     landwater4lv1->show(false);
-    sceneContainer->append(landseed1lv1);
-    landseed1lv1->show(false);
-    sceneContainer->append(landseed2lv1);
-    landseed2lv1->show(false);
-    sceneContainer->append(landseed3lv1);
-    landseed3lv1->show(false);
-    sceneContainer->append(landseed4lv1);
-    landseed4lv1->show(false);
-    sceneContainer->append(land1lv1);
-
-
+    //------------------------------------------------//
+    sceneContainer->append(land1lv2->show(false));
+    sceneContainer->append(land2lv2->show(false));
+    sceneContainer->append(land3lv2->show(false));
+    sceneContainer->append(land4lv2->show(false));
+    sceneContainer->append(landwater1lv2);
+    landwater1lv2->show(false);
+    sceneContainer->append(landwater2lv2);
+    landwater2lv2->show(false);
+    sceneContainer->append(landwater3lv2);
+    landwater3lv2->show(false);
+    sceneContainer->append(landwater4lv2);
+    landwater4lv2->show(false);
+    //------------------------------------------------//
+    sceneContainer->append(land1lv3->show(false));
+    sceneContainer->append(land2lv3->show(false));
+    sceneContainer->append(land3lv3->show(false));
+    sceneContainer->append(land4lv3->show(false));
+    sceneContainer->append(landwater1lv3);
+    landwater1lv3->show(false);
+    sceneContainer->append(landwater2lv3);
+    landwater2lv3->show(false);
+    sceneContainer->append(landwater3lv3);
+    landwater3lv3->show(false);
+    sceneContainer->append(landwater4lv3);
+    landwater4lv3->show(false);
+    //------------------------------------------------//
+    sceneContainer->append(land1lv4->show(false));
+    sceneContainer->append(land2lv4->show(false));
+    sceneContainer->append(land3lv4->show(false));
+    sceneContainer->append(land4lv4->show(false));
+    sceneContainer->append(landwater1lv4);
+    landwater1lv4->show(false);
+    sceneContainer->append(landwater2lv4);
+    landwater2lv4->show(false);
+    sceneContainer->append(landwater3lv4);
+    landwater3lv4->show(false);
+    sceneContainer->append(landwater4lv4);
+    landwater4lv4->show(false);
+    //------------------------------------------------//
+    sceneContainer->append(tree1->show(false));
+    sceneContainer->append(tree2->show(false));
+    sceneContainer->append(tree3->show(false));
+    sceneContainer->append(tree4->show(false));
 
 }

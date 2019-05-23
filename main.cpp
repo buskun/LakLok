@@ -65,7 +65,6 @@ int WinMain(int argc, char *argv[]) {
     mainGame3(gameScene);
     mainGame4(gameScene);
     introGame1(gameScene);
-    introGame4(gameScene);
     mainGame2Shop(gameScene);
 
     eventManager->on(SDL_MOUSEBUTTONDOWN, [&](SDL_Event event) {

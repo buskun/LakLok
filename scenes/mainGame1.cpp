@@ -85,20 +85,20 @@ void mainGame1(GameScenes *gameScenes) {
 	auto canBlueA = sceneContainer->append(new TouchableImage(SDLRendererController,
 	                                                          SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame1/canBlue.png"),
 	                                                          canClickFunction(0),
-	                                                          2, {600, 600}, {50, 500, POSITION_RELATIVE}));
+	                                                          2, {200, 300}, {100, 590, POSITION_RELATIVE}));
 	auto canRedB = sceneContainer->append(new TouchableImage(SDLRendererController,
 	                                                         SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame1/canRed.png"),
 	                                                         canClickFunction(1),
-	                                                         2, {600, 600}, {350, 500, POSITION_RELATIVE}));
+	                                                         2, {200, 300}, {500, 590, POSITION_RELATIVE}));
 	auto canGreenC = sceneContainer->append(new TouchableImage(SDLRendererController,
 	                                                           SDL::loadTexture(SDLRenderer, GAME_PROP.RESOURCE_PATH + "/img/maingame1/canGreen.png"),
 	                                                           canClickFunction(2),
-	                                                           2, {600, 600}, {650, 500, POSITION_RELATIVE}));
+	                                                           2, {200, 300}, {900, 590, POSITION_RELATIVE}));
 	auto canYellowD = sceneContainer->append(new TouchableImage(SDLRendererController,
 	                                                            SDL::loadTexture(SDLRenderer,
 	                                                                             GAME_PROP.RESOURCE_PATH + "/img/maingame1/canYellow.png"),
 	                                                            canClickFunction(3),
-	                                                            2, {600, 600}, {950, 500, POSITION_RELATIVE}));
+	                                                            2, {200, 300}, {1300, 590, POSITION_RELATIVE}));
 	auto boxEnd = sceneContainer->append(new Button(SDLRendererController,
 	                                                "Your score = ", {50, GAME_PROP.RESOURCE_PATH + "/fonts/Roboto-Regular.ttf",
 	                                                                  {255, 255, 255}},
