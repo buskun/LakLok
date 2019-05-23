@@ -33,6 +33,8 @@ public:
 	          ComponentPosition componentPosition = {0, 0, POSITION_RELATIVE});
 
 	ImageView *setHoverImage(SDL_Texture *imageTexture);
+
+	ImageView *setImage(SDL_Texture *imageTexture);
 };
 
 class TextView : public View {
