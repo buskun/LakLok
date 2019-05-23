@@ -63,21 +63,21 @@ void mainMenu(GameScenes *gameScenes) {
             new ImageView(SDLRendererController, mainGame_2, 1, {200, 200}, {200, 600, POSITION_RELATIVE}));
     sceneContainer->append(new TouchableImage(SDLRendererController, mainGame_2,
                                               [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
-                                                  gameScenes->setCurrentSceneName("mainGame3");
+                                                  gameScenes->setCurrentSceneName("introGame3");
                                               },
                                               1, {200, 200}, {200, 600, POSITION_RELATIVE}));
     sceneContainer->append(
             new ImageView(SDLRendererController, mainGame_3, 1, {200, 200}, {1225, 600, POSITION_RELATIVE}));
     sceneContainer->append(new TouchableImage(SDLRendererController, mainGame_3,
                                               [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
-                                                  gameScenes->setCurrentSceneName("mainGame4");
+                                                  gameScenes->setCurrentSceneName("introGame4");
                                               },
                                               1, {200, 200}, {1225, 600, POSITION_RELATIVE}));
     sceneContainer->append(
             new ImageView(SDLRendererController, mainGame_4, 1, {200, 200}, {1225, 150, POSITION_RELATIVE}));
     sceneContainer->append(new TouchableImage(SDLRendererController, mainGame_4,
                                               [=](Touchable *button, ComponentPosition clickPosition, SDL_Event event) {
-                                                  gameScenes->setCurrentSceneName("mainGame2");
+                                                  gameScenes->setCurrentSceneName("introGame2");
                                               },
                                               1, {200, 200}, {1225, 150, POSITION_RELATIVE}));
     int *imgState = new int{0},

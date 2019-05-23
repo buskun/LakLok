@@ -65,6 +65,8 @@ int WinMain(int argc, char *argv[]) {
     mainGame3(gameScene);
     mainGame4(gameScene);
     introGame1(gameScene);
+    introGame2(gameScene);
+    introGame3(gameScene);
     introGame4(gameScene);
     mainGame2Shop(gameScene);
 
